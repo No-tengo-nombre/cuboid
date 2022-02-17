@@ -40,10 +40,10 @@ pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
         .expect("Error reading vertex shader.");
     let fragment_content = fs::read_to_string(fragment_path)
         .expect("Error reading fragment shader.");
-    let vertex_shader = make_vertex_shader(vertex_content);
-    verify_vertex_shader(vertex_shader);
-    let fragment_shader = make_fragment_shader(fragment_content);
-    verify_fragment_shader(fragment_shader);
+    let vertex_shader = make_vertex_shader(&vertex_content);
+    verify_vertex_shader(&vertex_shader);
+    let fragment_shader = make_fragment_shader(&fragment_content);
+    verify_fragment_shader(&fragment_shader);
 
     // Creatig the shader program (by default it is not used)
     let shader_program;
@@ -78,7 +78,7 @@ pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
 }
 
 
-fn make_vertex_shader(content: String) -> GLuint{
+fn make_vertex_shader(content: &String) -> GLuint{
     let vertex_shader;
     unsafe {
         vertex_shader = glCreateShader(GL_VERTEX_SHADER);
@@ -95,7 +95,7 @@ fn make_vertex_shader(content: String) -> GLuint{
 }
 
 
-fn make_fragment_shader(content: String) -> GLuint{
+fn make_fragment_shader(content: &String) -> GLuint{
     let fragment_shader;
     unsafe {
         fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -112,15 +112,15 @@ fn make_fragment_shader(content: String) -> GLuint{
 }
 
 
-fn verify_vertex_shader(vertex_shader: GLuint) {
+fn verify_vertex_shader(vertex_shader: &GLuint) {
     let mut success = 0;
     unsafe {
-        glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &mut success);
+        glGetShaderiv(*vertex_shader, GL_COMPILE_STATUS, &mut success);
         if success == 0 {
             let mut v: Vec<u8> = Vec::with_capacity(1024);
             let mut log_len = 0_i32;
             glGetShaderInfoLog(
-                vertex_shader,
+                *vertex_shader,
                 1024,
                 &mut log_len,
                 v.as_mut_ptr().cast(),
@@ -132,15 +132,15 @@ fn verify_vertex_shader(vertex_shader: GLuint) {
 }
 
 
-fn verify_fragment_shader(fragment_shader: GLuint) {
+fn verify_fragment_shader(fragment_shader: &GLuint) {
     let mut success = 0;
     unsafe {
-        glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &mut success);
+        glGetShaderiv(*fragment_shader, GL_COMPILE_STATUS, &mut success);
         if success == 0 {
             let mut v: Vec<u8> = Vec::with_capacity(1024);
             let mut log_len = 0_i32;
             glGetShaderInfoLog(
-                fragment_shader,
+                *fragment_shader,
                 1024,
                 &mut log_len,
                 v.as_mut_ptr().cast(),

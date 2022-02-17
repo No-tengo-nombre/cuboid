@@ -32,8 +32,8 @@ fn main() {
     
     gl::set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = materials::shader::new(
-        "src/resources/shaders/shader1/test.vert",
-        "src/resources/shaders/shader1/test.frag",
+        "test/resources/shaders/shader1/test.vert",
+        "test/resources/shaders/shader1/test.frag",
     );
     shader.use_program();
 
