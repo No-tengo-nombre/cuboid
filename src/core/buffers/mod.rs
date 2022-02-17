@@ -1,3 +1,3 @@
-mod ebo;
-mod vao;
-mod vbo;
+pub mod ebo;
+pub mod vao;
+pub mod vbo;
