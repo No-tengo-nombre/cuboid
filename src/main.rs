@@ -1,6 +1,7 @@
 use beryllium::*;
 use ogl33::*;
 use std::mem::*;
+mod core;
 
 const WINDOW_TITLE: &str = "Triangle: Draw Arrays";
 
