@@ -43,6 +43,7 @@ impl VBO {
     }
 }
 
+
 pub fn new<T>(vertices: &[T]) -> VBO {
     let mut vbo = 0;
     unsafe {
@@ -61,6 +62,7 @@ pub fn new<T>(vertices: &[T]) -> VBO {
     }
     return VBO {_id: vbo};
 }
+
 
 pub fn new_with_usage<T>(vertices: &[T], usage: GLenum) -> VBO {
     let mut vbo = 0;

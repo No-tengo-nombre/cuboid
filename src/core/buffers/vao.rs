@@ -10,6 +10,7 @@ use ogl33::{
 use std::mem::{
     size_of,
 };
+
 use crate::core::buffers;
 use crate::core::utils::{
     types,
@@ -20,6 +21,7 @@ pub struct VAO {
     _id: u32,
     _size: usize,
 }
+
 
 impl VAO {
     pub fn get_id(&self) -> u32 {
