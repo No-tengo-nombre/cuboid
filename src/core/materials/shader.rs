@@ -31,6 +31,12 @@ impl Shader {
             glUseProgram(self._id);
         }
     }
+
+    pub fn del(&self) {
+        unsafe {
+            glDeleteShader(self._id);
+        }
+    }
 }
 
 
