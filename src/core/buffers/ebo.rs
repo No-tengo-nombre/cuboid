@@ -41,22 +41,6 @@ impl EBO {
 /// indices, asuming the usage `GL_STATIC_DRAW`.
 pub fn new<T>(indices: &[T], count: u32) -> EBO {
     return new_with_usage(indices, count, gl::STATIC_DRAW);
-    // let mut ebo = 0;
-    // unsafe {
-    //     // Generate the VBO
-    //     gl::GenBuffers(1, &mut ebo);
-    //     assert_ne!(ebo, 0);
-    //     gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, ebo);
-
-    //     // Buffer the vertices
-    //     gl::BufferData(
-    //         gl::ELEMENT_ARRAY_BUFFER,
-    //         (indices.len() * size_of::<T>()) as GLsizeiptr,
-    //         indices.as_ptr() as *const GLvoid,
-    //         gl::STATIC_DRAW,
-    //     );
-    // }
-    // return EBO {_id: ebo, _count: count};
 }
 
 

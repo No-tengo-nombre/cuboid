@@ -4,9 +4,6 @@ use std::mem::{
 };
 
 use crate::core::buffers;
-use crate::core::utils::{
-    types,
-};
 
 
 /// An OpenGL Vertex Array Object.
@@ -18,18 +15,6 @@ pub struct VAO {
 
 
 impl VAO {
-    pub fn get_id(&self) -> u32 {
-        return self._id;
-    }
-
-    pub fn get_stride(&self) -> i32 {
-        return self._stride;
-    }
-
-    pub fn get_size(&self) -> u32 {
-        return self._size;
-    }
-
     pub fn bind(&self) {
         unsafe {
             gl::BindVertexArray(self._id);
@@ -63,13 +48,6 @@ impl VAO {
         }
         vbo.unbind();
     }
-}
-
-
-/// Generates a new instance of a Vertex Array Object, asuming the size of the
-/// data is that of `types::Vertex` (which is defined in this package).
-pub fn new() -> VAO {
-    return new_typed::<types::V6>(3);
 }
 
 
