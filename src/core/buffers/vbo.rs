@@ -30,22 +30,6 @@ impl VBO {
 /// vertices, with the usage `GL_STATIC_DRAW`.
 pub fn new<T>(vertices: &[T]) -> VBO {
     return new_with_usage(vertices, gl::STATIC_DRAW);
-    // let mut vbo = 0;
-    // unsafe {
-    //     // Generate the VBO
-    //     gl::GenBuffers(1, &mut vbo);
-    //     assert_ne!(vbo, 0);
-    //     gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
-
-    //     // Buffer the vertices
-    //     gl::BufferData(
-    //         gl::ARRAY_BUFFER,
-    //         (vertices.len() * size_of::<T>()) as GLsizeiptr,
-    //         vertices.as_ptr() as *const GLvoid,
-    //         gl::STATIC_DRAW,
-    //     );
-    // }
-    // return VBO {_id: vbo};
 }
 
 
