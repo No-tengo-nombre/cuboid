@@ -70,75 +70,116 @@ pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
 }
 
 
-fn make_vertex_shader(content: &String) -> GLuint{
-    let vertex_shader;
+pub fn make_shader(content: &String, shader_type: GLenum) -> GLuint {
+    let shader;
     unsafe {
-        vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
-        assert_ne!(vertex_shader, 0);
+        shader = gl::CreateShader(shader_type);
+        assert_ne!(shader, 0);
         gl::ShaderSource(
-            vertex_shader,
+            shader,
             1,
             &(content.as_bytes().as_ptr().cast()),
             &(content.len().try_into().unwrap()),
         );
-        gl::CompileShader(vertex_shader);
+        gl::CompileShader(shader);
     }
-    return vertex_shader;
+    return shader;
+}
+
+
+fn make_vertex_shader(content: &String) -> GLuint{
+    return make_shader(content, gl::VERTEX_SHADER);
+    // let vertex_shader;
+    // unsafe {
+    //     vertex_shader = gl::CreateShader(gl::VERTEX_SHADER);
+    //     assert_ne!(vertex_shader, 0);
+    //     gl::ShaderSource(
+    //         vertex_shader,
+    //         1,
+    //         &(content.as_bytes().as_ptr().cast()),
+    //         &(content.len().try_into().unwrap()),
+    //     );
+    //     gl::CompileShader(vertex_shader);
+    // }
+    // return vertex_shader;
 }
 
 
 fn make_fragment_shader(content: &String) -> GLuint{
-    let fragment_shader;
+    return make_shader(content, gl::FRAGMENT_SHADER);
+    // let fragment_shader;
+    // unsafe {
+    //     fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
+    //     assert_ne!(fragment_shader, 0);
+    //     gl::ShaderSource(
+    //         fragment_shader,
+    //         1,
+    //         &(content.as_bytes().as_ptr().cast()),
+    //         &(content.len().try_into().unwrap()),
+    //     );
+    //     gl::CompileShader(fragment_shader);
+    // }
+    // return fragment_shader;
+}
+
+
+pub fn verify_shader(shader: &GLuint, message: &str) {
+    let mut success = 0;
     unsafe {
-        fragment_shader = gl::CreateShader(gl::FRAGMENT_SHADER);
-        assert_ne!(fragment_shader, 0);
-        gl::ShaderSource(
-            fragment_shader,
-            1,
-            &(content.as_bytes().as_ptr().cast()),
-            &(content.len().try_into().unwrap()),
-        );
-        gl::CompileShader(fragment_shader);
+        gl::GetShaderiv(*shader, gl::COMPILE_STATUS, &mut success);
+        if success == 0 {
+            let mut v: Vec<u8> = Vec::with_capacity(1024);
+            let mut log_len = 0_i32;
+            gl::GetShaderInfoLog(
+                *shader,
+                1024,
+                &mut log_len,
+                v.as_mut_ptr().cast(),
+            );
+            v.set_len(log_len.try_into().unwrap());
+            panic!("{} : {}", message, String::from_utf8_lossy(&v));
+        }
     }
-    return fragment_shader;
 }
 
 
 fn verify_vertex_shader(vertex_shader: &GLuint) {
-    let mut success = 0;
-    unsafe {
-        gl::GetShaderiv(*vertex_shader, gl::COMPILE_STATUS, &mut success);
-        if success == 0 {
-            let mut v: Vec<u8> = Vec::with_capacity(1024);
-            let mut log_len = 0_i32;
-            gl::GetShaderInfoLog(
-                *vertex_shader,
-                1024,
-                &mut log_len,
-                v.as_mut_ptr().cast(),
-            );
-            v.set_len(log_len.try_into().unwrap());
-            panic!("Vertex Compile Error: {}", String::from_utf8_lossy(&v));
-        }
-    }
+    verify_shader(vertex_shader, "Vertex Compile Error");
+    // let mut success = 0;
+    // unsafe {
+    //     gl::GetShaderiv(*vertex_shader, gl::COMPILE_STATUS, &mut success);
+    //     if success == 0 {
+    //         let mut v: Vec<u8> = Vec::with_capacity(1024);
+    //         let mut log_len = 0_i32;
+    //         gl::GetShaderInfoLog(
+    //             *vertex_shader,
+    //             1024,
+    //             &mut log_len,
+    //             v.as_mut_ptr().cast(),
+    //         );
+    //         v.set_len(log_len.try_into().unwrap());
+    //         panic!("Vertex Compile Error: {}", String::from_utf8_lossy(&v));
+    //     }
+    // }
 }
 
 
 fn verify_fragment_shader(fragment_shader: &GLuint) {
-    let mut success = 0;
-    unsafe {
-        gl::GetShaderiv(*fragment_shader, gl::COMPILE_STATUS, &mut success);
-        if success == 0 {
-            let mut v: Vec<u8> = Vec::with_capacity(1024);
-            let mut log_len = 0_i32;
-            gl::GetShaderInfoLog(
-                *fragment_shader,
-                1024,
-                &mut log_len,
-                v.as_mut_ptr().cast(),
-            );
-            v.set_len(log_len.try_into().unwrap());
-            panic!("Fragment Compile Error: {}", String::from_utf8_lossy(&v));
-        }
-    }
+    verify_shader(fragment_shader, "Fragment Compile Error");
+    // let mut success = 0;
+    // unsafe {
+    //     gl::GetShaderiv(*fragment_shader, gl::COMPILE_STATUS, &mut success);
+    //     if success == 0 {
+    //         let mut v: Vec<u8> = Vec::with_capacity(1024);
+    //         let mut log_len = 0_i32;
+    //         gl::GetShaderInfoLog(
+    //             *fragment_shader,
+    //             1024,
+    //             &mut log_len,
+    //             v.as_mut_ptr().cast(),
+    //         );
+    //         v.set_len(log_len.try_into().unwrap());
+    //         panic!("Fragment Compile Error: {}", String::from_utf8_lossy(&v));
+    //     }
+    // }
 }
