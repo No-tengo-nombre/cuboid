@@ -4,26 +4,17 @@ use std::mem::{
 };
 
 use crate::core::buffers;
-use crate::core::utils::{
-    types,
-};
 
 
+/// An OpenGL Vertex Array Object.
 pub struct VAO {
     _id: u32,
-    _size: usize,
+    _stride: i32,
+    _size: u32,
 }
 
 
 impl VAO {
-    pub fn get_id(&self) -> u32 {
-        return self._id;
-    }
-
-    pub fn get_size(&self) -> usize {
-        return self._size;
-    }
-
     pub fn bind(&self) {
         unsafe {
             gl::BindVertexArray(self._id);
@@ -42,7 +33,7 @@ impl VAO {
         }
     }
 
-    pub fn link_vbo(&self, vbo: buffers::vbo::VBO, layout: u32) {
+    pub fn link_vbo(&self, vbo: &buffers::vbo::VBO, layout: u32) {
         vbo.bind();
         unsafe {
             gl::VertexAttribPointer(
@@ -50,8 +41,8 @@ impl VAO {
                 3,
                 gl::FLOAT,
                 gl::FALSE,
-                self._size.try_into().unwrap(),
-                ((self._size as u32) * layout) as *const _,
+                self._stride,
+                (self._size * layout) as *const _,
             );
             gl::EnableVertexAttribArray(layout);
         }
@@ -60,23 +51,19 @@ impl VAO {
 }
 
 
-pub fn new() -> VAO {
-    let mut vao = 0;
-    unsafe {
-        gl::GenVertexArrays(1, &mut vao);
-        assert_ne!(vao, 0);
-        gl::BindVertexArray(vao);
-    }
-    return VAO {_id: vao, _size: size_of::<types::Vertex>()};
+pub fn new_typed<T>(size: u32) -> VAO {
+    return new_sized(size_of::<T>(), size);
 }
 
 
-pub fn new_sized(size: usize) -> VAO {
+/// Generates a new instance of a Vertex Array Object, allowing the user to
+/// specify the size of the data.
+pub fn new_sized(stride: usize, size: u32) -> VAO {
     let mut vao = 0;
     unsafe {
         gl::GenVertexArrays(1, &mut vao);
         assert_ne!(vao, 0);
         gl::BindVertexArray(vao);
     }
-    return VAO {_id: vao, _size: size};
+    return VAO {_id: vao, _stride: stride as i32, _size: size};
 }
