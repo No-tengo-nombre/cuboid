@@ -9,6 +9,7 @@ use crate::core::utils::{
 };
 
 
+/// An OpenGL Vertex Array Object.
 pub struct VAO {
     _id: u32,
     _size: usize,
@@ -60,6 +61,8 @@ impl VAO {
 }
 
 
+/// Generates a new instance of a Vertex Array Object, asuming the size of the
+/// data is that of `types::Vertex` (which is defined in this package).
 pub fn new() -> VAO {
     let mut vao = 0;
     unsafe {
@@ -67,10 +70,12 @@ pub fn new() -> VAO {
         assert_ne!(vao, 0);
         gl::BindVertexArray(vao);
     }
-    return VAO {_id: vao, _size: size_of::<types::Vertex>()};
+    return VAO {_id: vao, _size: size_of::<types::Vertex3>()};
 }
 
 
+/// Generates a new instance of a Vertex Array Object, allowing the user to
+/// specify the size of the data.
 pub fn new_sized(size: usize) -> VAO {
     let mut vao = 0;
     unsafe {

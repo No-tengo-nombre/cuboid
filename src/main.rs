@@ -13,7 +13,7 @@ use crate::core::utils::{
 
 const WINDOW_TITLE: &str = "Triangle: Draw Arrays";
 
-const VERTICES: [types::Vertex; 3] =
+const VERTICES: [types::Vertex3; 3] =
     [
         [-0.5, -0.5, 0.0],
         [0.5, -0.5, 0.0],

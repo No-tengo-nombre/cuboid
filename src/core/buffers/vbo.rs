@@ -5,6 +5,7 @@ use gl;
 use gl::types::*;
 
 
+/// An OpenGL Vertex Buffer Object.
 pub struct VBO {
     _id: u32,
 }
@@ -35,6 +36,8 @@ impl VBO {
 }
 
 
+/// Generates a new instance of a Vertex Buffer Object containing the given
+/// vertices, with the usage `GL_STATIC_DRAW`.
 pub fn new<T>(vertices: &[T]) -> VBO {
     let mut vbo = 0;
     unsafe {
@@ -55,6 +58,8 @@ pub fn new<T>(vertices: &[T]) -> VBO {
 }
 
 
+/// Generates a new instance of a Vertex Buffer Object containing the given
+/// vertices, allowing the user to specify the usage.
 pub fn new_with_usage<T>(vertices: &[T], usage: GLenum) -> VBO {
     let mut vbo = 0;
     unsafe {

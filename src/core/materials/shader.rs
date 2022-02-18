@@ -3,6 +3,7 @@ use gl;
 use gl::types::*;
 
 
+/// An OpenGL shader program.
 pub struct Shader {
     _id: u32,
 }
@@ -23,6 +24,8 @@ impl Shader {
 }
 
 
+/// Makes a shader program from two files corresponding to the
+/// vertex and fragment shader.
 pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
     // Making the vertex and fragment shaders
     let vertex_content = fs::read_to_string(vertex_path)

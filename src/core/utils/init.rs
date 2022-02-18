@@ -2,6 +2,7 @@ use glfw::{Context};
 use gl;
 
 
+/// Initializes a GLFW window, setting it as the current one.
 pub fn init_glfw(width: u32, height: u32, title: &str, mode: glfw::WindowMode)
     -> (glfw::Window, std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>, glfw::Glfw) {
     let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
@@ -12,6 +13,8 @@ pub fn init_glfw(width: u32, height: u32, title: &str, mode: glfw::WindowMode)
 }
 
 
+/// Initializes the OpenGL functions. This must be run, or the program will
+/// SegFault and crash.
 pub fn init_gl(window: &mut glfw::Window) {
     gl::load_with(|s| window.get_proc_address(s) as *const _);
 }
