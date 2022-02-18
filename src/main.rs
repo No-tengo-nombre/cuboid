@@ -35,8 +35,9 @@ fn main() {
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
     );
+    let material = components::material::new(&shader);
 
-    let triangle = components::shape::new(&VERTICES, &INDICES, &shader);
+    let triangle = components::shape::new(&VERTICES, &INDICES, &material);
     let mut wireframe = false;
     
     while !window.should_close() {

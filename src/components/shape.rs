@@ -1,5 +1,5 @@
 use crate::core::buffers;
-use crate::core::shader;
+use crate::components::material;
 use std::mem::{
     size_of,
 };
@@ -8,13 +8,13 @@ use std::mem::{
 pub struct Shape<'a> {
     _vao: buffers::vao::VAO,
     _ebo: buffers::ebo::EBO,
-    _shader: &'a shader::Shader,
+    _material: &'a material::Material<'a>,
 }
 
 
 impl<'a> Shape<'a> {
-    pub fn get_shader(&self) -> &'a shader::Shader {
-        return self._shader;
+    pub fn use_material(&self) {
+        self._material.use_program();
     }
 
     pub fn bind_vao(&self) {
@@ -32,17 +32,17 @@ impl<'a> Shape<'a> {
     pub fn del(&self) {
         self._vao.del();
         self._ebo.del();
-        self._shader.del();
+        self._material.del();
     }
 }
 
 
-pub fn new<'a, T>(vertices: &[T], indices: &[u32], shader: &'a shader::Shader) -> Shape<'a> {
-    return new_with_count(vertices, indices, shader, 6);
+pub fn new<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material) -> Shape<'a> {
+    return new_with_count(vertices, indices, material, 6);
 }
 
 
-pub fn new_with_count<'a, T>(vertices: &[T], indices: &[u32], shader: &'a shader::Shader, count: u32) -> Shape<'a> {
+pub fn new_with_count<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material, count: u32) -> Shape<'a> {
     let vao = buffers::vao::new_typed::<T>((size_of::<T>() as u32) / 2);
     vao.bind();
     let vbo = buffers::vbo::new(vertices);
@@ -58,6 +58,6 @@ pub fn new_with_count<'a, T>(vertices: &[T], indices: &[u32], shader: &'a shader
     return Shape {
         _vao: vao,
         _ebo: ebo,
-        _shader: shader,
+        _material: material,
     };
 }
