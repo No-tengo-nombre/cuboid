@@ -5,11 +5,14 @@ use std::mem::{
 };
 
 
+/// An OpenGL Element Buffer Object.
 pub struct EBO {
     _id: u32,
 }
 
 
+/// Generates a new instance of an Element Buffer Object containing the given
+/// indices, asuming the usage `GL_STATIC_DRAW`.
 pub fn new<T>(indices: &[T]) -> EBO {
     let mut ebo = 0;
     unsafe {
@@ -30,6 +33,8 @@ pub fn new<T>(indices: &[T]) -> EBO {
 }
 
 
+/// Generates a new instance of an Element Buffer Object containing the given
+/// indices, allowing the user to specify the usage.
 pub fn new_with_usage<T>(indices: &[T], usage: GLenum) -> EBO {
     let mut ebo = 0;
     unsafe {
