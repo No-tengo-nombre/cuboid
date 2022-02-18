@@ -1,14 +1,13 @@
 mod core;
 
-use beryllium::*;
-use ogl33::*;
+use glfw::{Action, Context, Key};
 
 use crate::core::buffers;
 use crate::core::materials;
 use crate::core::utils::{
     types,
     init,
-    gl,
+    wrappers,
 };
 
 
@@ -23,37 +22,34 @@ const VERTICES: [types::Vertex; 3] =
 
 
 fn main() {
-    let (sdl, win) = init::set_up_window(WINDOW_TITLE);
-    init::load_gl(&win);
+    let (mut window, events, mut glfw) = init::init_glfw(800, 600, WINDOW_TITLE, glfw::WindowMode::Windowed);
+    init::init_gl(&mut window);
 
     let vao = buffers::vao::new();
     let vbo = buffers::vbo::new(&VERTICES);
     vao.link_vbo(vbo, 0);
     
-    gl::set_clear_color(0.0, 0.0, 0.0, 1.0);
+    wrappers::set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = materials::shader::new(
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
     );
     shader.use_program();
-
-    'main_loop: loop {
-        // handle events this frame
-        while let Some(event) = sdl.poll_events().and_then(Result::ok) {
+    
+    while !window.should_close() {
+        glfw.poll_events();
+        for (_, event) in glfw::flush_messages(&events) {
             match event {
-                Event::Quit(_) => break 'main_loop,
-                _ => (),
+                glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
+                    window.set_should_close(true);
+                },
+                _ => {},
             }
         }
-        // now the events are clear.
-
-        // here's where we could change the world state if we had some.
-
-        // and then draw!
         unsafe {
-            glClear(GL_COLOR_BUFFER_BIT);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::DrawArrays(gl::TRIANGLES, 0, 3);
         }
-        win.swap_window();
+        window.swap_buffers();
     }
 }

@@ -1,46 +1,17 @@
-use beryllium::{
-    SDL,
-    GlWindow,
-    GlProfile,
-    SdlGlAttr,
-    InitFlags,
-    SwapInterval,
-    WindowFlags,
-    WindowPosition,    
-};
-use ogl33::{
-    load_gl_with,
-};
+use glfw::{Context};
+use gl;
 
 
-pub fn set_up_window(title: &str) -> (SDL, GlWindow) {
-    let sdl = SDL::init(InitFlags::Everything).expect("couldn't start SDL");
-    sdl.gl_set_attribute(SdlGlAttr::MajorVersion, 3).unwrap();
-    sdl.gl_set_attribute(SdlGlAttr::MinorVersion, 3).unwrap();
-    sdl.gl_set_attribute(SdlGlAttr::Profile, GlProfile::Core).unwrap();
-    #[cfg(target_os = "macos")]
-    {
-        sdl
-        .gl_set_attribute(SdlGlAttr::Flags, ContextFlag::ForwardCompatible)
-        .unwrap();
-    }
-
-    let win = sdl
-        .create_gl_window(
-            title,
-            WindowPosition::Centered,
-            800,
-            600,
-            WindowFlags::Shown,
-        )
-        .expect("couldn't make a window and context");
-    win.set_swap_interval(SwapInterval::Vsync);
-    return (sdl, win);
+pub fn init_glfw(width: u32, height: u32, title: &str, mode: glfw::WindowMode)
+    -> (glfw::Window, std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>, glfw::Glfw) {
+    let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+    let (mut window, events) = glfw.create_window(width, height, title, mode).expect("Error creating GLFW window");
+    window.make_current();
+    window.set_key_polling(true);
+    return (window, events, glfw);
 }
 
 
-pub fn load_gl(window: &GlWindow) {
-    unsafe {
-        load_gl_with(|f_name| window.get_proc_address(f_name));
-    }
+pub fn init_gl(window: &mut glfw::Window) {
+    gl::load_with(|s| window.get_proc_address(s) as *const _);
 }
