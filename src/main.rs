@@ -2,8 +2,6 @@ mod core;
 
 use glfw::{Action, Context, Key};
 
-use crate::core::buffers;
-use crate::core::materials;
 use crate::core::utils::{
     types,
     init,
@@ -25,12 +23,12 @@ fn main() {
     let (mut window, events, mut glfw) = init::init_glfw(800, 600, WINDOW_TITLE, glfw::WindowMode::Windowed);
     init::init_gl(&mut window);
 
-    let vao = buffers::vao::new();
-    let vbo = buffers::vbo::new(&VERTICES);
+    let vao = core::buffers::vao::new();
+    let vbo = core::buffers::vbo::new(&VERTICES);
     vao.link_vbo(vbo, 0);
     
     wrappers::set_clear_color(0.0, 0.0, 0.0, 1.0);
-    let shader = materials::shader::new(
+    let shader = core::shader::new(
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
     );
