@@ -1,11 +1,6 @@
+use crate::core::traits::{Drawable};
 use gl;
 use gl::types::*;
-// use crate::components;
-
-
-pub trait Drawable {
-    fn get_drawn(&self, mode: GLenum);
-}
 
 
 pub fn clear() {

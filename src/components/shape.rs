@@ -1,4 +1,7 @@
-use crate::core::buffers;
+use crate::core::{
+    buffers,
+    traits,
+};
 use crate::components::{
     material,
     renderer,
@@ -16,7 +19,7 @@ pub struct Shape<'a> {
 }
 
 
-impl<'a> renderer::Drawable for Shape<'a> {
+impl<'a> traits::Drawable for Shape<'a> {
     fn get_drawn(&self, mode: GLenum) {
         self.use_material();
         self.bind_vao();
