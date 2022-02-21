@@ -25,7 +25,7 @@ pub fn draw(shape: &components::shape::Shape) {
 
 /// Draws the given shape using triangles.
 pub fn draw_mode(shape: &components::shape::Shape, mode: GLenum) {
-    shape.get_shader().use_program();
+    shape.use_material();
     shape.bind_vao();
     shape.bind_ebo();
     unsafe {
