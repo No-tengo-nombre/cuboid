@@ -5,12 +5,19 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::utils::{init, types};
+use crate::utils::{
+    init,
+    types,
+    math::linalg,
+};
 
 const WINDOW_TITLE: &str = "Test Window";
 
+
 fn main() {
-        let triangle_v: Vec<types::V6> = vec![
+    let mut delta;
+    let mut prev_time = 0.0;
+    let mut triangle_v: Vec<types::V6> = vec![
         [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0],
         [-0.5, 0.5, 0.0, 0.0, 1.0, 0.0],
         [0.5, 0.5, 0.0, 0.0, 0.0, 1.0],
@@ -29,7 +36,7 @@ fn main() {
     );
     let material = components::material::new(&shader);
 
-    let triangle = components::shape::new(&triangle_v, &triangle_i, &material);
+    let mut triangle = components::shape::new(&triangle_v, &triangle_i, &material);
     let mut wireframe = false;
     while !window.should_close() {
         glfw_instance.poll_events();
@@ -53,16 +60,24 @@ fn main() {
                 _ => {}
             }
         }
-        components::renderer::clear();
-        components::renderer::draw(&triangle);
+        
+        let time = glfw_instance.get_time() as f32;
+        delta = time - prev_time;
+        let r = ((5.0 * time) / 2.0 + 0.5).sin();
+        let g = ((5.0 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let b = ((5.0 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
 
-        let r = ((5.0 * (glfw_instance.get_time() as f32)) / 2.0 + 0.5).sin();
-        let g = ((5.0 * (glfw_instance.get_time() as f32) + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let b = ((5.0 * (glfw_instance.get_time() as f32) - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(5.0 * time * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(5.0 * time * delta));
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(5.0 * time * delta));
+        triangle = components::shape::new(&triangle_v, &triangle_i, &material);
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
-
+        components::renderer::clear();
+        components::renderer::draw(&triangle);
         window.swap_buffers();
+        prev_time = time;
     }
 
     triangle.del();
