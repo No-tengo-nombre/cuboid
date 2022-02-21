@@ -15,6 +15,10 @@ impl<'a> Material<'a> {
     pub fn use_program(&self) {
         self._shader.use_program();
     }
+
+    pub fn get_shader(&self) -> &core::shader::Shader {
+        return self._shader;
+    }
 }
 
 

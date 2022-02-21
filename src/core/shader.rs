@@ -1,6 +1,6 @@
-use std::fs;
 use gl;
 use gl::types::*;
+use std::fs;
 
 
 /// An OpenGL shader program.
@@ -21,6 +21,100 @@ impl Shader {
             gl::DeleteShader(self._id);
         }
     }
+
+    pub fn set_1i(&self, name: &str, v0: i32) {
+        unsafe {
+            gl::Uniform1i(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+            );
+        }
+    }
+
+    pub fn set_2i(&self, name: &str, v0: i32, v1: i32) {
+        unsafe {
+            gl::Uniform2i(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+            );
+        }
+    }
+
+    pub fn set_3i(&self, name: &str, v0: i32, v1: i32, v2: i32) {
+        unsafe {
+            gl::Uniform3i(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+                v2,
+            );
+        }
+    }
+
+    pub fn set_4i(&self, name: &str, v0: i32, v1: i32, v2: i32, v3: i32) {
+        unsafe {
+            gl::Uniform4i(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+                v2,
+                v3,
+            );
+        }
+    }
+
+    pub fn set_1f(&self, name: &str, v0: f32) {
+        unsafe {
+            gl::Uniform1f(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+            );
+        }
+    }
+    
+    pub fn set_2f(&self, name: &str, v0: f32, v1: f32) {
+        unsafe {
+            gl::Uniform2f(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+            );
+        }
+    }
+    
+    pub fn set_3f(&self, name: &str, v0: f32, v1: f32, v2: f32) {
+        unsafe {
+            gl::Uniform3f(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+                v2,
+            );
+        }
+    }
+    
+    pub fn set_4f(&self, name: &str, v0: f32, v1: f32, v2: f32, v3: f32) {
+        unsafe {
+            gl::Uniform4f(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                v0,
+                v1,
+                v2,
+                v3,
+            );
+        }
+    }
+}
+
+
+fn name_to_ptr(name: &str) -> *const i8 {
+    return append_null(name).as_ptr() as *const i8;
+}
+
+
+fn append_null(name: &str) -> String {
+    return format!("{name}\0");
 }
 
 

@@ -19,6 +19,7 @@ const VERTICES: [types::V6; 4] = [
 const INDICES: [u32; 6] = [0, 1, 2, 0, 2, 3];
 
 fn main() {
+    let mut counter = 0;
     let (mut window, events, mut glfw_instance) =
         init::init_glfw(800, 600, WINDOW_TITLE, glfw::WindowMode::Windowed);
     init::init_gl(&mut window);
@@ -56,6 +57,13 @@ fn main() {
         components::renderer::clear();
         components::renderer::draw(&triangle);
 
+        let r = ((0.01 * (counter as f32)) / 2.0 + 0.5).sin();
+        let g = ((0.01 * (counter as f32) + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let b = ((0.01 * (counter as f32) - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+
+        material.get_shader().set_4f("timeColor", r, g, b, 1.0);
+
+        counter += 1;
         window.swap_buffers();
     }
 
