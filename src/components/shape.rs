@@ -1,5 +1,9 @@
 use crate::core::buffers;
-use crate::components::material;
+use crate::components::{
+    material,
+    renderer,
+};
+use gl::types::*;
 use std::mem::{
     size_of,
 };
@@ -9,6 +13,23 @@ pub struct Shape<'a> {
     _vao: buffers::vao::VAO,
     _ebo: buffers::ebo::EBO,
     _material: &'a material::Material<'a>,
+}
+
+
+impl<'a> renderer::Drawable for Shape<'a> {
+    fn get_drawn(&self, mode: GLenum) {
+        self.use_material();
+        self.bind_vao();
+        self.bind_ebo();
+        unsafe {
+            gl::DrawElements(
+                mode,
+                self.get_ebo_count().try_into().unwrap(),
+                gl::UNSIGNED_INT,
+                0 as *const _,
+            );
+        }
+    }
 }
 
 

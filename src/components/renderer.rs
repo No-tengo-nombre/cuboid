@@ -1,6 +1,11 @@
 use gl;
 use gl::types::*;
-use crate::components;
+// use crate::components;
+
+
+pub trait Drawable {
+    fn get_drawn(&self, mode: GLenum);
+}
 
 
 pub fn clear() {
@@ -18,22 +23,13 @@ pub fn set_clear_color(r: f32, g: f32, b: f32, a: f32) {
 
 
 /// Draws the given shape using triangles.
-pub fn draw(shape: &components::shape::Shape) {
-    draw_mode(shape, gl::TRIANGLES);
+pub fn draw(drawable: &dyn Drawable) {
+    draw_mode(drawable, gl::TRIANGLES);
 }
 
 
 /// Draws the given shape using triangles.
-pub fn draw_mode(shape: &components::shape::Shape, mode: GLenum) {
-    shape.use_material();
-    shape.bind_vao();
-    shape.bind_ebo();
-    unsafe {
-        gl::DrawElements(
-            mode,
-            shape.get_ebo_count().try_into().unwrap(),
-            gl::UNSIGNED_INT,
-            0 as *const _,
-        );
-    }
+pub fn draw_mode(drawable: &dyn Drawable, mode: GLenum) {
+    drawable.get_drawn(mode);
+
 }
