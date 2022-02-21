@@ -1,12 +1,13 @@
 mod components;
 mod core;
+mod utils;
 
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::core::utils::{init, types};
+use crate::utils::{init, types};
 
-const WINDOW_TITLE: &str = "Triangle: Draw Arrays";
+const WINDOW_TITLE: &str = "Test Window";
 
 const VERTICES: [types::V6; 4] = [
     [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0],
