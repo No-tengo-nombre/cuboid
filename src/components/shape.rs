@@ -1,11 +1,11 @@
 use crate::components::material;
-use crate::core::{buffers, buffers::ebo::EBO, buffers::vao::VAO, traits};
+use crate::core::{buffers::ebo::EBO, buffers::vao::VAO, buffers::vbo::VBO, traits};
 use gl::types::*;
 use std::mem::size_of;
 
 pub struct Shape<'a> {
-    _vao: buffers::vao::VAO,
-    _ebo: buffers::ebo::EBO,
+    _vao: VAO,
+    _ebo: EBO,
     _material: &'a material::Material<'a>,
 }
 
@@ -43,7 +43,7 @@ impl<'a> Shape<'a> {
     ) -> Shape<'a> {
         let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
         vao.bind();
-        let vbo = buffers::vbo::new(vertices);
+        let vbo = VBO::new(vertices);
         let ebo = EBO::new(indices, count);
         for i in 0..layouts.len() {
             vao.link_vbo(&vbo, layouts[i]);
@@ -61,7 +61,7 @@ impl<'a> Shape<'a> {
     pub fn set_vertices<T>(&mut self, vertices: &[T], layouts: &[u32]) {
         let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
         vao.bind();
-        let vbo = buffers::vbo::new(vertices);
+        let vbo = VBO::new(vertices);
         for i in 0..layouts.len() {
             vao.link_vbo(&vbo, layouts[i]);
         }
