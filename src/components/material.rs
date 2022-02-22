@@ -5,6 +5,10 @@ pub struct Material<'a> {
 }
 
 impl<'a> Material<'a> {
+    pub fn new(shader: &core::shader::Shader) -> Material {
+        return Material { _shader: shader };
+    }
+    
     pub fn del(&self) {
         self._shader.del();
     }
@@ -18,6 +22,3 @@ impl<'a> Material<'a> {
     }
 }
 
-pub fn new(shader: &core::shader::Shader) -> Material {
-    return Material { _shader: shader };
-}

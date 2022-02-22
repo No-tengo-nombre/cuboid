@@ -6,6 +6,7 @@ use glfw;
 use glfw::{Action, Context, Key};
 
 use crate::utils::{init, math::linalg, types};
+use crate::components::material::Material;
 
 const WINDOW_TITLE: &str = "Test Window";
 
@@ -29,7 +30,7 @@ fn main() {
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
     );
-    let material = components::material::new(&shader);
+    let material = Material::new(&shader);
 
     let mut triangle = components::shape::new(&triangle_v, &triangle_i, &material);
     let mut wireframe = false;
