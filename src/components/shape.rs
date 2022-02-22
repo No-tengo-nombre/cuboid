@@ -1,18 +1,75 @@
-use crate::core::buffers;
 use crate::components::material;
-use std::mem::{
-    size_of,
-};
-
+use crate::core::{buffers::ebo::EBO, buffers::vao::VAO, buffers::vbo::VBO, traits};
+use gl::types::*;
+use std::mem::size_of;
 
 pub struct Shape<'a> {
-    _vao: buffers::vao::VAO,
-    _ebo: buffers::ebo::EBO,
+    _vao: VAO,
+    _ebo: EBO,
     _material: &'a material::Material<'a>,
 }
 
+impl<'a> traits::Drawable for Shape<'a> {
+    fn get_drawn(&self, mode: GLenum) {
+        self.use_material();
+        self.bind_vao();
+        self.bind_ebo();
+        unsafe {
+            gl::DrawElements(
+                mode,
+                self.get_ebo_count().try_into().unwrap(),
+                gl::UNSIGNED_INT,
+                0 as *const _,
+            );
+        }
+    }
+}
 
 impl<'a> Shape<'a> {
+    pub fn new<T>(
+        vertices: &[T],
+        indices: &[u32],
+        material: &'a material::Material,
+        layouts: &[u32],
+    ) -> Shape<'a> {
+        return Shape::new_with_count(vertices, indices, material, layouts, 6);
+    }
+    pub fn new_with_count<T>(
+        vertices: &[T],
+        indices: &[u32],
+        material: &'a material::Material,
+        layouts: &[u32],
+        count: u32,
+    ) -> Shape<'a> {
+        let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
+        vao.bind();
+        let vbo = VBO::new(vertices);
+        let ebo = EBO::new(indices, count);
+        for i in 0..layouts.len() {
+            vao.link_vbo(&vbo, layouts[i]);
+        }
+        vao.unbind();
+        vbo.unbind();
+        ebo.unbind();
+        return Shape {
+            _vao: vao,
+            _ebo: ebo,
+            _material: material,
+        };
+    }
+
+    pub fn set_vertices<T>(&mut self, vertices: &[T], layouts: &[u32]) {
+        let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
+        vao.bind();
+        let vbo = VBO::new(vertices);
+        for i in 0..layouts.len() {
+            vao.link_vbo(&vbo, layouts[i]);
+        }
+        vao.unbind();
+        vbo.unbind();
+        self._vao = vao;
+    }
+
     pub fn use_material(&self) {
         self._material.use_program();
     }
@@ -34,30 +91,4 @@ impl<'a> Shape<'a> {
         self._ebo.del();
         self._material.del();
     }
-}
-
-
-pub fn new<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material) -> Shape<'a> {
-    return new_with_count(vertices, indices, material, 6);
-}
-
-
-pub fn new_with_count<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material, count: u32) -> Shape<'a> {
-    let vao = buffers::vao::new_typed::<T>((size_of::<T>() as u32) / 2);
-    vao.bind();
-    let vbo = buffers::vbo::new(vertices);
-    let ebo = buffers::ebo::new(indices, count);
-
-    vao.link_vbo(&vbo, 0);
-    vao.link_vbo(&vbo, 1);
-
-    vao.unbind();
-    vbo.unbind();
-    ebo.unbind();
-
-    return Shape {
-        _vao: vao,
-        _ebo: ebo,
-        _material: material,
-    };
 }
