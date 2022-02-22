@@ -1,15 +1,11 @@
-use std::mem::{
-    size_of,
-};
 use gl;
 use gl::types::*;
-
+use std::mem::size_of;
 
 /// An OpenGL Vertex Buffer Object.
 pub struct VBO {
     _id: u32,
 }
-
 
 impl VBO {
     pub fn bind(&self) {
@@ -25,13 +21,11 @@ impl VBO {
     }
 }
 
-
 /// Generates a new instance of a Vertex Buffer Object containing the given
 /// vertices, with the usage `GL_STATIC_DRAW`.
 pub fn new<T>(vertices: &[T]) -> VBO {
     return new_with_usage(vertices, gl::STATIC_DRAW);
 }
-
 
 /// Generates a new instance of a Vertex Buffer Object containing the given
 /// vertices, allowing the user to specify the usage.
@@ -51,5 +45,5 @@ pub fn new_with_usage<T>(vertices: &[T], usage: GLenum) -> VBO {
             usage,
         );
     }
-    return VBO {_id: vbo};
+    return VBO { _id: vbo };
 }

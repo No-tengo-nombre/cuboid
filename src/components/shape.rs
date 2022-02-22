@@ -1,23 +1,13 @@
-use crate::core::{
-    buffers,
-    traits,
-};
-use crate::components::{
-    material,
-    renderer,
-};
+use crate::components::material;
+use crate::core::{buffers, traits};
 use gl::types::*;
-use std::mem::{
-    size_of,
-};
-
+use std::mem::size_of;
 
 pub struct Shape<'a> {
     _vao: buffers::vao::VAO,
     _ebo: buffers::ebo::EBO,
     _material: &'a material::Material<'a>,
 }
-
 
 impl<'a> traits::Drawable for Shape<'a> {
     fn get_drawn(&self, mode: GLenum) {
@@ -34,7 +24,6 @@ impl<'a> traits::Drawable for Shape<'a> {
         }
     }
 }
-
 
 impl<'a> Shape<'a> {
     pub fn use_material(&self) {
@@ -60,13 +49,16 @@ impl<'a> Shape<'a> {
     }
 }
 
-
 pub fn new<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material) -> Shape<'a> {
     return new_with_count(vertices, indices, material, 6);
 }
 
-
-pub fn new_with_count<'a, T>(vertices: &[T], indices: &[u32], material: &'a material::Material, count: u32) -> Shape<'a> {
+pub fn new_with_count<'a, T>(
+    vertices: &[T],
+    indices: &[u32],
+    material: &'a material::Material,
+    count: u32,
+) -> Shape<'a> {
     let vao = buffers::vao::new_typed::<T>((size_of::<T>() as u32) / 2);
     vao.bind();
     let vbo = buffers::vbo::new(vertices);

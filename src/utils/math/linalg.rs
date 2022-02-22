@@ -1,8 +1,4 @@
-use crate::utils::{
-    types,
-    math::trig,
-};
-
+use crate::utils::{math::trig, types};
 
 pub fn mat6_mul3(m1: &[types::V6], m2: &[types::V3; 3]) -> Vec<types::V6> {
     let mut result = Vec::<types::V6>::new();
@@ -21,32 +17,29 @@ pub fn mat6_mul3(m1: &[types::V6], m2: &[types::V3; 3]) -> Vec<types::V6> {
     return result;
 }
 
-
 pub fn rot_mat_x(angle: f32) -> [types::V3; 3] {
     let ang_rad = angle.to_radians();
     return [
-        [1.0, 0.0,           0.0           ],
+        [1.0, 0.0, 0.0],
         [0.0, ang_rad.cos(), -ang_rad.sin()],
-        [0.0, ang_rad.sin(), ang_rad.cos() ],
+        [0.0, ang_rad.sin(), ang_rad.cos()],
     ];
 }
-
 
 pub fn rot_mat_y(angle: f32) -> [types::V3; 3] {
     let ang_rad = angle.to_radians();
     return [
-        [ang_rad.cos() , 0.0, ang_rad.sin()],
-        [0.0           , 1.0, 0.0          ],
+        [ang_rad.cos(), 0.0, ang_rad.sin()],
+        [0.0, 1.0, 0.0],
         [-ang_rad.sin(), 0.0, ang_rad.cos()],
     ];
 }
-
 
 pub fn rot_mat_z(angle: f32) -> [types::V3; 3] {
     let ang_rad = angle.to_radians();
     return [
         [ang_rad.cos(), -ang_rad.sin(), 0.0],
-        [ang_rad.sin(), ang_rad.cos() , 0.0],
-        [0.0          , 0.0           , 1.0],
+        [ang_rad.sin(), ang_rad.cos(), 0.0],
+        [0.0, 0.0, 1.0],
     ];
 }

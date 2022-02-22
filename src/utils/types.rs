@@ -5,16 +5,13 @@ pub type V3 = [f32; 3];
 /// with 3 values for the color.
 pub type V6 = [f32; 6];
 
-
 // pub struct M3<'a> {
 //     _values: &'a [V3],
 // }
 
-
 // pub struct M6<'a> {
 //     _values: &'a [V6],
 // }
-
 
 // impl<'a> M3<'a> {
 //     pub fn column(&self, i: usize) -> [f32; 3] {
@@ -29,7 +26,6 @@ pub type V6 = [f32; 6];
 //         return self._values.len();
 //     }
 // }
-
 
 // impl<'a> M6<'a> {
 //     pub fn size(&self) -> usize {

@@ -5,20 +5,15 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::utils::{
-    init,
-    types,
-    math::linalg,
-};
+use crate::utils::{init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
-
 
 fn main() {
     let mut delta;
     let mut prev_time = 0.0;
     let mut triangle_v: Vec<types::V6> = vec![
-        [-0.5, -0.5, 0.0, 1.0, 0.0, 0.0],
+        [-0.5, -0.5, 0.5, 1.0, 0.0, 0.0],
         [-0.5, 0.5, 0.0, 0.0, 1.0, 0.0],
         [0.5, 0.5, 0.0, 0.0, 0.0, 1.0],
         [0.5, -0.5, 0.0, 1.0, 1.0, 1.0],
@@ -60,17 +55,18 @@ fn main() {
                 _ => {}
             }
         }
-        
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
-        let r = ((5.0 * time) / 2.0 + 0.5).sin();
-        let g = ((5.0 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let b = ((5.0 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-
+        // let r = ((5.0 * time) / 2.0 + 0.5).sin();
+        // let g = ((5.0 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        // let b = ((5.0 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let r = 1.0;
+        let g = 1.0;
+        let b = 1.0;
 
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(5.0 * time * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(5.0 * time * delta));
-        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(5.0 * time * delta));
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(5.0 * time * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(5.0 * time * delta));
         triangle = components::shape::new(&triangle_v, &triangle_i, &material);
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);

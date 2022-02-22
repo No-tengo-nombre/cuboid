@@ -1,10 +1,7 @@
 use gl;
-use std::mem::{
-    size_of,
-};
+use std::mem::size_of;
 
 use crate::core::buffers;
-
 
 /// An OpenGL Vertex Array Object.
 pub struct VAO {
@@ -12,7 +9,6 @@ pub struct VAO {
     _stride: i32,
     _size: u32,
 }
-
 
 impl VAO {
     pub fn bind(&self) {
@@ -50,11 +46,9 @@ impl VAO {
     }
 }
 
-
 pub fn new_typed<T>(size: u32) -> VAO {
     return new_sized(size_of::<T>(), size);
 }
-
 
 /// Generates a new instance of a Vertex Array Object, allowing the user to
 /// specify the size of the data.
@@ -65,5 +59,9 @@ pub fn new_sized(stride: usize, size: u32) -> VAO {
         assert_ne!(vao, 0);
         gl::BindVertexArray(vao);
     }
-    return VAO {_id: vao, _stride: stride as i32, _size: size};
+    return VAO {
+        _id: vao,
+        _stride: stride as i32,
+        _size: size,
+    };
 }

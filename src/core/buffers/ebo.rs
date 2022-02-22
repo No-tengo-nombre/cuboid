@@ -1,16 +1,12 @@
 use gl;
 use gl::types::*;
-use std::mem::{
-    size_of,
-};
-
+use std::mem::size_of;
 
 /// An OpenGL Element Buffer Object.
 pub struct EBO {
     _id: u32,
     _count: u32,
 }
-
 
 impl EBO {
     pub fn get_count(&self) -> u32 {
@@ -36,13 +32,11 @@ impl EBO {
     }
 }
 
-
 /// Generates a new instance of an Element Buffer Object containing the given
 /// indices, asuming the usage `GL_STATIC_DRAW`.
 pub fn new<T>(indices: &[T], count: u32) -> EBO {
     return new_with_usage(indices, count, gl::STATIC_DRAW);
 }
-
 
 /// Generates a new instance of an Element Buffer Object containing the given
 /// indices, allowing the user to specify the usage.
@@ -62,5 +56,8 @@ pub fn new_with_usage<T>(indices: &[T], count: u32, usage: GLenum) -> EBO {
             usage,
         );
     }
-    return EBO {_id: ebo, _count: count};
+    return EBO {
+        _id: ebo,
+        _count: count,
+    };
 }
