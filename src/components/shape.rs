@@ -1,5 +1,5 @@
 use crate::components::material;
-use crate::core::{buffers, buffers::vao::VAO, buffers::ebo::EBO, traits};
+use crate::core::{buffers, buffers::ebo::EBO, buffers::vao::VAO, traits};
 use gl::types::*;
 use std::mem::size_of;
 
