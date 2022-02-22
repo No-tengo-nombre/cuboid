@@ -11,6 +11,26 @@ pub struct VAO {
 }
 
 impl VAO {
+    pub fn new_typed<T>(size: u32) -> VAO {
+        return VAO::new_sized(size_of::<T>(), size);
+    }
+
+    /// Generates a new instance of a Vertex Array Object, allowing the user to
+    /// specify the size of the data.
+    pub fn new_sized(stride: usize, size: u32) -> VAO {
+        let mut vao = 0;
+        unsafe {
+            gl::GenVertexArrays(1, &mut vao);
+            assert_ne!(vao, 0);
+            gl::BindVertexArray(vao);
+        }
+        return VAO {
+            _id: vao,
+            _stride: stride as i32,
+            _size: size,
+        };
+    }
+
     pub fn bind(&self) {
         unsafe {
             gl::BindVertexArray(self._id);
@@ -44,24 +64,4 @@ impl VAO {
         }
         vbo.unbind();
     }
-}
-
-pub fn new_typed<T>(size: u32) -> VAO {
-    return new_sized(size_of::<T>(), size);
-}
-
-/// Generates a new instance of a Vertex Array Object, allowing the user to
-/// specify the size of the data.
-pub fn new_sized(stride: usize, size: u32) -> VAO {
-    let mut vao = 0;
-    unsafe {
-        gl::GenVertexArrays(1, &mut vao);
-        assert_ne!(vao, 0);
-        gl::BindVertexArray(vao);
-    }
-    return VAO {
-        _id: vao,
-        _stride: stride as i32,
-        _size: size,
-    };
 }
