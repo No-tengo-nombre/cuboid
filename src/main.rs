@@ -5,8 +5,8 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
+use crate::components::{material::Material, renderer::Renderer};
 use crate::utils::{init, math::linalg, types};
-use crate::components::material::Material;
 
 const WINDOW_TITLE: &str = "Test Window";
 
@@ -25,7 +25,8 @@ fn main() {
     let (mut window, events, mut glfw_instance) =
         init::init_glfw(800, 600, WINDOW_TITLE, glfw::WindowMode::Windowed);
     init::init_gl(&mut window);
-    components::renderer::set_clear_color(0.0, 0.0, 0.0, 1.0);
+    let mut renderer = Renderer::new();
+    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = core::shader::new(
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
@@ -71,8 +72,8 @@ fn main() {
         triangle = components::shape::new(&triangle_v, &triangle_i, &material);
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
-        components::renderer::clear();
-        components::renderer::draw(&triangle);
+        renderer.clear();
+        renderer.draw(&triangle);
         window.swap_buffers();
         prev_time = time;
     }
