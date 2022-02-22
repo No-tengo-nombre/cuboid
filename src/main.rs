@@ -5,7 +5,7 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{material::Material, renderer::Renderer};
+use crate::components::{material::Material, renderer::Renderer, shape::Shape};
 use crate::utils::{init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
@@ -33,7 +33,7 @@ fn main() {
     );
     let material = Material::new(&shader);
 
-    let mut triangle = components::shape::new(&triangle_v, &triangle_i, &material);
+    let mut triangle = Shape::new(&triangle_v, &triangle_i, &material, &[0, 1]);
     let mut wireframe = false;
     while !window.should_close() {
         glfw_instance.poll_events();
@@ -69,7 +69,7 @@ fn main() {
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(5.0 * time * delta));
         triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(5.0 * time * delta));
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(5.0 * time * delta));
-        triangle = components::shape::new(&triangle_v, &triangle_i, &material);
+        triangle.set_vertices(&triangle_v, &[0, 1]);
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         renderer.clear();
