@@ -1,5 +1,5 @@
 use crate::components::material;
-use crate::core::{buffers, traits};
+use crate::core::{buffers, buffers::ebo::EBO, traits};
 use gl::types::*;
 use std::mem::size_of;
 
@@ -44,12 +44,10 @@ impl<'a> Shape<'a> {
         let vao = buffers::vao::new_typed::<T>((size_of::<T>() as u32) / 2);
         vao.bind();
         let vbo = buffers::vbo::new(vertices);
-        let ebo = buffers::ebo::new(indices, count);
+        let ebo = EBO::new(indices, count);
         for i in 0..layouts.len() {
             vao.link_vbo(&vbo, layouts[i]);
         }
-        // vao.link_vbo(&vbo, 0);
-        // vao.link_vbo(&vbo, 1);
         vao.unbind();
         vbo.unbind();
         ebo.unbind();
