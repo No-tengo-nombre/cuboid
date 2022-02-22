@@ -6,6 +6,7 @@ use glfw;
 use glfw::{Action, Context, Key};
 
 use crate::components::{material::Material, renderer::Renderer, shape::Shape};
+use crate::core::shader::Shader;
 use crate::utils::{init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
@@ -27,7 +28,7 @@ fn main() {
     init::init_gl(&mut window);
     let mut renderer = Renderer::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
-    let shader = core::shader::new(
+    let shader = Shader::new(
         "test/resources/shaders/shader1/test.vert",
         "test/resources/shaders/shader1/test.frag",
     );
