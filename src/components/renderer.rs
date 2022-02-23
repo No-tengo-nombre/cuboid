@@ -2,15 +2,27 @@ use crate::core::traits::Drawable;
 use gl;
 use gl::types::*;
 
-pub struct Renderer {
+pub struct Renderer<'a> {
     _clear_color: [f32; 4],
+    // _layers: Vec<Vec<(&'a dyn Drawable, GLenum)>>,
+    _layers: Vec<Vec<(&'a dyn Drawable, GLenum)>>,
 }
 
-impl Renderer {
-    pub fn new() -> Renderer {
+impl<'a> Renderer<'a> {
+    pub fn new() -> Renderer<'a> {
         return Renderer {
             _clear_color: [0.0, 0.0, 0.0, 1.0],
+            // Really ugly code, TODO: Fix the layers
+            _layers: vec![vec![], vec![], vec![], vec![]],
         };
+    }
+
+    pub fn add_item(&mut self, drawable: &'a dyn Drawable, layer: usize) {
+        self.add_item_with_mode(drawable, layer, gl::TRIANGLES);
+    }
+
+    pub fn add_item_with_mode(&mut self, drawable: &'a dyn Drawable, layer: usize, mode: GLenum) {
+        self._layers[layer].push((drawable, mode));
     }
 
     pub fn clear(&self) {
@@ -24,10 +36,26 @@ impl Renderer {
             gl::ClearColor(r, g, b, a);
         }
     }
+
+    pub fn get_layer(&self, layer: usize) -> &Vec<(&dyn Drawable, GLenum)> {
+        return &self._layers[layer];
+    }
+
+    pub fn render(&self) {
+        for i in 0..self._layers.len() {
+            let layer = self.get_layer(i);
+            for j in 0..layer.len() {
+                let drawable = layer[j];
+                self.draw_mode(drawable.0, drawable.1);
+            }
+        }
+    }
+
     /// Draws the given shape using triangles.
     pub fn draw(&self, drawable: &dyn Drawable) {
         self.draw_mode(drawable, gl::TRIANGLES);
     }
+
     /// Draws the given shape using triangles.
     pub fn draw_mode(&self, drawable: &dyn Drawable, mode: GLenum) {
         drawable.get_drawn(mode);

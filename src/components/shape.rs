@@ -32,7 +32,13 @@ impl<'a> Shape<'a> {
         material: &'a material::Material,
         layouts: &[u32],
     ) -> Shape<'a> {
-        return Shape::new_with_count(vertices, indices, material, layouts, 6);
+        return Shape::new_with_count(
+            vertices,
+            indices,
+            material,
+            layouts,
+            indices.len().try_into().unwrap(),
+        );
     }
     pub fn new_with_count<T>(
         vertices: &[T],
