@@ -5,9 +5,9 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{material::Material, renderer3d::Renderer3D, shape::Shape};
+use crate::components::{camera::Camera, material::Material, renderer3d::Renderer3D, shape::Shape};
 use crate::core::shader::Shader;
-use crate::utils::{init, math::linalg, types};
+use crate::utils::{conversions, init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
 
@@ -59,7 +59,9 @@ fn main() {
     let mut wireframe = false;
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
-
+    let mut camera_pos = [0.0, 0.0, 1.0];
+    let speed = 0.05;
+    
     while !window.should_close() {
         glfw_instance.poll_events();
         for (_, event) in glfw::flush_messages(&events) {
@@ -79,6 +81,18 @@ fn main() {
                     }
                     wireframe = !wireframe;
                 }
+                glfw::WindowEvent::Key(Key::W, _, Action::Repeat, _) => {
+                    camera_pos[1] += speed;
+                }
+                glfw::WindowEvent::Key(Key::S, _, Action::Repeat, _) => {
+                    camera_pos[1] += -speed;
+                }
+                glfw::WindowEvent::Key(Key::D, _, Action::Repeat, _) => {
+                    camera_pos[0] += speed;
+                }
+                glfw::WindowEvent::Key(Key::A, _, Action::Repeat, _) => {
+                    camera_pos[0] += -speed;
+                }
                 _ => {}
             }
         }
@@ -95,14 +109,28 @@ fn main() {
 
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(rot_speed * delta));
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(rot_speed * delta));
-        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(rot_speed * delta));
-        triangle.set_vertices(&triangle_v, &[0, 1]);
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(rot_speed * delta));
+        // triangle.set_vertices(&triangle_v, &[0, 1]);
 
-        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(rot_speed * delta));
-        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(rot_speed * delta));
+        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(rot_speed * delta));
+        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(rot_speed * delta));
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(rot_speed * delta));
-        cube.set_vertices(&cube_v, &[0, 1]);
+        // cube.set_vertices(&cube_v, &[0, 1]);
 
+        let view = linalg::look_at(
+            &[0.0, 0.0, 0.0],
+            &[0.0, 1.0, 0.0],
+            &[0.0, 0.0, 1.0],
+            &[1.0, 0.0, 0.0],
+        );
+
+        let camera = Camera::new_from_target(
+            &camera_pos,
+            &[0.0, 0.0, 0.0],
+            &[0.0, 1.0, 0.0],
+        );
+
+        material.get_shader().set_matrix4fv("view", &conversions::vec4_to_v4(camera.look_at()));
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         renderer.clear();
         renderer.render();
