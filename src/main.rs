@@ -5,7 +5,7 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{camera::Camera, material::Material, renderer3d::Renderer3D, shape::Shape};
+use crate::components::{camera::Camera, camera::OrthoCamera, camera::PerspectiveCamera, material::Material, renderer3d::Renderer3D, shape::Shape};
 use crate::core::shader::Shader;
 use crate::utils::{conversions, init, math::linalg, types};
 
@@ -13,6 +13,7 @@ const WINDOW_TITLE: &str = "Test Window";
 
 fn main() {
     let mut delta;
+    let mut fps;
     let mut prev_time = 0.0;
     let mut triangle_v: Vec<types::V6> = vec![
         [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
@@ -31,6 +32,22 @@ fn main() {
         [0.5, -0.5, 0.5, 1.0, 0.0, 1.0],
         [0.5, 0.5, -0.5, 1.0, 1.0, 0.0],
         [0.5, 0.5, 0.5, 1.0, 1.0, 1.0],
+        // [100.0, 100.0, 100.0, 0.0, 0.0, 0.0],
+        // [100.0, 100.0, 200.0, 0.0, 0.0, 1.0],
+        // [100.0, 200.0, 100.0, 0.0, 1.0, 0.0],
+        // [100.0, 200.0, 200.0, 0.0, 1.0, 1.0],
+        // [200.0, 100.0, 100.0, 1.0, 0.0, 0.0],
+        // [200.0, 100.0, 200.0, 1.0, 0.0, 1.0],
+        // [200.0, 200.0, 100.0, 1.0, 1.0, 0.0],
+        // [200.0, 200.0, 200.0, 1.0, 1.0, 1.0],
+        // [100.0, 100.0, 0.0, 0.0, 0.0, 0.0],
+        // [100.0, 100.0, 0.0, 0.0, 0.0, 1.0],
+        // [100.0, 200.0, 0.0, 0.0, 1.0, 0.0],
+        // [100.0, 200.0, 0.0, 0.0, 1.0, 1.0],
+        // [200.0, 100.0, 0.0, 1.0, 0.0, 0.0],
+        // [200.0, 100.0, 0.0, 1.0, 0.0, 1.0],
+        // [200.0, 200.0, 0.0, 1.0, 1.0, 0.0],
+        // [200.0, 200.0, 0.0, 1.0, 1.0, 1.0],
     ];
 
     // Quads indices
@@ -54,12 +71,12 @@ fn main() {
     );
     let material = Material::new(&shader);
 
-    let triangle = Shape::new(&triangle_v, &triangle_i, &material, &[0, 1]);
-    let cube = Shape::new(&cube_v, &cube_i, &material, &[0, 1]);
+    let triangle = Shape::new_with_usage(&triangle_v, &triangle_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
+    let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
     let mut wireframe = false;
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
-    let mut camera_pos = [0.0, 0.0, 1.0];
+    let mut camera_pos = [0.0, 0.0, 5.0];
     let speed = 0.05;
     
     while !window.should_close() {
@@ -81,16 +98,16 @@ fn main() {
                     }
                     wireframe = !wireframe;
                 }
-                glfw::WindowEvent::Key(Key::W, _, Action::Repeat, _) => {
+                glfw::WindowEvent::Key(Key::W, _, Action::Press, _) => {
                     camera_pos[1] += speed;
                 }
-                glfw::WindowEvent::Key(Key::S, _, Action::Repeat, _) => {
+                glfw::WindowEvent::Key(Key::S, _, Action::Press, _) => {
                     camera_pos[1] += -speed;
                 }
-                glfw::WindowEvent::Key(Key::D, _, Action::Repeat, _) => {
+                glfw::WindowEvent::Key(Key::D, _, Action::Press, _) => {
                     camera_pos[0] += speed;
                 }
-                glfw::WindowEvent::Key(Key::A, _, Action::Repeat, _) => {
+                glfw::WindowEvent::Key(Key::A, _, Action::Press, _) => {
                     camera_pos[0] += -speed;
                 }
                 _ => {}
@@ -98,6 +115,8 @@ fn main() {
         }
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
+        fps = 1.0 / delta;
+        println!("Δt: {} ms  |  FPS: {}", delta * 1000.0, fps);
         // let r = ((2.5 * time) / 2.0 + 0.5).sin();
         // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
         // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
@@ -117,21 +136,14 @@ fn main() {
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
-        let view = linalg::look_at(
-            &[0.0, 0.0, 0.0],
-            &[0.0, 1.0, 0.0],
-            &[0.0, 0.0, 1.0],
-            &[1.0, 0.0, 0.0],
-        );
-
-        let camera = Camera::new_from_target(
+        let camera = OrthoCamera::new(
             &camera_pos,
-            &[0.0, 0.0, 0.0],
+            &[0.0, 0.0, 1.0],
             &[0.0, 1.0, 0.0],
         );
 
-        material.get_shader().set_matrix4fv("view", &conversions::vec4_to_v4(camera.look_at()));
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
+        material.get_shader().set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
         renderer.clear();
         renderer.render();
         window.swap_buffers();
