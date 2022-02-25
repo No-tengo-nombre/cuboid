@@ -25,6 +25,12 @@ impl<'a> traits::Drawable for Shape<'a> {
     }
 }
 
+impl<'a> Drop for Shape<'a> {
+    fn drop(&mut self) {
+        self.del();
+    }
+}
+
 impl<'a> Shape<'a> {
     pub fn new<T>(
         vertices: &[T],
@@ -32,7 +38,13 @@ impl<'a> Shape<'a> {
         material: &'a material::Material,
         layouts: &[u32],
     ) -> Shape<'a> {
-        return Shape::new_with_count(vertices, indices, material, layouts, 6);
+        return Shape::new_with_count(
+            vertices,
+            indices,
+            material,
+            layouts,
+            indices.len().try_into().unwrap(),
+        );
     }
     pub fn new_with_count<T>(
         vertices: &[T],
@@ -58,16 +70,15 @@ impl<'a> Shape<'a> {
         };
     }
 
-    pub fn set_vertices<T>(&mut self, vertices: &[T], layouts: &[u32]) {
-        let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
-        vao.bind();
+    pub fn set_vertices<T>(&self, vertices: &[T], layouts: &[u32]) {
+        // let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
+        self._vao.bind();
         let vbo = VBO::new(vertices);
         for i in 0..layouts.len() {
-            vao.link_vbo(&vbo, layouts[i]);
+            self._vao.link_vbo(&vbo, layouts[i]);
         }
-        vao.unbind();
+        self._vao.unbind();
         vbo.unbind();
-        self._vao = vao;
     }
 
     pub fn use_material(&self) {

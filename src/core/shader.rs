@@ -1,4 +1,5 @@
 use crate::utils::str::name_to_ptr;
+use crate::utils::types::V4;
 use gl;
 use gl::types::*;
 use std::fs;
@@ -160,6 +161,17 @@ impl Shader {
                 v1,
                 v2,
                 v3,
+            );
+        }
+    }
+
+    pub fn set_matrix4fv(&self, name: &str, value: &[V4; 4]) {
+        unsafe {
+            gl::UniformMatrix4fv(
+                gl::GetUniformLocation(self._id, name_to_ptr(name)),
+                1,
+                gl::FALSE,
+                value.as_ptr().cast(),
             );
         }
     }

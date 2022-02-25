@@ -1,9 +1,12 @@
 /// A three-dimensional vertex, with coordinates x, y and z.
 pub type V3 = [f32; 3];
 
+pub type V4 = [f32; 4];
+
 /// A six-dimensional vertex, used to indicate three spatial coordinates along
 /// with 3 values for the color.
 pub type V6 = [f32; 6];
+
 
 // pub struct M3<'a> {
 //     _values: &'a [V3],
