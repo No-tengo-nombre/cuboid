@@ -26,7 +26,7 @@ impl<'a> Renderer2D<'a> {
 
     pub fn clear(&self) {
         unsafe {
-            gl::Clear(gl::COLOR_BUFFER_BIT);
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
     pub fn set_clear_color(&mut self, r: f32, g: f32, b: f32, a: f32) {
