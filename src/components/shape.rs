@@ -53,10 +53,60 @@ impl<'a> Shape<'a> {
         layouts: &[u32],
         count: u32,
     ) -> Shape<'a> {
+        return Shape::new_with_count_usage(
+            vertices,
+            indices,
+            material,
+            layouts,
+            count,
+            gl::STATIC_DRAW,
+        );
+        // let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
+        // vao.bind();
+        // let vbo = VBO::new(vertices);
+        // let ebo = EBO::new(indices, count);
+        // for i in 0..layouts.len() {
+        //     vao.link_vbo(&vbo, layouts[i]);
+        // }
+        // vao.unbind();
+        // vbo.unbind();
+        // ebo.unbind();
+        // return Shape {
+        //     _vao: vao,
+        //     _ebo: ebo,
+        //     _material: material,
+        // };
+    }
+
+    pub fn new_with_usage<T>(
+            vertices: &[T],
+            indices: &[u32],
+            material: &'a material::Material,
+            layouts: &[u32],
+            usage: GLenum,
+        ) -> Shape<'a> {
+            return Shape::new_with_count_usage(
+                vertices,
+                indices,
+                material,
+                layouts,
+                indices.len().try_into().unwrap(),
+                usage,
+            );
+        }
+
+    pub fn new_with_count_usage<T>(
+        vertices: &[T],
+        indices: &[u32],
+        material: &'a material::Material,
+        layouts: &[u32],
+        count: u32,
+        usage: GLenum,
+    ) -> Shape<'a> {
         let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
         vao.bind();
-        let vbo = VBO::new(vertices);
-        let ebo = EBO::new(indices, count);
+        let vbo = VBO::new_with_usage(vertices, usage);
+        let ebo = EBO::new_with_usage(indices, count, usage);
         for i in 0..layouts.len() {
             vao.link_vbo(&vbo, layouts[i]);
         }
