@@ -61,11 +61,11 @@ fn main() {
     );
     let material = Material::new(&shader);
 
-    let mut triangle = Shape::new(&triangle_v, &triangle_i, &material, &[0, 1]);
-    let mut cube = Shape::new(&cube_v, &cube_i, &material, &[0, 1]);
+    let triangle = Shape::new(&triangle_v, &triangle_i, &material, &[0, 1]);
+    let cube = Shape::new(&cube_v, &cube_i, &material, &[0, 1]);
     let mut wireframe = false;
-    renderer.add_item_with_mode(&cube, 0, gl::QUADS);
-    renderer.add_item(&triangle, 1);
+    renderer.add_item_with_mode(&cube, 1, gl::QUADS);
+    renderer.add_item(&triangle, 0);
 
     while !window.should_close() {
         glfw_instance.poll_events();
@@ -100,12 +100,12 @@ fn main() {
 
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(45.0 * delta));
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(45.0 * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(45.0 * delta));
-        // triangle.set_vertices(&triangle_v, &[0, 1]);
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(45.0 * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(45.0 * delta));
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(45.0 * delta));
+        triangle.set_vertices(&triangle_v, &[0, 1]);
+        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(45.0 * delta));
+        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(45.0 * delta));
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(5.0 * delta));
-        // cube.set_vertices(&cube_v, &[0, 1]);
+        cube.set_vertices(&cube_v, &[0, 1]);
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         renderer.clear();

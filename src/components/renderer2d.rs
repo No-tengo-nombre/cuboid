@@ -5,7 +5,6 @@ use gl::types::*;
 pub struct Renderer2D<'a> {
     _clear_color: [f32; 4],
     _layers: Vec<Vec<(&'a dyn Drawable, GLenum)>>,
-    // _layers: Vec<Vec<(&'a mut dyn Drawable, GLenum)>>,
 }
 
 impl<'a> Renderer2D<'a> {
@@ -18,12 +17,10 @@ impl<'a> Renderer2D<'a> {
     }
 
     pub fn add_item(&mut self, drawable: &'a dyn Drawable, layer: usize) {
-    // pub fn add_item(&mut self, drawable: &'a mut dyn Drawable, layer: usize) {
         self.add_item_with_mode(drawable, layer, gl::TRIANGLES);
     }
 
     pub fn add_item_with_mode(&mut self, drawable: &'a dyn Drawable, layer: usize, mode: GLenum) {
-    // pub fn add_item_with_mode(&mut self, drawable: &'a mut dyn Drawable, layer: usize, mode: GLenum) {
         self._layers[layer].push((drawable, mode));
     }
 
@@ -40,7 +37,6 @@ impl<'a> Renderer2D<'a> {
     }
 
     pub fn get_layer(&self, layer: usize) -> &Vec<(&dyn Drawable, GLenum)> {
-    // pub fn get_layer(&self, layer: usize) -> &Vec<(&'a mut dyn Drawable, GLenum)> {
         return &self._layers[layer];
     }
 
