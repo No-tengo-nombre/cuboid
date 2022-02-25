@@ -5,7 +5,7 @@ mod utils;
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{material::Material, renderer::Renderer, shape::Shape};
+use crate::components::{material::Material, renderer2d::Renderer2D, shape::Shape};
 use crate::core::shader::Shader;
 use crate::utils::{init, math::linalg, types};
 
@@ -54,7 +54,7 @@ fn main() {
     let (mut window, events, mut glfw_instance) =
         init::init_glfw(1000, 1000, WINDOW_TITLE, glfw::WindowMode::Windowed);
     init::init_gl(&mut window);
-    let mut renderer = Renderer::new();
+    let mut renderer = Renderer2D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
         "test/resources/shaders/shader1/test.vert",

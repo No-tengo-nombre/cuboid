@@ -1,3 +1,3 @@
 pub mod material;
-pub mod renderer;
+pub mod renderer2d;
 pub mod shape;
