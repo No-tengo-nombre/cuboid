@@ -9,6 +9,10 @@ pub trait Camera {
     fn look_at(&self) -> Vec<V4>;
 }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//|================================| Orthogonal camera |========================================|//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
 pub struct OrthoCamera {
     _position: V3,
     _direction: V3,
@@ -66,6 +70,74 @@ impl OrthoCamera {
 
     pub fn set_target(&mut self, target: &V3) {
         self._direction = OrthoCamera::dir_from_target(&self._position, target);
+    }
+
+    fn dir_from_target(position: &V3, target: &V3) -> V3 {
+        return vector::normalize_v3(&vector::sub_v3(target, position));
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//|================================| Perspective camera |=======================================|//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+pub struct PerspectiveCamera {
+    _position: V3,
+    _direction: V3,
+    _up: V3,
+    _right: V3,
+}
+
+impl Camera for PerspectiveCamera {
+    fn get_position(&self) -> V3 {
+        return self._position;
+    }
+
+    fn get_up(&self) -> V3 {
+        return self._up;
+    }
+
+    fn get_right(&self) -> V3 {
+        return self._right;
+    }
+
+    fn get_direction(&self) -> V3 {
+        return self._direction;
+    }
+
+    fn look_at(&self) -> Vec<V4> {
+        return linalg::look_at(
+            &self.get_position(),
+            &self.get_up(),
+            &self.get_direction(),
+            &self.get_right(),
+        );
+    }
+}
+
+impl PerspectiveCamera {
+    pub fn new(position: &V3, direction: &V3, up: &V3) -> PerspectiveCamera {
+        let new_direction = vector::normalize_v3(direction);
+        return PerspectiveCamera {
+            _position: *position,
+            _direction: new_direction,
+            _up: vector::normalize_v3(up),
+            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+        };
+    }
+
+    pub fn new_from_target(position: &V3, target: &V3, up: &V3) -> PerspectiveCamera {
+        let new_direction = PerspectiveCamera::dir_from_target(position, target);
+        return PerspectiveCamera {
+            _position: *position,
+            _direction: new_direction,
+            _up: vector::normalize_v3(up),
+            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+        };
+    }
+
+    pub fn set_target(&mut self, target: &V3) {
+        self._direction = PerspectiveCamera::dir_from_target(&self._position, target);
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
