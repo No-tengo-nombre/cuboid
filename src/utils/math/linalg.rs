@@ -89,3 +89,33 @@ pub fn look_at(position: &V3, up: &V3, direction: &V3, right: &V3) -> Vec<V4> {
     ];
     return mat4_mul4(&matrix1, &matrix2);
 }
+
+pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> Vec<V4> {
+    let rml = xmax - xmin;
+    let tmb = ymax - ymin;
+    let fmn = zmax - zmin;
+    let rpl = xmax + xmin;
+    let tpb = ymax + ymin;
+    let fpn = zmax + zmin;
+    return vec![
+        [2.0 / rml, 0.0, 0.0, -rpl / rml],
+        [0.0, 2.0 / tmb, 0.0, -tpb / tmb],
+        [0.0, 0.0, -2.0 / fmn, fpn / fmn],
+        [0.0, 0.0, 0.0, 1.0],
+    ];
+}
+
+pub fn perspective(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> Vec<V4> {
+    let rml = xmax - xmin;
+    let tmb = ymax - ymin;
+    let fmn = zmax - zmin;
+    let rpl = xmax + xmin;
+    let tpb = ymax + ymin;
+    let fpn = zmax + zmin;
+    return vec![
+        [2.0 * zmin / rml, 0.0, rpl / rml, 0.0],
+        [0.0, 2.0 * zmin / tmb, tpb / tmb, 0.0],
+        [0.0, 0.0, -fpn / fmn, -2.0 * zmax * zmin / fmn],
+        [0.0, 0.0, -1.0, 0.0],
+    ];
+}
