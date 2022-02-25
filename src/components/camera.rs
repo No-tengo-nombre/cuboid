@@ -1,5 +1,5 @@
-use crate::utils::math::vector;
-use crate::utils::types::V3;
+use crate::utils::math::{linalg, vector};
+use crate::utils::types::{V3, V4};
 
 pub struct Camera {
     _position: V3,
@@ -27,6 +27,31 @@ impl Camera {
             _up: vector::normalize_v3(up),
             _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
         };
+    }
+
+    pub fn get_position(&self) -> V3 {
+        return self._position;
+    }
+
+    pub fn get_up(&self) -> V3 {
+        return self._up;
+    }
+
+    pub fn get_right(&self) -> V3 {
+        return self._right;
+    }
+
+    pub fn get_direction(&self) -> V3 {
+        return self._direction;
+    }
+
+    pub fn look_at(&self) -> Vec<V4> {
+        return linalg::look_at(
+            &self.get_position(),
+            &self.get_up(),
+            &self.get_direction(),
+            &self.get_right(),
+        );
     }
 
     pub fn set_target(&mut self, target: &V3) {
