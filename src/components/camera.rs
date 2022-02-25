@@ -1,5 +1,6 @@
 use crate::utils::math::{linalg, vector};
 use crate::utils::types::{V3, V4};
+use crate::utils::conversions;
 
 pub trait Camera {
     fn get_position(&self) -> V3;
@@ -38,11 +39,22 @@ impl Camera for OrthoCamera {
     }
 
     fn look_at(&self) -> Vec<V4> {
-        return linalg::look_at(
+        // return linalg::look_at(
+        //     &self.get_position(),
+        //     &self.get_up(),
+        //     &self.get_direction(),
+        //     &self.get_right(),
+        // );
+        let look = linalg::look_at(
             &self.get_position(),
             &self.get_up(),
             &self.get_direction(),
             &self.get_right(),
+        );
+        let orth_view = linalg::ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+        return linalg::mat4_mul4(
+            &conversions::vec4_to_v4(&look),
+            &conversions::vec4_to_v4(&orth_view),
         );
     }
 }
@@ -73,7 +85,8 @@ impl OrthoCamera {
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
-        return vector::normalize_v3(&vector::sub_v3(target, position));
+        // return vector::normalize_v3(&vector::sub_v3(target, position));
+        return vector::normalize_v3(&vector::sub_v3(position, target));
     }
 }
 
@@ -112,6 +125,17 @@ impl Camera for PerspectiveCamera {
             &self.get_direction(),
             &self.get_right(),
         );
+        // let look = linalg::look_at(
+        //     &self.get_position(),
+        //     &self.get_up(),
+        //     &self.get_direction(),
+        //     &self.get_right(),
+        // );
+        // let persp_view = linalg::perspective(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+        // return linalg::mat4_mul4(
+        //     &conversions::vec4_to_v4(&persp_view),
+        //     &conversions::vec4_to_v4(&look),
+        // );
     }
 }
 
