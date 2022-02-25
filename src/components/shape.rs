@@ -25,6 +25,12 @@ impl<'a> traits::Drawable for Shape<'a> {
     }
 }
 
+impl<'a> Drop for Shape<'a> {
+    fn drop(&mut self) {
+        self.del();
+    }
+}
+
 impl<'a> Shape<'a> {
     pub fn new<T>(
         vertices: &[T],

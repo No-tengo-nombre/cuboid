@@ -116,7 +116,4 @@ fn main() {
         window.swap_buffers();
         prev_time = time;
     }
-
-    triangle.del();
-    cube.del();
 }
