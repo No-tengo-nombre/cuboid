@@ -14,19 +14,12 @@ const WINDOW_TITLE: &str = "Test Window";
 fn main() {
     let mut delta;
     let mut prev_time = 0.0;
-    // let mut triangle_v: Vec<types::V6> = vec![
-    //     [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
-    //     [-0.75, 0.75, 0.0, 0.0, 1.0, 0.0],
-    //     [0.75, 0.75, 0.0, 0.0, 0.0, 1.0],
-    //     [0.75, -0.75, 0.0, 1.0, 1.0, 1.0],
-    // ];
     let mut triangle_v: Vec<types::V6> = vec![
         [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
         [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
         [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
     ];
 
-    // let triangle_i: Vec<u32> = vec![0, 1, 2, 0, 2, 3];
     let triangle_i: Vec<u32> = vec![0, 1, 2];
 
     let mut cube_v: Vec<types::V6> = vec![
@@ -91,17 +84,18 @@ fn main() {
         }
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
-        // let r = ((5.0 * time) / 2.0 + 0.5).sin();
-        // let g = ((5.0 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        // let b = ((5.0 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let r = 1.0;
-        let g = 1.0;
-        let b = 1.0;
+        let r = ((5.0 * time) / 2.0 + 0.5).sin();
+        let g = ((5.0 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let b = ((5.0 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        // let r = 1.0;
+        // let g = 1.0;
+        // let b = 1.0;
 
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(45.0 * delta));
         // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(45.0 * delta));
         triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(45.0 * delta));
         triangle.set_vertices(&triangle_v, &[0, 1]);
+
         cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(45.0 * delta));
         cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(45.0 * delta));
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(5.0 * delta));
@@ -109,9 +103,6 @@ fn main() {
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         renderer.clear();
-        // renderer.add_item_with_mode(&cube, 1, gl::QUADS);
-        // renderer.draw_mode(&cube, gl::QUADS);
-        // renderer.draw(&triangle);
         renderer.render();
         window.swap_buffers();
         prev_time = time;
