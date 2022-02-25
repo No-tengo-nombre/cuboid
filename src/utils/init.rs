@@ -25,4 +25,7 @@ pub fn init_glfw(
 /// SegFault and crash.
 pub fn init_gl(window: &mut glfw::Window) {
     gl::load_with(|s| window.get_proc_address(s) as *const _);
+    unsafe {
+        gl::Enable(gl::DEPTH_TEST);
+    }
 }
