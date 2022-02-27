@@ -1,4 +1,5 @@
 use crate::core::traits::Drawable;
+use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
 use gl::types::*;
 
@@ -25,11 +26,13 @@ impl<'a> Renderer2D<'a> {
     }
 
     pub fn clear(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
     pub fn set_clear_color(&mut self, r: f32, g: f32, b: f32, a: f32) {
+        assert_gl_is_loaded();
         self._clear_color = [r, g, b, a];
         unsafe {
             gl::ClearColor(r, g, b, a);

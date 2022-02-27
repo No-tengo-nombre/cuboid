@@ -1,13 +1,24 @@
 mod components;
 mod core;
+mod io;
+mod example;
 mod utils;
 
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{camera::Camera, camera::OrthoCamera, camera::PerspectiveCamera, material::Material, renderer3d::Renderer3D, shape::Shape};
+use crate::components::{
+    camera::Camera,
+    camera::OrthoCamera,
+    camera::PerspectiveCamera,
+    material::Material,
+    renderer3d::Renderer3D,
+    shape::Shape
+};
 use crate::core::shader::Shader;
-use crate::utils::{conversions, init, math::linalg, types};
+use crate::example::controller::Controller;
+use crate::io::cam_controller::CameraController;
+use crate::utils::{conversions, init, math::trig, math::vector, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
 
@@ -32,22 +43,6 @@ fn main() {
         [0.5, -0.5, 0.5, 1.0, 0.0, 1.0],
         [0.5, 0.5, -0.5, 1.0, 1.0, 0.0],
         [0.5, 0.5, 0.5, 1.0, 1.0, 1.0],
-        // [100.0, 100.0, 100.0, 0.0, 0.0, 0.0],
-        // [100.0, 100.0, 200.0, 0.0, 0.0, 1.0],
-        // [100.0, 200.0, 100.0, 0.0, 1.0, 0.0],
-        // [100.0, 200.0, 200.0, 0.0, 1.0, 1.0],
-        // [200.0, 100.0, 100.0, 1.0, 0.0, 0.0],
-        // [200.0, 100.0, 200.0, 1.0, 0.0, 1.0],
-        // [200.0, 200.0, 100.0, 1.0, 1.0, 0.0],
-        // [200.0, 200.0, 200.0, 1.0, 1.0, 1.0],
-        // [100.0, 100.0, 0.0, 0.0, 0.0, 0.0],
-        // [100.0, 100.0, 0.0, 0.0, 0.0, 1.0],
-        // [100.0, 200.0, 0.0, 0.0, 1.0, 0.0],
-        // [100.0, 200.0, 0.0, 0.0, 1.0, 1.0],
-        // [200.0, 100.0, 0.0, 1.0, 0.0, 0.0],
-        // [200.0, 100.0, 0.0, 1.0, 0.0, 1.0],
-        // [200.0, 200.0, 0.0, 1.0, 1.0, 0.0],
-        // [200.0, 200.0, 0.0, 1.0, 1.0, 1.0],
     ];
 
     // Quads indices
@@ -71,52 +66,87 @@ fn main() {
     );
     let material = Material::new(&shader);
 
-    let triangle = Shape::new_with_usage(&triangle_v, &triangle_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
+    let triangle = Shape::new_with_usage(
+        &triangle_v,
+        &triangle_i,
+        &material,
+        &[0, 1],
+        gl::DYNAMIC_DRAW
+    );
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
-    let mut wireframe = false;
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
-    let mut camera_pos = [0.0, 0.0, 5.0];
-    let speed = 0.05;
+    let mut radius = 5.0;
+    let mut camera_pos = [0.0, 0.0, radius];
+    let mut camera_dir = [0.0, 0.0, 1.0];
+    let mut phi = 0.0;
+    let mut theta = trig::PI / 2.0;
+    let mut camera_up = [0.0, 1.0, 0.0];
+    let cam_mov_speed = 0.005;
+    let cam_rot_speed = 1.0;
+    
+    let mut wireframe = false;
+    let mut controller = Controller::new();
     
     while !window.should_close() {
-        glfw_instance.poll_events();
-        for (_, event) in glfw::flush_messages(&events) {
-            match event {
-                glfw::WindowEvent::Key(Key::Escape, _, Action::Press, _) => {
-                    window.set_should_close(true);
-                }
-                glfw::WindowEvent::Key(Key::Space, _, Action::Press, _) => {
-                    if !wireframe {
-                        unsafe {
-                            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-                        }
-                    } else {
-                        unsafe {
-                            gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
-                        }
-                    }
-                    wireframe = !wireframe;
-                }
-                glfw::WindowEvent::Key(Key::W, _, Action::Press, _) => {
-                    camera_pos[1] += speed;
-                }
-                glfw::WindowEvent::Key(Key::S, _, Action::Press, _) => {
-                    camera_pos[1] += -speed;
-                }
-                glfw::WindowEvent::Key(Key::D, _, Action::Press, _) => {
-                    camera_pos[0] += speed;
-                }
-                glfw::WindowEvent::Key(Key::A, _, Action::Press, _) => {
-                    camera_pos[0] += -speed;
-                }
-                _ => {}
-            }
+        controller.poll_window_events(&mut glfw_instance, &events);
+        if controller.esc_pressed {
+            window.set_should_close(true);
         }
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
         fps = 1.0 / delta;
-        println!("Δt: {} ms  |  FPS: {}", delta * 1000.0, fps);
+
+        if wireframe != controller.wireframe {
+            if controller.wireframe {
+                renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
+                println!("LINE")
+            }
+            else {
+                renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::FILL);
+                println!("FILL")
+            }
+            wireframe = controller.wireframe;
+        }
+        // if controller.w_pressed {
+        //     changed = true;
+        // }
+        // if controller.s_pressed {
+        //     theta = (theta - cam_rot_speed) % (2.0 * trig::PI);
+        //     changed = true;
+        // }
+        // if controller.a_pressed {
+        //     phi = (phi - cam_rot_speed) % (2.0 * trig::PI);
+        //     changed = true;
+        // }
+        // if controller.d_pressed {
+        //     phi = (phi + cam_rot_speed) % (2.0 * trig::PI);
+        //     changed = true;
+        // }
+        // println!("PHI: {phi}   THETA: {theta}");
+        if controller.up_pressed {
+            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_x(cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_x(cam_rot_speed), &camera_up);
+        }
+        if controller.down_pressed {
+            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_x(-cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_x(-cam_rot_speed), &camera_up);
+        }
+        if controller.left_pressed {
+            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_y(cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_y(cam_rot_speed), &camera_up);
+        }
+        if controller.right_pressed {
+            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_y(-cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_y(-cam_rot_speed), &camera_up);
+        }
+        if controller.r_button_pressed {
+            println!("Δt: {} ms  |  FPS: {}", delta * 1000.0, fps);
+        }
+        if controller.l_button_pressed {
+            println!("LEFT");
+        }
+
         // let r = ((2.5 * time) / 2.0 + 0.5).sin();
         // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
         // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
@@ -138,8 +168,8 @@ fn main() {
 
         let camera = OrthoCamera::new(
             &camera_pos,
-            &[0.0, 0.0, 1.0],
-            &[0.0, 1.0, 0.0],
+            &camera_dir,
+            &camera_up,
         );
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);

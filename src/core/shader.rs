@@ -1,3 +1,4 @@
+use crate::utils::opengl::assert_gl_is_loaded;
 use crate::utils::str::name_to_ptr;
 use crate::utils::types::V4;
 use gl;
@@ -13,6 +14,7 @@ impl Shader {
     /// Makes a shader program from two files corresponding to the
     /// vertex and fragment shader.
     pub fn new(vertex_path: &str, fragment_path: &str) -> Shader {
+        assert_gl_is_loaded();
         // Making the vertex and fragment shaders
         let vertex_content = fs::read_to_string(vertex_path).expect("Error reading vertex shader.");
         let fragment_content =
@@ -46,6 +48,7 @@ impl Shader {
         };
     }
     pub fn make_shader(content: &String, shader_type: GLenum) -> GLuint {
+        assert_gl_is_loaded();
         let shader;
         unsafe {
             shader = gl::CreateShader(shader_type);
@@ -67,6 +70,7 @@ impl Shader {
         return Shader::make_shader(content, gl::FRAGMENT_SHADER);
     }
     pub fn verify_shader(shader: &GLuint, message: &str) {
+        assert_gl_is_loaded();
         let mut success = 0;
         unsafe {
             gl::GetShaderiv(*shader, gl::COMPILE_STATUS, &mut success);
@@ -87,30 +91,35 @@ impl Shader {
     }
 
     pub fn use_program(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::UseProgram(self._id);
         }
     }
 
     pub fn del(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::DeleteShader(self._id);
         }
     }
 
     pub fn set_1i(&self, name: &str, v0: i32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform1i(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0);
         }
     }
 
     pub fn set_2i(&self, name: &str, v0: i32, v1: i32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform2i(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0, v1);
         }
     }
 
     pub fn set_3i(&self, name: &str, v0: i32, v1: i32, v2: i32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform3i(
                 gl::GetUniformLocation(self._id, name_to_ptr(name)),
@@ -122,6 +131,7 @@ impl Shader {
     }
 
     pub fn set_4i(&self, name: &str, v0: i32, v1: i32, v2: i32, v3: i32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform4i(
                 gl::GetUniformLocation(self._id, name_to_ptr(name)),
@@ -134,16 +144,19 @@ impl Shader {
     }
 
     pub fn set_1f(&self, name: &str, v0: f32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform1f(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0);
         }
     }
     pub fn set_2f(&self, name: &str, v0: f32, v1: f32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform2f(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0, v1);
         }
     }
     pub fn set_3f(&self, name: &str, v0: f32, v1: f32, v2: f32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform3f(
                 gl::GetUniformLocation(self._id, name_to_ptr(name)),
@@ -154,6 +167,7 @@ impl Shader {
         }
     }
     pub fn set_4f(&self, name: &str, v0: f32, v1: f32, v2: f32, v3: f32) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Uniform4f(
                 gl::GetUniformLocation(self._id, name_to_ptr(name)),
@@ -166,6 +180,7 @@ impl Shader {
     }
 
     pub fn set_matrix4fv(&self, name: &str, value: &[V4; 4]) {
+        assert_gl_is_loaded();
         unsafe {
             gl::UniformMatrix4fv(
                 gl::GetUniformLocation(self._id, name_to_ptr(name)),
