@@ -30,6 +30,10 @@ impl CameraController for Controller {
                 glfw::Key::A => self.a_pressed = true,
                 glfw::Key::S => self.s_pressed = true,
                 glfw::Key::D => self.d_pressed = true,
+                glfw::Key::Up => self.up_pressed = true,
+                glfw::Key::Left => self.left_pressed = true,
+                glfw::Key::Down => self.down_pressed = true,
+                glfw::Key::Right => self.right_pressed = true,
                 glfw::Key::Escape => self.esc_pressed = true,
                 glfw::Key::Space => self.wireframe = !self.wireframe,
                 _ => {}
@@ -39,6 +43,10 @@ impl CameraController for Controller {
                 glfw::Key::A => self.a_pressed = false,
                 glfw::Key::S => self.s_pressed = false,
                 glfw::Key::D => self.d_pressed = false,
+                glfw::Key::Up => self.up_pressed = false,
+                glfw::Key::Left => self.left_pressed = false,
+                glfw::Key::Down => self.down_pressed = false,
+                glfw::Key::Right => self.right_pressed = false,
                 glfw::Key::Escape => self.esc_pressed = false,
                 _ => {}
             },
