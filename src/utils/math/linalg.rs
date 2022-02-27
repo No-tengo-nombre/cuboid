@@ -35,6 +35,23 @@ pub fn mat6_mul3(m1: &[V6], m2: &[V3; 3]) -> Vec<V6> {
     return result;
 }
 
+pub fn mat3_mul3(m1: &[V3], m2: &[V3; 3]) -> Vec<V3> {
+    let mut result = Vec::<V3>::new();
+    for i in 0..m1.len() {
+        let vertex = m1[i];
+        let mut temp_result: V3 = [0.0, 0.0, 0.0];
+        for j in 0..3 {
+            let mut sum = 0.0;
+            for k in 0..3 {
+                sum += vertex[k] * m2[k][j];
+            }
+            temp_result[j] = sum;
+        }
+        result.push(temp_result);
+    }
+    return result;
+}
+
 pub fn rot_mat_x(angle: f32) -> [V3; 3] {
     let ang_rad = angle.to_radians();
     return [

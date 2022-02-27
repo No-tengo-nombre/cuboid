@@ -16,8 +16,12 @@ pub fn init_glfw(
     let (mut window, events) = glfw
         .create_window(width, height, title, mode)
         .expect("Error creating GLFW window");
-    window.make_current();
     window.set_key_polling(true);
+    window.set_cursor_mode(glfw::CursorMode::Normal);
+    window.set_cursor_enter_polling(true);
+    window.set_mouse_button_polling(true);
+    window.set_cursor_pos_polling(true);
+    window.make_current();
     return (window, events, glfw);
 }
 
