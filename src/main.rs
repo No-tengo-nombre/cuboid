@@ -166,7 +166,7 @@ fn main() {
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
-        let camera = OrthoCamera::new(
+        let camera = PerspectiveCamera::new(
             &camera_pos,
             &camera_dir,
             &camera_up,
