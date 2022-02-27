@@ -1,6 +1,8 @@
 use gl;
 use glfw::Context;
 
+pub static mut GL_IS_LOADED: bool = false;
+
 /// Initializes a GLFW window, setting it as the current one.
 pub fn init_glfw(
     width: u32,
@@ -28,6 +30,9 @@ pub fn init_glfw(
 /// Initializes the OpenGL functions. This must be run, or the program will
 /// SegFault and crash.
 pub fn init_gl(window: &mut glfw::Window) {
+    unsafe {
+        GL_IS_LOADED = true;
+    }
     gl::load_with(|s| window.get_proc_address(s) as *const _);
     enable_depth_test();
 }
