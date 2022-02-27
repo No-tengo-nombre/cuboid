@@ -2,6 +2,7 @@ use crate::io::cam_controller::CameraController;
 use glfw;
 
 pub struct Controller {
+    pub esc_pressed: bool,
     pub wireframe: bool,
     pub w_pressed: bool,
     pub s_pressed: bool,
@@ -29,6 +30,7 @@ impl CameraController for Controller {
                 glfw::Key::A => self.a_pressed = true,
                 glfw::Key::S => self.s_pressed = true,
                 glfw::Key::D => self.d_pressed = true,
+                glfw::Key::Escape => self.esc_pressed = true,
                 glfw::Key::Space => self.wireframe = !self.wireframe,
                 _ => {}
             },
@@ -37,12 +39,13 @@ impl CameraController for Controller {
                 glfw::Key::A => self.a_pressed = false,
                 glfw::Key::S => self.s_pressed = false,
                 glfw::Key::D => self.d_pressed = false,
+                glfw::Key::Escape => self.esc_pressed = false,
                 _ => {}
             },
             _ => {}
         }
     }
-
+    
     fn handle_mouse_button_event(
         &mut self,
         mouse_button: glfw::MouseButton,
@@ -55,6 +58,7 @@ impl CameraController for Controller {
 impl Controller {
     pub fn new() -> Controller {
         return Controller {
+            esc_pressed: false,
             wireframe: false,
             w_pressed: false,
             s_pressed: false,
