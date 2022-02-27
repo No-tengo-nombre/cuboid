@@ -1,6 +1,5 @@
 use crate::utils::types::{V3, V4, V6};
 
-
 pub fn mat4_mul4(m1: &[V4; 4], m2: &[V4; 4]) -> Vec<V4> {
     let mut result = Vec::<V4>::new();
     for i in 0..m1.len() {
@@ -48,6 +47,16 @@ pub fn mat3_mul3(m1: &[V3], m2: &[V3; 3]) -> Vec<V3> {
             temp_result[j] = sum;
         }
         result.push(temp_result);
+    }
+    return result;
+}
+
+pub fn mat3_mulV3(m1: &[V3], v: &V3) -> V3 {
+    let mut result = [0.0, 0.0, 0.0];
+    for i in 0..m1.len() {
+        let vertex = m1[i];
+        let temp_result = v[0] * vertex[0] + v[1] * vertex[1] + v[2] * vertex[2];
+        result[i] = temp_result;
     }
     return result;
 }
