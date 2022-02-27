@@ -12,7 +12,7 @@ pub fn assert_gl_is_loaded() {
     unsafe {
         if !GL_IS_LOADED {
             println!("{GL_NOT_LOADED_MSG}");
-            std::process::exit(-1);
+            std::process::exit(0);
         }
     }
 }

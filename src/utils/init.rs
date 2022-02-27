@@ -1,5 +1,6 @@
 use gl;
 use glfw::Context;
+use std::sync::mpsc::Receiver;
 
 pub static mut GL_IS_LOADED: bool = false;
 
@@ -9,11 +10,7 @@ pub fn init_glfw(
     height: u32,
     title: &str,
     mode: glfw::WindowMode,
-) -> (
-    glfw::Window,
-    std::sync::mpsc::Receiver<(f64, glfw::WindowEvent)>,
-    glfw::Glfw,
-) {
+) -> (glfw::Window, Receiver<(f64, glfw::WindowEvent)>, glfw::Glfw) {
     let glfw = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
     let (mut window, events) = glfw
         .create_window(width, height, title, mode)
