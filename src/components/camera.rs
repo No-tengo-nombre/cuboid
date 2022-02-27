@@ -1,6 +1,6 @@
+use crate::utils::conversions;
 use crate::utils::math::{linalg, vector};
 use crate::utils::types::{V3, V4};
-use crate::utils::conversions;
 
 pub trait Camera {
     fn get_position(&self) -> V3;
