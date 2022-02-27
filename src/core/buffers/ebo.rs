@@ -1,3 +1,4 @@
+use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
 use gl::types::*;
 use std::mem::size_of;
@@ -18,6 +19,7 @@ impl EBO {
     /// Generates a new instance of an Element Buffer Object containing the given
     /// indices, allowing the user to specify the usage.
     pub fn new_with_usage<T>(indices: &[T], count: u32, usage: GLenum) -> EBO {
+        assert_gl_is_loaded();
         let mut ebo = 0;
         unsafe {
             // Generate the VBO
@@ -44,18 +46,21 @@ impl EBO {
     }
 
     pub fn bind(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, self._id);
         }
     }
 
     pub fn unbind(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, 0);
         }
     }
 
     pub fn del(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::DeleteBuffers(1, &self._id);
         }

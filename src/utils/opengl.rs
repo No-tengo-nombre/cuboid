@@ -5,7 +5,7 @@ ERROR: OpenGL is not currently loaded. Make sure to initalize it at the beginnin
 by running `init::init_gl(&window)`, where `window: glfw::Window`.
 ";
 
-/// The following function checks that OpenGL is loaded, and should be called at the beginning of
+/// This function checks that OpenGL is loaded, and should be called at the beginning of
 /// every unsafe OpenGL function call.
 pub fn assert_gl_is_loaded() {
     unsafe {

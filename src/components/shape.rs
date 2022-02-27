@@ -1,5 +1,6 @@
 use crate::components::material;
 use crate::core::{buffers::ebo::EBO, buffers::vao::VAO, buffers::vbo::VBO, traits};
+use crate::utils::opengl::assert_gl_is_loaded;
 use gl::types::*;
 use std::mem::size_of;
 
@@ -14,6 +15,7 @@ impl<'a> traits::Drawable for Shape<'a> {
         self.use_material();
         self.bind_vao();
         self.bind_ebo();
+        assert_gl_is_loaded();
         unsafe {
             gl::DrawElements(
                 mode,

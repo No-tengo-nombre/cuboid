@@ -1,4 +1,5 @@
 use crate::core::traits::Drawable;
+use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
 use gl::types::*;
 
@@ -24,11 +25,13 @@ impl<'a> Renderer3D<'a> {
     }
 
     pub fn clear(&self) {
+        assert_gl_is_loaded();
         unsafe {
             gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
         }
     }
     pub fn set_clear_color(&mut self, r: f32, g: f32, b: f32, a: f32) {
+        assert_gl_is_loaded();
         self._clear_color = [r, g, b, a];
         unsafe {
             gl::ClearColor(r, g, b, a);
@@ -54,5 +57,12 @@ impl<'a> Renderer3D<'a> {
     /// Draws the given shape using triangles.
     pub fn draw_mode(&self, drawable: &dyn Drawable, mode: GLenum) {
         drawable.get_drawn(mode);
+    }
+
+    pub fn set_polygon_mode(&self, face: GLenum, mode: GLenum) {
+        assert_gl_is_loaded();
+        unsafe {
+            gl::PolygonMode(face, mode);
+        }
     }
 }
