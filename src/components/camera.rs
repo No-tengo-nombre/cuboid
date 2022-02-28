@@ -39,19 +39,13 @@ impl Camera for OrthoCamera {
     }
 
     fn look_at(&self) -> Vec<V4> {
-        // return linalg::look_at(
-        //     &self.get_position(),
-        //     &self.get_up(),
-        //     &self.get_direction(),
-        //     &self.get_right(),
-        // );
         let look = linalg::look_at(
             &self.get_position(),
             &self.get_up(),
             &self.get_direction(),
             &self.get_right(),
         );
-        let orth_view = linalg::ortho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+        let orth_view = linalg::ortho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
         return linalg::mat4_mul4(
             &conversions::vec4_to_v4(&orth_view),
             &conversions::vec4_to_v4(&look),
@@ -119,12 +113,6 @@ impl Camera for PerspectiveCamera {
     }
 
     fn look_at(&self) -> Vec<V4> {
-        // return linalg::look_at(
-        //     &self.get_position(),
-        //     &self.get_up(),
-        //     &self.get_direction(),
-        //     &self.get_right(),
-        // );
         let look = linalg::look_at(
             &self.get_position(),
             &self.get_up(),
