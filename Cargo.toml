@@ -2,6 +2,14 @@
 name = "shiny"
 version = "0.1.0"
 edition = "2021"
+description = "An OpenGL rendering API for different visualization purposes"
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
+keywords = ["graphics", "opengl", "gamedev", "science", "visualization"]
+categories = ["graphics", "rendering::graphics-api"]
+homepage = "https://github.com/No-tengo-nombre/shiny"
+repository = "https://github.com/No-tengo-nombre/shiny"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
