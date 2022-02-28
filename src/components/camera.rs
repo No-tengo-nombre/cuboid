@@ -84,7 +84,8 @@ impl OrthoCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            // _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
 
@@ -110,7 +111,7 @@ impl OrthoCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
 
@@ -165,7 +166,9 @@ impl Camera for PerspectiveCamera {
             &self.get_direction(),
             &self.get_right(),
         );
-        let persp_view = linalg::perspective(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+        let persp_view = linalg::perspective(
+            self._xmin, self._xmax, self._ymin, self._ymax, self._zmin, self._zmax,
+        );
         return linalg::mat4_mul4(
             &conversions::vec4_to_v4(&persp_view),
             &conversions::vec4_to_v4(&look),
@@ -196,7 +199,8 @@ impl PerspectiveCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            // _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
 
@@ -222,7 +226,7 @@ impl PerspectiveCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
+            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
 
