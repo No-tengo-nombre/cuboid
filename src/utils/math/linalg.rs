@@ -90,7 +90,7 @@ pub fn mat3_mul3(m1: &[V3], m2: &[V3; 3]) -> Vec<V3> {
     return result;
 }
 
-pub fn mat3_mulV3(m1: &[V3], v: &V3) -> V3 {
+pub fn mat3_mul_v3(m1: &[V3], v: &V3) -> V3 {
     let mut result = [0.0, 0.0, 0.0];
     for i in 0..m1.len() {
         let vertex = m1[i];
@@ -165,7 +165,7 @@ pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -
     return vec![
         [2.0 / rml, 0.0, 0.0, -rpl / rml],
         [0.0, 2.0 / tmb, 0.0, -tpb / tmb],
-        [0.0, 0.0, -2.0 / fmn, fpn / fmn],
+        [0.0, 0.0, -2.0 / fmn, -fpn / fmn],
         [0.0, 0.0, 0.0, 1.0],
     ];
 }
