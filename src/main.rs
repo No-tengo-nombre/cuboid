@@ -189,6 +189,7 @@ fn main() {
             1000.0,
         );
 
+        // TODO: Make materials handle these uniforms.
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         material
             .get_shader()
