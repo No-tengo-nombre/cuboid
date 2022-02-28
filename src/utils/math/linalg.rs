@@ -36,11 +36,7 @@ pub fn cross_v3(a: &V3, b: &V3) -> V3 {
     let xb = b[0];
     let yb = b[1];
     let zb = b[2];
-    return [
-        ya * zb - za * yb,
-        za * xb - xa * zb,
-        xa * yb - ya * xb,
-    ];
+    return [ya * zb - za * yb, za * xb - xa * zb, xa * yb - ya * xb];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,7 +108,7 @@ pub fn mat3_mul_v3(m1: &[V3], v: &V3) -> V3 {
 //|================================| Important matrices |=======================================|//
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-pub fn rot_mat_x(angle: f32) -> [V3; 3] {
+pub fn rot_mat3_x(angle: f32) -> [V3; 3] {
     let ang_rad = angle.to_radians();
     return [
         [1.0, 0.0, 0.0],
@@ -121,7 +117,7 @@ pub fn rot_mat_x(angle: f32) -> [V3; 3] {
     ];
 }
 
-pub fn rot_mat_y(angle: f32) -> [V3; 3] {
+pub fn rot_mat3_y(angle: f32) -> [V3; 3] {
     let ang_rad = angle.to_radians();
     return [
         [ang_rad.cos(), 0.0, ang_rad.sin()],
@@ -130,12 +126,38 @@ pub fn rot_mat_y(angle: f32) -> [V3; 3] {
     ];
 }
 
-pub fn rot_mat_z(angle: f32) -> [V3; 3] {
+pub fn rot_mat3_z(angle: f32) -> [V3; 3] {
     let ang_rad = angle.to_radians();
     return [
         [ang_rad.cos(), -ang_rad.sin(), 0.0],
         [ang_rad.sin(), ang_rad.cos(), 0.0],
         [0.0, 0.0, 1.0],
+    ];
+}
+
+pub fn rot_mat3(axis: &V3, angle: f32) -> [V3; 3] {
+    let ang_rad = angle.to_radians();
+    let x = axis[0];
+    let y = axis[1];
+    let z = axis[2];
+    let c = ang_rad.cos();
+    let s = ang_rad.sin();
+    return [
+        [
+            (1.0 - c) * x * x + c,
+            (1.0 - c) * x * y - s * z,
+            (1.0 - c) * x * z + s * y,
+        ],
+        [
+            (1.0 - c) * x * y + s * z,
+            (1.0 - c) * y * y + c,
+            (1.0 - c) * y * z - s * x,
+        ],
+        [
+            (1.0 - c) * x * z - s * y,
+            (1.0 - c) * y * z + s * x,
+            (1.0 - c) * z * z + c,
+        ],
     ];
 }
 
