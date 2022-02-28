@@ -1,5 +1,3 @@
-// mod components;
-// mod core;
 mod controller;
 
 use glfw;
