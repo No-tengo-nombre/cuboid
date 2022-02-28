@@ -1,5 +1,44 @@
 use crate::utils::types::{V3, V4, V6};
 
+pub fn norm_v3(target: &V3) -> f32 {
+    let x = target[0];
+    let y = target[1];
+    let z = target[2];
+    return (x * x + y * y + z * z).sqrt();
+}
+
+pub fn normalize_v3(target: &V3) -> V3 {
+    let x = target[0];
+    let y = target[1];
+    let z = target[2];
+    let length = norm_v3(target);
+    return [x / length, y / length, z / length];
+}
+
+pub fn sub_v3(a: &V3, b: &V3) -> V3 {
+    let xa = a[0];
+    let ya = a[1];
+    let za = a[2];
+    let xb = b[0];
+    let yb = b[1];
+    let zb = b[2];
+    return [xa - xb, ya - yb, za - zb];
+}
+
+pub fn cross_v3(a: &V3, b: &V3) -> V3 {
+    let xa = a[0];
+    let ya = a[1];
+    let za = a[2];
+    let xb = b[0];
+    let yb = b[1];
+    let zb = b[2];
+    return [
+        ya * zb - za * yb,
+        za * xb - xa * zb,
+        xa * yb - ya * xb,
+    ];
+}
+
 pub fn mat4_mul4(m1: &[V4; 4], m2: &[V4; 4]) -> Vec<V4> {
     let mut result = Vec::<V4>::new();
     for i in 0..m1.len() {
@@ -51,7 +90,7 @@ pub fn mat3_mul3(m1: &[V3], m2: &[V3; 3]) -> Vec<V3> {
     return result;
 }
 
-pub fn mat3_mulV3(m1: &[V3], v: &V3) -> V3 {
+pub fn mat3_mul_v3(m1: &[V3], v: &V3) -> V3 {
     let mut result = [0.0, 0.0, 0.0];
     for i in 0..m1.len() {
         let vertex = m1[i];
@@ -110,7 +149,7 @@ pub fn look_at(position: &V3, up: &V3, direction: &V3, right: &V3) -> Vec<V4> {
     let matrix2 = [
         [1.0, 0.0, 0.0, -px],
         [0.0, 1.0, 0.0, -py],
-        [0.0, 0.0, 1.0, -px],
+        [0.0, 0.0, 1.0, -pz],
         [0.0, 0.0, 0.0, 1.0],
     ];
     return mat4_mul4(&matrix1, &matrix2);
@@ -126,7 +165,7 @@ pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -
     return vec![
         [2.0 / rml, 0.0, 0.0, -rpl / rml],
         [0.0, 2.0 / tmb, 0.0, -tpb / tmb],
-        [0.0, 0.0, -2.0 / fmn, fpn / fmn],
+        [0.0, 0.0, -2.0 / fmn, -fpn / fmn],
         [0.0, 0.0, 0.0, 1.0],
     ];
 }
@@ -139,9 +178,9 @@ pub fn perspective(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: 
     let tpb = ymax + ymin;
     let fpn = zmax + zmin;
     return vec![
-        [2.0 * zmin / rml, 0.0, rpl / rml, 0.0],
-        [0.0, 2.0 * zmin / tmb, tpb / tmb, 0.0],
-        [0.0, 0.0, -fpn / fmn, -2.0 * zmax * zmin / fmn],
-        [0.0, 0.0, -1.0, 0.0],
+        [2.0 * zmin / rml, 0.0, 0.0, 0.0],
+        [0.0, 2.0 * zmin / tmb, 0.0, 0.0],
+        [rpl / rml, tpb / tmb, -fpn / fmn, -1.0],
+        [0.0, 0.0, -2.0 * zmax * zmin / fmn, 0.0],
     ];
 }

@@ -53,7 +53,6 @@ impl CameraController for Controller {
             _ => {}
         }
     }
-    
     fn handle_mouse_button_event(
         &mut self,
         mouse_button: glfw::MouseButton,

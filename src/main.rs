@@ -18,7 +18,7 @@ use crate::components::{
 use crate::core::shader::Shader;
 use crate::example::controller::Controller;
 use crate::io::cam_controller::CameraController;
-use crate::utils::{conversions, init, math::trig, math::vector, math::linalg, types};
+use crate::utils::{conversions, init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Test Window";
 
@@ -76,12 +76,11 @@ fn main() {
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
-    let mut radius = 5.0;
-    let mut camera_pos = [0.0, 0.0, radius];
+    let mut camera_pos = [0.0, 0.0, 2.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
-    let mut phi = 0.0;
-    let mut theta = trig::PI / 2.0;
     let mut camera_up = [0.0, 1.0, 0.0];
+    let mut camera_right;
+
     let cam_mov_speed = 0.005;
     let cam_rot_speed = 1.0;
     
@@ -97,6 +96,8 @@ fn main() {
         delta = time - prev_time;
         fps = 1.0 / delta;
 
+        camera_right = linalg::normalize_v3(&linalg::cross_v3(&camera_dir, &camera_up));
+
         if wireframe != controller.wireframe {
             if controller.wireframe {
                 renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
@@ -108,38 +109,48 @@ fn main() {
             }
             wireframe = controller.wireframe;
         }
-        // if controller.w_pressed {
-        //     changed = true;
-        // }
-        // if controller.s_pressed {
-        //     theta = (theta - cam_rot_speed) % (2.0 * trig::PI);
-        //     changed = true;
-        // }
-        // if controller.a_pressed {
-        //     phi = (phi - cam_rot_speed) % (2.0 * trig::PI);
-        //     changed = true;
-        // }
-        // if controller.d_pressed {
-        //     phi = (phi + cam_rot_speed) % (2.0 * trig::PI);
-        //     changed = true;
-        // }
-        // println!("PHI: {phi}   THETA: {theta}");
+
+        // Camera movement control
+        if controller.w_pressed {
+            camera_pos[0] -= cam_mov_speed * camera_dir[0];
+            camera_pos[1] -= cam_mov_speed * camera_dir[1];
+            camera_pos[2] -= cam_mov_speed * camera_dir[2];
+        }
+        if controller.s_pressed {
+            camera_pos[0] += cam_mov_speed * camera_dir[0];
+            camera_pos[1] += cam_mov_speed * camera_dir[1];
+            camera_pos[2] += cam_mov_speed * camera_dir[2];
+        }
+        if controller.a_pressed {
+            camera_pos[0] -= cam_mov_speed * camera_right[0];
+            camera_pos[1] -= cam_mov_speed * camera_right[1];
+            camera_pos[2] -= cam_mov_speed * camera_right[2];
+        }
+        if controller.d_pressed {
+            camera_pos[0] += cam_mov_speed * camera_right[0];
+            camera_pos[1] += cam_mov_speed * camera_right[1];
+            camera_pos[2] += cam_mov_speed * camera_right[2];
+        }
+
+        // Camera rotation control
         if controller.up_pressed {
-            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_x(cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_x(cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_x(cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_x(cam_rot_speed), &camera_up);
         }
         if controller.down_pressed {
-            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_x(-cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_x(-cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_x(-cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_x(-cam_rot_speed), &camera_up);
         }
         if controller.left_pressed {
-            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_y(cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_y(cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_y(-cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_y(-cam_rot_speed), &camera_up);
         }
         if controller.right_pressed {
-            camera_dir = linalg::mat3_mulV3(&linalg::rot_mat_y(-cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mulV3(&linalg::rot_mat_y(-cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_y(cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_y(cam_rot_speed), &camera_up);
         }
+
+        // Random functionality for the mouse buttons
         if controller.r_button_pressed {
             println!("Δt: {} ms  |  FPS: {}", delta * 1000.0, fps);
         }
@@ -147,12 +158,12 @@ fn main() {
             println!("LEFT");
         }
 
-        // let r = ((2.5 * time) / 2.0 + 0.5).sin();
-        // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let r = 1.0;
-        let g = 1.0;
-        let b = 1.0;
+        let r = ((2.5 * time) / 2.0 + 0.5).sin();
+        let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        // let r = 1.0;
+        // let g = 1.0;
+        // let b = 1.0;
 
         let rot_speed = 10.0;
 
@@ -166,10 +177,17 @@ fn main() {
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
-        let camera = OrthoCamera::new(
+        // TODO: Change these magic numbers
+        let camera = PerspectiveCamera::new(
             &camera_pos,
             &camera_dir,
             &camera_up,
+            -1.0,
+            1.0,
+            -1.0,
+            1.0,
+            1.0,
+            1000.0,
         );
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
