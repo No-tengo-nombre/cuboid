@@ -129,20 +129,20 @@ fn main() {
 
         // Camera rotation control
         if controller.up_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_x(cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_x(cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, -cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, -cam_rot_speed), &camera_up);
         }
         if controller.down_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_x(-cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_x(-cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_up);
         }
         if controller.left_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_y(-cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_y(-cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3_y(-cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3_y(-cam_rot_speed), &camera_up);
         }
         if controller.right_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat_y(cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat_y(cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_dir);
+            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_up);
         }
 
         // Random functionality for the mouse buttons
@@ -162,14 +162,14 @@ fn main() {
 
         let rot_speed = 10.0;
 
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_x(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_y(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat_z(rot_speed * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
         // triangle.set_vertices(&triangle_v, &[0, 1]);
 
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_x(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_y(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat_z(rot_speed * delta));
+        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
+        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
+        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
         // TODO: Change these magic numbers
