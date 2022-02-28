@@ -1,5 +1,5 @@
 use crate::utils::conversions;
-use crate::utils::math::{linalg, vector};
+use crate::utils::math::linalg;
 use crate::utils::types::{V3, V4};
 
 pub trait Camera {
@@ -73,7 +73,7 @@ impl OrthoCamera {
         zmin: f32,
         zmax: f32,
     ) -> OrthoCamera {
-        let new_direction = vector::normalize_v3(direction);
+        let new_direction = linalg::normalize_v3(direction);
         return OrthoCamera {
             _xmin: xmin,
             _xmax: xmax,
@@ -83,8 +83,8 @@ impl OrthoCamera {
             _zmax: zmax,
             _position: *position,
             _direction: new_direction,
-            _up: vector::normalize_v3(up),
-            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+            _up: linalg::normalize_v3(up),
+            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
         };
     }
 
@@ -109,8 +109,8 @@ impl OrthoCamera {
             _zmax: zmax,
             _position: *position,
             _direction: new_direction,
-            _up: vector::normalize_v3(up),
-            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+            _up: linalg::normalize_v3(up),
+            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
         };
     }
 
@@ -119,8 +119,8 @@ impl OrthoCamera {
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
-        // return vector::normalize_v3(&vector::sub_v3(target, position));
-        return vector::normalize_v3(&vector::sub_v3(position, target));
+        // return linalg::normalize_v3(&linalg::sub_v3(target, position));
+        return linalg::normalize_v3(&linalg::sub_v3(position, target));
     }
 }
 
@@ -185,7 +185,7 @@ impl PerspectiveCamera {
         zmin: f32,
         zmax: f32,
     ) -> PerspectiveCamera {
-        let new_direction = vector::normalize_v3(direction);
+        let new_direction = linalg::normalize_v3(direction);
         return PerspectiveCamera {
             _xmin: xmin,
             _xmax: xmax,
@@ -195,8 +195,8 @@ impl PerspectiveCamera {
             _zmax: zmax,
             _position: *position,
             _direction: new_direction,
-            _up: vector::normalize_v3(up),
-            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+            _up: linalg::normalize_v3(up),
+            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
         };
     }
 
@@ -221,8 +221,8 @@ impl PerspectiveCamera {
             _zmax: zmax,
             _position: *position,
             _direction: new_direction,
-            _up: vector::normalize_v3(up),
-            _right: vector::normalize_v3(&vector::cross_v3(up, &new_direction)),
+            _up: linalg::normalize_v3(up),
+            _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
         };
     }
 
@@ -231,6 +231,6 @@ impl PerspectiveCamera {
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
-        return vector::normalize_v3(&vector::sub_v3(target, position));
+        return linalg::normalize_v3(&linalg::sub_v3(target, position));
     }
 }
