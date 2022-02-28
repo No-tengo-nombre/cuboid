@@ -15,6 +15,12 @@ pub trait Camera {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 pub struct OrthoCamera {
+    _xmin: f32,
+    _xmax: f32,
+    _ymin: f32,
+    _ymax: f32,
+    _zmin: f32,
+    _zmax: f32,
     _position: V3,
     _direction: V3,
     _up: V3,
@@ -45,7 +51,9 @@ impl Camera for OrthoCamera {
             &self.get_direction(),
             &self.get_right(),
         );
-        let orth_view = linalg::ortho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
+        let orth_view = linalg::ortho(
+            self._xmin, self._xmax, self._ymin, self._ymax, self._zmin, self._zmax,
+        );
         return linalg::mat4_mul4(
             &conversions::vec4_to_v4(&orth_view),
             &conversions::vec4_to_v4(&look),
@@ -54,9 +62,25 @@ impl Camera for OrthoCamera {
 }
 
 impl OrthoCamera {
-    pub fn new(position: &V3, direction: &V3, up: &V3) -> OrthoCamera {
+    pub fn new(
+        position: &V3,
+        direction: &V3,
+        up: &V3,
+        xmin: f32,
+        xmax: f32,
+        ymin: f32,
+        ymax: f32,
+        zmin: f32,
+        zmax: f32,
+    ) -> OrthoCamera {
         let new_direction = vector::normalize_v3(direction);
         return OrthoCamera {
+            _xmin: xmin,
+            _xmax: xmax,
+            _ymin: ymin,
+            _ymax: ymax,
+            _zmin: zmin,
+            _zmax: zmax,
             _position: *position,
             _direction: new_direction,
             _up: vector::normalize_v3(up),
@@ -64,9 +88,25 @@ impl OrthoCamera {
         };
     }
 
-    pub fn new_from_target(position: &V3, target: &V3, up: &V3) -> OrthoCamera {
+    pub fn new_from_target(
+        position: &V3,
+        target: &V3,
+        up: &V3,
+        xmin: f32,
+        xmax: f32,
+        ymin: f32,
+        ymax: f32,
+        zmin: f32,
+        zmax: f32,
+    ) -> OrthoCamera {
         let new_direction = OrthoCamera::dir_from_target(position, target);
         return OrthoCamera {
+            _xmin: xmin,
+            _xmax: xmax,
+            _ymin: ymin,
+            _ymax: ymax,
+            _zmin: zmin,
+            _zmax: zmax,
             _position: *position,
             _direction: new_direction,
             _up: vector::normalize_v3(up),
@@ -89,6 +129,12 @@ impl OrthoCamera {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 pub struct PerspectiveCamera {
+    _xmin: f32,
+    _xmax: f32,
+    _ymin: f32,
+    _ymax: f32,
+    _zmin: f32,
+    _zmax: f32,
     _position: V3,
     _direction: V3,
     _up: V3,
@@ -128,9 +174,25 @@ impl Camera for PerspectiveCamera {
 }
 
 impl PerspectiveCamera {
-    pub fn new(position: &V3, direction: &V3, up: &V3) -> PerspectiveCamera {
+    pub fn new(
+        position: &V3,
+        direction: &V3,
+        up: &V3,
+        xmin: f32,
+        xmax: f32,
+        ymin: f32,
+        ymax: f32,
+        zmin: f32,
+        zmax: f32,
+    ) -> PerspectiveCamera {
         let new_direction = vector::normalize_v3(direction);
         return PerspectiveCamera {
+            _xmin: xmin,
+            _xmax: xmax,
+            _ymin: ymin,
+            _ymax: ymax,
+            _zmin: zmin,
+            _zmax: zmax,
             _position: *position,
             _direction: new_direction,
             _up: vector::normalize_v3(up),
@@ -138,9 +200,25 @@ impl PerspectiveCamera {
         };
     }
 
-    pub fn new_from_target(position: &V3, target: &V3, up: &V3) -> PerspectiveCamera {
+    pub fn new_from_target(
+        position: &V3,
+        target: &V3,
+        up: &V3,
+        xmin: f32,
+        xmax: f32,
+        ymin: f32,
+        ymax: f32,
+        zmin: f32,
+        zmax: f32,
+    ) -> PerspectiveCamera {
         let new_direction = PerspectiveCamera::dir_from_target(position, target);
         return PerspectiveCamera {
+            _xmin: xmin,
+            _xmax: xmax,
+            _ymin: ymin,
+            _ymax: ymax,
+            _zmin: zmin,
+            _zmax: zmax,
             _position: *position,
             _direction: new_direction,
             _up: vector::normalize_v3(up),
