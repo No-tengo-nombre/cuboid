@@ -196,7 +196,7 @@ fn main() {
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
         material
             .get_shader()
-            .set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
+            .set_matrix4fv("view", &conversions::vec4_to_v4(&camera.get_transform()));
         renderer.clear();
         renderer.render();
         window.swap_buffers();

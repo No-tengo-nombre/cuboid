@@ -7,7 +7,7 @@ pub trait Camera {
     fn get_direction(&self) -> V3;
     fn get_up(&self) -> V3;
     fn get_right(&self) -> V3;
-    fn look_at(&self) -> Vec<V4>;
+    fn get_transform(&self) -> Vec<V4>;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ impl Camera for OrthoCamera {
         return self._direction;
     }
 
-    fn look_at(&self) -> Vec<V4> {
+    fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
             &self.get_position(),
             &self.get_up(),
@@ -159,7 +159,7 @@ impl Camera for PerspectiveCamera {
         return self._direction;
     }
 
-    fn look_at(&self) -> Vec<V4> {
+    fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
             &self.get_position(),
             &self.get_up(),
