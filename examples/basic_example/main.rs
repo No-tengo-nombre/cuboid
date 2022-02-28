@@ -149,8 +149,8 @@ fn main() {
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
-        "test/resources/shaders/shader1/test.vert",
-        "test/resources/shaders/shader1/test.frag",
+        "examples/basic_example/resources/shaders/test.vert",
+        "examples/basic_example/resources/shaders/test.frag",
     );
     let material = Material::new(&shader);
 
