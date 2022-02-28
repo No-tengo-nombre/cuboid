@@ -1,13 +1,14 @@
-mod components;
-mod core;
-mod io;
-mod example;
-mod utils;
+// mod components;
+// mod core;
+// mod example;
+// mod io;
+// mod utils;
+
 
 use glfw;
 use glfw::{Action, Context, Key};
 
-use crate::components::{
+use shiny::components::{
     camera::Camera,
     camera::OrthoCamera,
     camera::PerspectiveCamera,
@@ -15,12 +16,99 @@ use crate::components::{
     renderer3d::Renderer3D,
     shape::Shape
 };
-use crate::core::shader::Shader;
-use crate::example::controller::Controller;
-use crate::io::cam_controller::CameraController;
-use crate::utils::{conversions, init, math::linalg, types};
+use shiny::core::shader::Shader;
+use shiny::io::cam_controller::CameraController;
+use shiny::utils::{conversions, init, math::linalg, types};
 
-const WINDOW_TITLE: &str = "Test Window";
+const WINDOW_TITLE: &str = "Basic Example";
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//|================================| Camera controller |========================================|//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+pub struct Controller {
+    pub esc_pressed: bool,
+    pub wireframe: bool,
+    pub w_pressed: bool,
+    pub s_pressed: bool,
+    pub a_pressed: bool,
+    pub d_pressed: bool,
+    pub up_pressed: bool,
+    pub down_pressed: bool,
+    pub left_pressed: bool,
+    pub right_pressed: bool,
+    pub l_button_pressed: bool,
+    pub r_button_pressed: bool,
+}
+
+impl CameraController for Controller {
+    fn handle_key_event(
+        &mut self,
+        key: glfw::Key,
+        scancode: glfw::Scancode,
+        action: glfw::Action,
+        modifiers: glfw::Modifiers,
+    ) {
+        match action {
+            glfw::Action::Press => match key {
+                glfw::Key::W => self.w_pressed = true,
+                glfw::Key::A => self.a_pressed = true,
+                glfw::Key::S => self.s_pressed = true,
+                glfw::Key::D => self.d_pressed = true,
+                glfw::Key::Up => self.up_pressed = true,
+                glfw::Key::Left => self.left_pressed = true,
+                glfw::Key::Down => self.down_pressed = true,
+                glfw::Key::Right => self.right_pressed = true,
+                glfw::Key::Escape => self.esc_pressed = true,
+                glfw::Key::Space => self.wireframe = !self.wireframe,
+                _ => {}
+            },
+            glfw::Action::Release => match key {
+                glfw::Key::W => self.w_pressed = false,
+                glfw::Key::A => self.a_pressed = false,
+                glfw::Key::S => self.s_pressed = false,
+                glfw::Key::D => self.d_pressed = false,
+                glfw::Key::Up => self.up_pressed = false,
+                glfw::Key::Left => self.left_pressed = false,
+                glfw::Key::Down => self.down_pressed = false,
+                glfw::Key::Right => self.right_pressed = false,
+                glfw::Key::Escape => self.esc_pressed = false,
+                _ => {}
+            },
+            _ => {}
+        }
+    }
+    fn handle_mouse_button_event(
+        &mut self,
+        mouse_button: glfw::MouseButton,
+        action: glfw::Action,
+        modifiers: glfw::Modifiers,
+    ) {
+    }
+}
+
+impl Controller {
+    pub fn new() -> Controller {
+        return Controller {
+            esc_pressed: false,
+            wireframe: false,
+            w_pressed: false,
+            s_pressed: false,
+            a_pressed: false,
+            d_pressed: false,
+            up_pressed: false,
+            down_pressed: false,
+            left_pressed: false,
+            right_pressed: false,
+            l_button_pressed: false,
+            r_button_pressed: false,
+        };
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//|===================================| Main function |=========================================|//
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 fn main() {
     let mut delta;
@@ -71,7 +159,7 @@ fn main() {
         &triangle_i,
         &material,
         &[0, 1],
-        gl::DYNAMIC_DRAW
+        gl::DYNAMIC_DRAW,
     );
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
     renderer.add_item_with_mode(&cube, gl::QUADS);
@@ -83,10 +171,10 @@ fn main() {
 
     let cam_mov_speed = 0.005;
     let cam_rot_speed = 1.0;
-    
+
     let mut wireframe = false;
     let mut controller = Controller::new();
-    
+
     while !window.should_close() {
         controller.poll_window_events(&mut glfw_instance, &events);
         if controller.esc_pressed {
@@ -102,8 +190,7 @@ fn main() {
             if controller.wireframe {
                 renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
                 println!("LINE")
-            }
-            else {
+            } else {
                 renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::FILL);
                 println!("FILL")
             }
@@ -178,7 +265,7 @@ fn main() {
         // cube.set_vertices(&cube_v, &[0, 1]);
 
         // TODO: Change these magic numbers
-        let camera = PerspectiveCamera::new(
+        let camera = OrthoCamera::new(
             &camera_pos,
             &camera_dir,
             &camera_up,
@@ -190,8 +277,11 @@ fn main() {
             1000.0,
         );
 
+        // TODO: Make materials handle these uniforms.
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
-        material.get_shader().set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
+        material
+            .get_shader()
+            .set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
         renderer.clear();
         renderer.render();
         window.swap_buffers();
