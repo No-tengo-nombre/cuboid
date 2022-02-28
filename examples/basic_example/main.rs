@@ -1,5 +1,6 @@
 mod controller;
 
+use gl;
 use glfw;
 use glfw::{Action, Context, Key};
 
@@ -129,12 +130,18 @@ fn main() {
 
         // Camera rotation control
         if controller.up_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, -cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, -cam_rot_speed), &camera_up);
+            camera_dir = linalg::mat3_mul_v3(
+                &linalg::rot_mat3(&camera_right, -cam_rot_speed),
+                &camera_dir,
+            );
+            camera_up =
+                linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, -cam_rot_speed), &camera_up);
         }
         if controller.down_pressed {
-            camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_dir);
-            camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_up);
+            camera_dir =
+                linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_dir);
+            camera_up =
+                linalg::mat3_mul_v3(&linalg::rot_mat3(&camera_right, cam_rot_speed), &camera_up);
         }
         if controller.left_pressed {
             camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3_y(-cam_rot_speed), &camera_dir);
@@ -153,12 +160,12 @@ fn main() {
             println!("LEFT");
         }
 
-        let r = ((2.5 * time) / 2.0 + 0.5).sin();
-        let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        // let r = 1.0;
-        // let g = 1.0;
-        // let b = 1.0;
+        // let r = ((2.5 * time) / 2.0 + 0.5).sin();
+        // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let r = 1.0;
+        let g = 1.0;
+        let b = 1.0;
 
         let rot_speed = 10.0;
 
@@ -173,7 +180,7 @@ fn main() {
         // cube.set_vertices(&cube_v, &[0, 1]);
 
         // TODO: Change these magic numbers
-        let camera = OrthoCamera::new(
+        let camera = PerspectiveCamera::new(
             &camera_pos,
             &camera_dir,
             &camera_up,
