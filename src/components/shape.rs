@@ -81,21 +81,21 @@ impl<'a> Shape<'a> {
     }
 
     pub fn new_with_usage<T>(
-            vertices: &[T],
-            indices: &[u32],
-            material: &'a material::Material,
-            layouts: &[u32],
-            usage: GLenum,
-        ) -> Shape<'a> {
-            return Shape::new_with_count_usage(
-                vertices,
-                indices,
-                material,
-                layouts,
-                indices.len().try_into().unwrap(),
-                usage,
-            );
-        }
+        vertices: &[T],
+        indices: &[u32],
+        material: &'a material::Material,
+        layouts: &[u32],
+        usage: GLenum,
+    ) -> Shape<'a> {
+        return Shape::new_with_count_usage(
+            vertices,
+            indices,
+            material,
+            layouts,
+            indices.len().try_into().unwrap(),
+            usage,
+        );
+    }
 
     pub fn new_with_count_usage<T>(
         vertices: &[T],

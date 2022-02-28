@@ -1,7 +1,7 @@
 mod components;
 mod core;
-mod io;
 mod example;
+mod io;
 mod utils;
 
 use glfw;
@@ -71,7 +71,7 @@ fn main() {
         &triangle_i,
         &material,
         &[0, 1],
-        gl::DYNAMIC_DRAW
+        gl::DYNAMIC_DRAW,
     );
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
     renderer.add_item_with_mode(&cube, gl::QUADS);
@@ -83,10 +83,10 @@ fn main() {
 
     let cam_mov_speed = 0.005;
     let cam_rot_speed = 1.0;
-    
+
     let mut wireframe = false;
     let mut controller = Controller::new();
-    
+
     while !window.should_close() {
         controller.poll_window_events(&mut glfw_instance, &events);
         if controller.esc_pressed {
@@ -102,8 +102,7 @@ fn main() {
             if controller.wireframe {
                 renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
                 println!("LINE")
-            }
-            else {
+            } else {
                 renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::FILL);
                 println!("FILL")
             }
@@ -191,7 +190,9 @@ fn main() {
         );
 
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
-        material.get_shader().set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
+        material
+            .get_shader()
+            .set_matrix4fv("view", &conversions::vec4_to_v4(&camera.look_at()));
         renderer.clear();
         renderer.render();
         window.swap_buffers();
