@@ -33,6 +33,7 @@ impl VBO {
                 vertices.as_ptr() as *const GLvoid,
                 usage,
             );
+            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
         }
         return VBO { _id: vbo };
     }
