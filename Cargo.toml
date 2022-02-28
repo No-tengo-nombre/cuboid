@@ -5,7 +5,6 @@ edition = "2021"
 description = "An OpenGL rendering API for different visualization purposes"
 readme = "README.md"
 license = "MIT"
-license-file = "LICENSE"
 keywords = ["graphics", "opengl", "gamedev", "science", "visualization"]
 categories = ["graphics", "rendering::graphics-api"]
 homepage = "https://github.com/No-tengo-nombre/shiny"
