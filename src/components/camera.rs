@@ -84,7 +84,6 @@ impl OrthoCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            // _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
@@ -120,7 +119,6 @@ impl OrthoCamera {
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
-        // return linalg::normalize_v3(&linalg::sub_v3(target, position));
         return linalg::normalize_v3(&linalg::sub_v3(position, target));
     }
 }
@@ -199,7 +197,6 @@ impl PerspectiveCamera {
             _position: *position,
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
-            // _right: linalg::normalize_v3(&linalg::cross_v3(up, &new_direction)),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
         };
     }
