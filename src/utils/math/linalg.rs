@@ -110,7 +110,7 @@ pub fn look_at(position: &V3, up: &V3, direction: &V3, right: &V3) -> Vec<V4> {
     let matrix2 = [
         [1.0, 0.0, 0.0, -px],
         [0.0, 1.0, 0.0, -py],
-        [0.0, 0.0, 1.0, -px],
+        [0.0, 0.0, 1.0, -pz],
         [0.0, 0.0, 0.0, 1.0],
     ];
     return mat4_mul4(&matrix1, &matrix2);
@@ -139,9 +139,9 @@ pub fn perspective(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: 
     let tpb = ymax + ymin;
     let fpn = zmax + zmin;
     return vec![
-        [2.0 * zmin / rml, 0.0, rpl / rml, 0.0],
-        [0.0, 2.0 * zmin / tmb, tpb / tmb, 0.0],
-        [0.0, 0.0, -fpn / fmn, -2.0 * zmax * zmin / fmn],
-        [0.0, 0.0, -1.0, 0.0],
+        [2.0 * zmin / rml, 0.0, 0.0, 0.0],
+        [0.0, 2.0 * zmin / tmb, 0.0, 0.0],
+        [rpl / rml, tpb / tmb, -fpn / fmn, -1.0],
+        [0.0, 0.0, -2.0 * zmax * zmin / fmn, 0.0],
     ];
 }
