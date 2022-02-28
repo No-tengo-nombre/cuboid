@@ -1,5 +1,5 @@
 [package]
-name = "shiny"
+name = "cuboid"
 version = "0.1.0"
 edition = "2021"
 description = "An OpenGL rendering API for different visualization purposes"
