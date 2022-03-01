@@ -2,7 +2,7 @@ mod controller;
 
 use gl;
 use glfw;
-use glfw::{Action, Context, Key};
+use glfw::Context;
 
 use controller::Controller;
 use cuboid::components::{
@@ -13,10 +13,9 @@ use cuboid::components::{
     renderer3d::Renderer3D,
     shape::Shape
 };
-use cuboid::core::buffers::ubo::UBO;
 use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
-use cuboid::utils::{conversions, init, math::linalg, types};
+use cuboid::utils::{init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Basic Example";
 
