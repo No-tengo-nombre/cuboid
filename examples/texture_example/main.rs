@@ -23,34 +23,13 @@ fn main() {
     let mut delta;
     let mut fps;
     let mut prev_time = 0.0;
-    let mut triangle_v: Vec<types::V6> = vec![
-        [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
-        [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
-        [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
+    let triangle_v: Vec<types::V6> = vec![
+        [-10.0, -10.0, 0.0, 1.0, 0.0, 0.0],
+        [10.0, -10.0, 0.0, 0.0, 1.0, 0.0],
+        [0.0, 10.0, 0.0, 0.0, 0.0, 1.0],
     ];
 
     let triangle_i: Vec<u32> = vec![0, 1, 2];
-
-    let mut cube_v: Vec<types::V6> = vec![
-        [-10.5, -10.5, -10.5, 0.0, 0.0, 0.0],
-        [-10.5, -10.5, 10.5, 0.0, 0.0, 1.0],
-        [-10.5, 10.5, -10.5, 0.0, 1.0, 0.0],
-        [-10.5, 10.5, 10.5, 0.0, 1.0, 1.0],
-        [10.5, -10.5, -10.5, 1.0, 0.0, 0.0],
-        [10.5, -10.5, 10.5, 1.0, 0.0, 1.0],
-        [10.5, 10.5, -10.5, 1.0, 1.0, 0.0],
-        [10.5, 10.5, 10.5, 1.0, 1.0, 1.0],
-    ];
-
-    // Quads indices
-    let cube_i: Vec<u32> = vec![
-        0, 1, 3, 2,
-        0, 4, 6, 2,
-        4, 5, 7, 6,
-        1, 5, 7, 3,
-        0, 1, 5, 4,
-        2, 3, 7, 6,
-    ];
 
     let (mut window, events, mut glfw_instance) =
         init::init_glfw(1000, 1000, WINDOW_TITLE, glfw::WindowMode::Windowed);
@@ -58,8 +37,8 @@ fn main() {
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
-        "examples/basic_example/resources/shaders/test.vert",
-        "examples/basic_example/resources/shaders/test.frag",
+        "examples/texture_example/resources/shaders/test.vert",
+        "examples/texture_example/resources/shaders/test.frag",
     );
     let material = Material::new(&shader);
 
@@ -70,8 +49,6 @@ fn main() {
         &[0, 1],
         gl::DYNAMIC_DRAW,
     );
-    let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
-    renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
     let mut camera_pos = [0.0, 0.0, 20.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
@@ -164,36 +141,6 @@ fn main() {
             camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_up);
         }
         camera.update(&camera_pos, &camera_dir, &camera_up);
-
-        // Random functionality for the mouse buttons
-        if controller.r_button_pressed {
-            println!("Δt: {} ms  |  FPS: {}", delta * 1000.0, fps);
-        }
-        if controller.l_button_pressed {
-            println!("LEFT");
-        }
-
-        // let r = ((2.5 * time) / 2.0 + 0.5).sin();
-        // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let r = 1.0;
-        let g = 1.0;
-        let b = 1.0;
-
-        let rot_speed = 10.0;
-
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
-        // triangle.set_vertices(&triangle_v, &[0, 1]);
-
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
-        // cube.set_vertices(&cube_v, &[0, 1]);
-
-        // TODO: Make materials handle these uniforms.
-        material.get_shader().set_4f("timeColor", r, g, b, 1.0);
 
         renderer.clear();
         renderer.render();

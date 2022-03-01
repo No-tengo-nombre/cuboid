@@ -63,21 +63,6 @@ impl<'a> Shape<'a> {
             count,
             gl::STATIC_DRAW,
         );
-        // let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
-        // vao.bind();
-        // let vbo = VBO::new(vertices);
-        // let ebo = EBO::new(indices, count);
-        // for i in 0..layouts.len() {
-        //     vao.link_vbo(&vbo, layouts[i]);
-        // }
-        // vao.unbind();
-        // vbo.unbind();
-        // ebo.unbind();
-        // return Shape {
-        //     _vao: vao,
-        //     _ebo: ebo,
-        //     _material: material,
-        // };
     }
 
     pub fn new_with_usage<T>(
