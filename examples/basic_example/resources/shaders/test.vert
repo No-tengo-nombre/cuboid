@@ -4,7 +4,6 @@ layout (location = 0) in vec3 pos;
 layout (location = 1) in vec3 color;
 
 layout (std140, binding = 0) uniform View
-// layout (std140) uniform View
 {
     mat4 view;
 };
