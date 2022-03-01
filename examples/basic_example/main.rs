@@ -193,10 +193,6 @@ fn main() {
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
-        let camera_ubo = UBO::new(64);
-        camera_ubo.buffer_data(0, &camera.get_transform());
-        camera_ubo.bind_index(0);
-
         // TODO: Make materials handle these uniforms.
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
 
