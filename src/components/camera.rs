@@ -27,9 +27,7 @@ pub trait Camera {
     /// Makes an UBO
     fn make_ubo() -> UBO {
         let camera_ubo = UBO::new(64);
-        // camera_ubo.buffer_data(0, &self.get_transform());
         camera_ubo.bind_index(0);
-        // self.set_ubo(camera_ubo);
         return camera_ubo;
     }
 }
