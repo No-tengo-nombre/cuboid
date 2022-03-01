@@ -7,6 +7,9 @@ pub type V4 = [f32; 4];
 /// with 3 values for the color.
 pub type V6 = [f32; 6];
 
+pub type V8 = [f32; 8];
+
+pub type V9 = [f32; 9];
 
 // pub struct M3<'a> {
 //     _values: &'a [V3],
