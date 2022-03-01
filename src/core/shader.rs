@@ -190,4 +190,8 @@ impl Shader {
             );
         }
     }
+
+    pub fn get_id(&self) -> u32 {
+        return self._id;
+    }
 }
