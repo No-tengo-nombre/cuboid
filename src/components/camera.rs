@@ -1,3 +1,4 @@
+use crate::core::buffers::ubo::UBO;
 use crate::utils::conversions;
 use crate::utils::math::linalg;
 use crate::utils::types::{V3, V4};
@@ -8,6 +9,29 @@ pub trait Camera {
     fn get_up(&self) -> V3;
     fn get_right(&self) -> V3;
     fn get_transform(&self) -> Vec<V4>;
+    fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3);
+    fn get_ubo(&self) -> &UBO;
+    fn set_ubo(&mut self, ubo: UBO);
+
+    /*
+    The following functions (update_ubo and make_ubo) are not meant to be overwritten. Instead,
+    they define the default behaviour for the camera's uniform, which is binded to the index 0
+    and contains the data associated with the MVP matrix.
+    */
+
+    /// Update the UBO
+    fn update_ubo(&self) {
+        self.get_ubo().buffer_data(0, &self.get_transform());
+    }
+
+    /// Makes an UBO
+    fn make_ubo() -> UBO {
+        let camera_ubo = UBO::new(64);
+        // camera_ubo.buffer_data(0, &self.get_transform());
+        camera_ubo.bind_index(0);
+        // self.set_ubo(camera_ubo);
+        return camera_ubo;
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,6 +49,7 @@ pub struct OrthoCamera {
     _direction: V3,
     _up: V3,
     _right: V3,
+    _ubo: UBO,
 }
 
 impl Camera for OrthoCamera {
@@ -44,6 +69,14 @@ impl Camera for OrthoCamera {
         return self._direction;
     }
 
+    fn get_ubo(&self) -> &UBO {
+        return &self._ubo;
+    }
+
+    fn set_ubo(&mut self, ubo: UBO) {
+        self._ubo = ubo;
+    }
+
     fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
             &self.get_position(),
@@ -58,6 +91,14 @@ impl Camera for OrthoCamera {
             &conversions::vec4_to_v4(&orth_view),
             &conversions::vec4_to_v4(&look),
         );
+    }
+
+    fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3) {
+        self._position = *new_pos;
+        self._direction = *new_dir;
+        self._up = *new_up;
+        self._right = linalg::cross_v3(&self._direction, &self._up);
+        self.update_ubo();
     }
 }
 
@@ -85,6 +126,7 @@ impl OrthoCamera {
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            _ubo: OrthoCamera::make_ubo(),
         };
     }
 
@@ -111,6 +153,7 @@ impl OrthoCamera {
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            _ubo: OrthoCamera::make_ubo(),
         };
     }
 
@@ -138,6 +181,7 @@ pub struct PerspectiveCamera {
     _direction: V3,
     _up: V3,
     _right: V3,
+    _ubo: UBO,
 }
 
 impl Camera for PerspectiveCamera {
@@ -157,6 +201,14 @@ impl Camera for PerspectiveCamera {
         return self._direction;
     }
 
+    fn get_ubo(&self) -> &UBO {
+        return &self._ubo;
+    }
+
+    fn set_ubo(&mut self, ubo: UBO) {
+        self._ubo = ubo;
+    }
+
     fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
             &self.get_position(),
@@ -171,6 +223,14 @@ impl Camera for PerspectiveCamera {
             &conversions::vec4_to_v4(&persp_view),
             &conversions::vec4_to_v4(&look),
         );
+    }
+
+    fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3) {
+        self._position = *new_pos;
+        self._direction = *new_dir;
+        self._up = *new_up;
+        self._right = linalg::cross_v3(&self._direction, &self._up);
+        self.update_ubo();
     }
 }
 
@@ -198,6 +258,7 @@ impl PerspectiveCamera {
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            _ubo: PerspectiveCamera::make_ubo(),
         };
     }
 
@@ -224,6 +285,7 @@ impl PerspectiveCamera {
             _direction: new_direction,
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            _ubo: PerspectiveCamera::make_ubo(),
         };
     }
 
