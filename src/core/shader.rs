@@ -47,6 +47,7 @@ impl Shader {
             _id: shader_program,
         };
     }
+
     pub fn make_shader(content: &String, shader_type: GLenum) -> GLuint {
         assert_gl_is_loaded();
         let shader;
@@ -63,12 +64,15 @@ impl Shader {
         }
         return shader;
     }
+
     fn make_vertex_shader(content: &String) -> GLuint {
         return Shader::make_shader(content, gl::VERTEX_SHADER);
     }
+
     fn make_fragment_shader(content: &String) -> GLuint {
         return Shader::make_shader(content, gl::FRAGMENT_SHADER);
     }
+
     pub fn verify_shader(shader: &GLuint, message: &str) {
         assert_gl_is_loaded();
         let mut success = 0;
@@ -83,9 +87,11 @@ impl Shader {
             }
         }
     }
+
     fn verify_vertex_shader(vertex_shader: &GLuint) {
         Shader::verify_shader(vertex_shader, "Vertex Compile Error");
     }
+
     fn verify_fragment_shader(fragment_shader: &GLuint) {
         Shader::verify_shader(fragment_shader, "Fragment Compile Error");
     }
@@ -149,12 +155,14 @@ impl Shader {
             gl::Uniform1f(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0);
         }
     }
+
     pub fn set_2f(&self, name: &str, v0: f32, v1: f32) {
         assert_gl_is_loaded();
         unsafe {
             gl::Uniform2f(gl::GetUniformLocation(self._id, name_to_ptr(name)), v0, v1);
         }
     }
+
     pub fn set_3f(&self, name: &str, v0: f32, v1: f32, v2: f32) {
         assert_gl_is_loaded();
         unsafe {
@@ -166,6 +174,7 @@ impl Shader {
             );
         }
     }
+
     pub fn set_4f(&self, name: &str, v0: f32, v1: f32, v2: f32, v3: f32) {
         assert_gl_is_loaded();
         unsafe {
