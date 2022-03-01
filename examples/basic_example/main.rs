@@ -13,6 +13,7 @@ use cuboid::components::{
     renderer3d::Renderer3D,
     shape::Shape
 };
+use cuboid::core::buffers::ubo::UBO;
 use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
 use cuboid::utils::{conversions, init, math::linalg, types};
@@ -32,14 +33,14 @@ fn main() {
     let triangle_i: Vec<u32> = vec![0, 1, 2];
 
     let mut cube_v: Vec<types::V6> = vec![
-        [-0.5, -0.5, -0.5, 0.0, 0.0, 0.0],
-        [-0.5, -0.5, 0.5, 0.0, 0.0, 1.0],
-        [-0.5, 0.5, -0.5, 0.0, 1.0, 0.0],
-        [-0.5, 0.5, 0.5, 0.0, 1.0, 1.0],
-        [0.5, -0.5, -0.5, 1.0, 0.0, 0.0],
-        [0.5, -0.5, 0.5, 1.0, 0.0, 1.0],
-        [0.5, 0.5, -0.5, 1.0, 1.0, 0.0],
-        [0.5, 0.5, 0.5, 1.0, 1.0, 1.0],
+        [-10.5, -10.5, -10.5, 0.0, 0.0, 0.0],
+        [-10.5, -10.5, 10.5, 0.0, 0.0, 1.0],
+        [-10.5, 10.5, -10.5, 0.0, 1.0, 0.0],
+        [-10.5, 10.5, 10.5, 0.0, 1.0, 1.0],
+        [10.5, -10.5, -10.5, 1.0, 0.0, 0.0],
+        [10.5, -10.5, 10.5, 1.0, 0.0, 1.0],
+        [10.5, 10.5, -10.5, 1.0, 1.0, 0.0],
+        [10.5, 10.5, 10.5, 1.0, 1.0, 1.0],
     ];
 
     // Quads indices
@@ -73,12 +74,24 @@ fn main() {
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
-    let mut camera_pos = [0.0, 0.0, 2.0];
+    let mut camera_pos = [0.0, 0.0, 20.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
     let mut camera_up = [0.0, 1.0, 0.0];
     let mut camera_right;
 
-    let cam_mov_speed = 0.005;
+    let mut camera = PerspectiveCamera::new(
+        &camera_pos,
+        &camera_dir,
+        &camera_up,
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        1.0,
+        1000.0,
+    );
+
+    let cam_mov_speed = 0.1;
     let cam_rot_speed = 1.0;
 
     let mut wireframe = false;
@@ -151,6 +164,7 @@ fn main() {
             camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_dir);
             camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_up);
         }
+        camera.update(&camera_pos, &camera_dir, &camera_up);
 
         // Random functionality for the mouse buttons
         if controller.r_button_pressed {
@@ -179,24 +193,13 @@ fn main() {
         // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
 
-        // TODO: Change these magic numbers
-        let camera = PerspectiveCamera::new(
-            &camera_pos,
-            &camera_dir,
-            &camera_up,
-            -1.0,
-            1.0,
-            -1.0,
-            1.0,
-            1.0,
-            1000.0,
-        );
+        let camera_ubo = UBO::new(64);
+        camera_ubo.buffer_data(0, &camera.get_transform());
+        camera_ubo.bind_index(0);
 
         // TODO: Make materials handle these uniforms.
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
-        material
-            .get_shader()
-            .set_matrix4fv("view", &conversions::vec4_to_v4(&camera.get_transform()));
+
         renderer.clear();
         renderer.render();
         window.swap_buffers();
