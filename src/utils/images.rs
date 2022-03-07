@@ -4,7 +4,13 @@ use std::io::prelude::Read;
 pub fn load(path: &str) -> (*mut u8, i32, i32) {
     let mut file = File::open(path).expect(&format!("Error loading file {}", path));
     let mut contents = vec![];
-    file.read_to_end(&mut contents);
+    match file.read_to_end(&mut contents) {
+        Ok(_) => {},
+        Err(error) => {
+            println!("Error reading file {}", path);
+            println!("{:?}", error);
+        },
+    }
 
     let mut x = 0;
     let mut y = 0;
