@@ -9,6 +9,6 @@ uniform sampler2D uTexture;
 
 void main() {
     // finalColor = outColor;
-    finalColor = texture(uTexture, texCoord);
-    // finalColor = texture(uTexture, texCoord) * outColor;
+    // finalColor = texture(uTexture, texCoord);
+    finalColor = texture(uTexture, texCoord) * outColor;
 }
