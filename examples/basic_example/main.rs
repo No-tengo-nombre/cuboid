@@ -17,7 +17,7 @@ use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
 use cuboid::utils::{init, math::linalg, types};
 
-const WINDOW_TITLE: &str = "Basic Example";
+const WINDOW_TITLE: &str = "Basic example";
 
 fn main() {
     let mut delta;
