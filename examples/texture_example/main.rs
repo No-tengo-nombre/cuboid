@@ -18,7 +18,7 @@ use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
 use cuboid::utils::{init, math::linalg, types};
 
-const WINDOW_TITLE: &str = "Basic Example";
+const WINDOW_TITLE: &str = "Texture example";
 
 fn main() {
     let mut delta;
@@ -146,7 +146,6 @@ fn main() {
         }
         camera.update(&camera_pos, &camera_dir, &camera_up);
 
-        
         renderer.clear();
         renderer.render();
         window.swap_buffers();
