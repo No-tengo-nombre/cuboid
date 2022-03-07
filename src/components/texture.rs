@@ -3,6 +3,7 @@ use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
 use stb_image_rust;
 
+#[derive(Copy, Clone)]
 pub struct Texture2D {
     _id: u32,
 }
