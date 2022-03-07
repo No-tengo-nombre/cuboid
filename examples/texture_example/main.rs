@@ -43,15 +43,16 @@ fn main() {
         "examples/texture_example/resources/shaders/test.frag",
     );
     let material = Material::new(&shader);
-    let texture = Texture2D::new("examples/texture_example/resources/images/perroxd.png");
 
-    let square = Shape::new_with_usage(
+    let mut square = Shape::new_with_usage(
         &square_v,
         &square_i,
         &material,
         &[0, 1, 2],
         gl::DYNAMIC_DRAW,
     );
+    square.set_texture_path("examples/texture_example/resources/images/perroxd.png");
+
     renderer.add_item_with_mode(&square, gl::QUADS);
     let mut camera_pos = [0.0, 0.0, 20.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
@@ -146,11 +147,9 @@ fn main() {
         camera.update(&camera_pos, &camera_dir, &camera_up);
 
         
-        texture.bind();
         renderer.clear();
         renderer.render();
         window.swap_buffers();
-        texture.unbind();
         prev_time = time;
     }
 }
