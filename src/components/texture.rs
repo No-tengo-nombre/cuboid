@@ -1,7 +1,6 @@
 use crate::utils::images::load;
 use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
-use stb_image_rust;
 
 #[derive(Copy, Clone)]
 pub struct Texture2D {
@@ -13,13 +12,7 @@ impl Texture2D {
         assert_gl_is_loaded();
         let mut id = 0;
         let (img, width, height) = load(path);
-        // println!("{}", img.width());
-        // let img_ptr = img.to_rgba8().as_mut_ptr();
-
-        unsafe {
-            println!("DSAGSGDGSG");
-            println!("{}", *img);
-        }
+        let data = img.to_rgba8().into_vec();
 
         unsafe {
             // Generate the texture
@@ -41,12 +34,9 @@ impl Texture2D {
                 0,
                 gl::RGBA.try_into().unwrap(),
                 gl::UNSIGNED_BYTE,
-                // img_ptr as *const _,
-                // img.to_rgba8().as_mut_ptr() as *const _,
-                img as *const _,
+                &data[0] as *const u8 as *const _,
             );
             gl::GenerateMipmap(gl::TEXTURE_2D);
-            stb_image_rust::c_runtime::free(img);
         }
         return Texture2D { _id: id };
     }
@@ -59,7 +49,7 @@ impl Texture2D {
         assert_gl_is_loaded();
         let mut id = 0;
         let (img, width, height) = load(path);
-        // let img_ptr = img.to_rgba8().as_mut_ptr();
+        let data = img.to_rgb8().into_vec();
 
         unsafe {
             // Generate the texture
@@ -85,12 +75,9 @@ impl Texture2D {
                 0,
                 gl::RGBA,
                 gl::UNSIGNED_BYTE,
-                // img_ptr as *const _,
-                img as *const _,
+                &data[0] as *const u8 as *const _,
             );
             gl::GenerateMipmap(gl::TEXTURE_2D);
-
-            stb_image_rust::c_runtime::free(img);
         }
         self._id = id;
     }
