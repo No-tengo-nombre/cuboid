@@ -7,29 +7,29 @@ use glfw::Context;
 use controller::Controller;
 use cuboid::components::{
     camera::Camera,
-    camera::OrthoCamera,
     camera::PerspectiveCamera,
     material::Material,
     renderer3d::Renderer3D,
-    shape::Shape
+    shape::Shape,
 };
 use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
 use cuboid::utils::{init, math::linalg, types};
 
-const WINDOW_TITLE: &str = "Basic Example";
+const WINDOW_TITLE: &str = "Texture example";
 
 fn main() {
     let mut delta;
     let mut fps;
     let mut prev_time = 0.0;
-    let triangle_v: Vec<types::V6> = vec![
-        [-10.0, -10.0, 0.0, 1.0, 0.0, 0.0],
-        [10.0, -10.0, 0.0, 0.0, 1.0, 0.0],
-        [0.0, 10.0, 0.0, 0.0, 0.0, 1.0],
+    let square_v: Vec<types::V8> = vec![
+        [-10.0, -10.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+        [10.0, -10.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+        [10.0, 10.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+        [-10.0, 10.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0],
     ];
 
-    let triangle_i: Vec<u32> = vec![0, 1, 2];
+    let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
     let (mut window, events, mut glfw_instance) =
         init::init_glfw(1000, 1000, WINDOW_TITLE, glfw::WindowMode::Windowed);
@@ -42,14 +42,16 @@ fn main() {
     );
     let material = Material::new(&shader);
 
-    let triangle = Shape::new_with_usage(
-        &triangle_v,
-        &triangle_i,
+    let mut square = Shape::new_with_usage(
+        &square_v,
+        &square_i,
         &material,
-        &[0, 1],
+        &[0, 1, 2],
         gl::DYNAMIC_DRAW,
     );
-    renderer.add_item(&triangle);
+    square.set_texture_path("examples/texture_example/resources/images/perroxd.png");
+
+    renderer.add_item_with_mode(&square, gl::QUADS);
     let mut camera_pos = [0.0, 0.0, 20.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
     let mut camera_up = [0.0, 1.0, 0.0];
@@ -81,6 +83,7 @@ fn main() {
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
         fps = 1.0 / delta;
+        println!("FPS : {}", fps);
 
         camera_right = linalg::normalize_v3(&linalg::cross_v3(&camera_dir, &camera_up));
 

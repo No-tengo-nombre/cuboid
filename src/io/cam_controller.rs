@@ -25,6 +25,7 @@ pub trait CameraController {
             _ => {}
         }
     }
+
     fn handle_key_event(
         &mut self,
         key: glfw::Key,
@@ -33,6 +34,7 @@ pub trait CameraController {
         modifiers: glfw::Modifiers,
     ) {
     }
+
     fn handle_mouse_button_event(
         &mut self,
         mouse_button: glfw::MouseButton,
@@ -40,7 +42,9 @@ pub trait CameraController {
         modifiers: glfw::Modifiers,
     ) {
     }
+
     fn handle_cursor_pos_event(&mut self, x: f64, y: f64) {}
+
     fn handle_cursor_enter_event(&mut self, enter: bool) {}
 }
 

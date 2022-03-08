@@ -20,9 +20,9 @@ impl CameraController for Controller {
     fn handle_key_event(
         &mut self,
         key: glfw::Key,
-        scancode: glfw::Scancode,
+        _: glfw::Scancode,
         action: glfw::Action,
-        modifiers: glfw::Modifiers,
+        _: glfw::Modifiers,
     ) {
         match action {
             glfw::Action::Press => match key {
@@ -52,13 +52,6 @@ impl CameraController for Controller {
             },
             _ => {}
         }
-    }
-    fn handle_mouse_button_event(
-        &mut self,
-        mouse_button: glfw::MouseButton,
-        action: glfw::Action,
-        modifiers: glfw::Modifiers,
-    ) {
     }
 }
 
