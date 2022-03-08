@@ -7,12 +7,10 @@ use glfw::Context;
 use controller::Controller;
 use cuboid::components::{
     camera::Camera,
-    camera::OrthoCamera,
     camera::PerspectiveCamera,
     material::Material,
     renderer3d::Renderer3D,
     shape::Shape,
-    texture::Texture2D,
 };
 use cuboid::core::shader::Shader;
 use cuboid::io::cam_controller::CameraController;
@@ -85,6 +83,7 @@ fn main() {
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
         fps = 1.0 / delta;
+        println!("FPS : {}", fps);
 
         camera_right = linalg::normalize_v3(&linalg::cross_v3(&camera_dir, &camera_up));
 
