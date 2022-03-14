@@ -6,14 +6,14 @@ use glfw::Context;
 
 use controller::Controller;
 use cuboid::components::{
-    camera::Camera,
-    camera::PerspectiveCamera,
-    material::Material,
-    renderer3d::Renderer3D,
-    shape::Shape,
+    Camera,
+    PerspectiveCamera,
+    Material,
+    Renderer3D,
+    Shape,
 };
-use cuboid::core::shader::Shader;
-use cuboid::io::cam_controller::CameraController;
+use cuboid::core::Shader;
+use cuboid::io::CameraController;
 use cuboid::utils::{init, math::linalg, types};
 
 const WINDOW_TITLE: &str = "Texture example";
