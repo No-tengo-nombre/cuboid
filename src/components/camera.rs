@@ -15,7 +15,7 @@ pub trait Camera {
 
     /*
     The following functions (update_ubo and make_ubo) are not meant to be overwritten. Instead,
-    they define the default behaviour for the camera's uniform, which is binded to the index 0
+    they define the default behaviour for the camera's uniform, which is bound to the index 0
     and contains the data associated with the MVP matrix.
     */
 

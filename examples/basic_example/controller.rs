@@ -1,4 +1,4 @@
-use cuboid::io::cam_controller::CameraController;
+use cuboid::io::CameraController;
 use glfw;
 
 pub struct Controller {
