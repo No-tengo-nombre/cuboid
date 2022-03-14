@@ -6,20 +6,20 @@ pub struct Transform {
 }
 
 #[derive(Copy, Clone)]
-struct TransformTranslate {
+pub struct TransformTranslate {
     _x: f32,
     _y: f32,
     _z: f32,
 }
 
 #[derive(Copy, Clone)]
-struct TransformRotate {
+pub struct TransformRotate {
     _theta: f32,
     _phi: f32,
 }
 
 #[derive(Copy, Clone)]
-struct TransformScale {
+pub struct TransformScale {
     _x: f32,
     _y: f32,
     _z: f32,
