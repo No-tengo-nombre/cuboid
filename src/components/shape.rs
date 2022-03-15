@@ -1,5 +1,5 @@
-use crate::components::{material::Material, texture::Texture2D};
-use crate::core::{buffers::ebo::EBO, buffers::vao::VAO, buffers::vbo::VBO, traits};
+use crate::components::{Material, Texture2D};
+use crate::core::{buffers::EBO, buffers::VAO, buffers::VBO, traits};
 use crate::utils::opengl::assert_gl_is_loaded;
 use gl::types::*;
 use std::mem::size_of;
@@ -123,7 +123,6 @@ impl<'a> Shape<'a> {
     }
 
     pub fn set_vertices<T>(&self, vertices: &[T], layouts: &[u32]) {
-        // let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
         self._vao.bind();
         let vbo = VBO::new(vertices);
         for i in 0..layouts.len() {
