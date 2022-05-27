@@ -7,5 +7,8 @@ pub trait Drawable {
 }
 
 pub trait Transformable {
-    fn apply_transform(&self, transform: &Transform) -> dyn Transformable;
+    fn get_trans(&self) -> Transform;
+    fn trans(&mut self, transform: &Transform) {
+        self.get_trans().add(transform);
+    }
 }
