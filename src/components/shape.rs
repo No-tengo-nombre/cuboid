@@ -1,5 +1,5 @@
 use crate::components::{Material, Texture2D};
-use crate::core::{buffers::EBO, buffers::VAO, buffers::VBO, traits};
+use crate::core::{buffers::EBO, buffers::VAO, buffers::VBO, traits, Transform};
 use crate::utils::opengl::assert_gl_is_loaded;
 use gl::types::*;
 use std::mem::size_of;
@@ -31,6 +31,12 @@ impl<'a> traits::Drawable for Shape<'a> {
         self.unbind_texture();
     }
 }
+
+// impl<'a> traits::Transformable for Shape<'a> {
+//     fn apply_transform(&self, transform: &Transform) -> Self {
+        
+//     }
+// }
 
 impl<'a> Drop for Shape<'a> {
     fn drop(&mut self) {
