@@ -69,8 +69,8 @@ fn main() {
         1000.0,
     );
 
-    let cam_mov_speed = 0.1;
-    let cam_rot_speed = 1.0;
+    let cam_mov_speed = 0.01;
+    let cam_rot_speed = 0.5;
 
     let mut wireframe = false;
     let mut controller = Controller::new();
