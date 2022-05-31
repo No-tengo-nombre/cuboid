@@ -1,4 +1,4 @@
-use crate::utils::init::GL_IS_LOADED;
+use crate::GL_IS_LOADED;
 
 const GL_NOT_LOADED_MSG: &str = "
 ERROR: OpenGL is not currently loaded. Make sure to initalize it at the beginning of the program
