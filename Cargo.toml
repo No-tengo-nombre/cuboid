@@ -14,5 +14,9 @@ repository = "https://github.com/No-tengo-nombre/cuboid"
 
 [dependencies]
 gl = "0.14.0"
-glfw = "0.43.0"
+glfw = "0.44.0"
 image = "0.24.1"
+
+# [dependencies.glfw]
+# git = "https://github.com/bjz/glfw-rs.git"
+# default-features = false
