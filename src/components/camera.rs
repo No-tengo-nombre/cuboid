@@ -11,7 +11,7 @@ pub trait Camera {
     fn get_transform(&self) -> Vec<V4>;
     fn get_applied_transform(&self) -> Transform;
     fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3);
-    fn get_ubo(&self) -> &UBO;
+    fn get_ubo(&self) -> UBO;
     fn set_ubo(&mut self, ubo: UBO);
 
     /*
@@ -44,49 +44,49 @@ pub struct OrthoCamera {
     _ymax: f32,
     _zmin: f32,
     _zmax: f32,
-    _position: V3,
-    _direction: V3,
-    _up: V3,
-    _right: V3,
-    _ubo: UBO,
-    _transform: Transform,
+    pub position: V3,
+    pub direction: V3,
+    pub up: V3,
+    pub right: V3,
+    pub ubo: UBO,
+    pub transform: Transform,
 }
 
 impl Camera for OrthoCamera {
     fn get_position(&self) -> V3 {
-        return self._position;
+        return self.position;
     }
 
     fn get_up(&self) -> V3 {
-        return self._up;
+        return self.up;
     }
 
     fn get_right(&self) -> V3 {
-        return self._right;
+        return self.right;
     }
 
     fn get_direction(&self) -> V3 {
-        return self._direction;
+        return self.direction;
     }
 
-    fn get_ubo(&self) -> &UBO {
-        return &self._ubo;
+    fn get_ubo(&self) -> UBO {
+        return self.ubo;
     }
 
     fn set_ubo(&mut self, ubo: UBO) {
-        self._ubo = ubo;
+        self.ubo = ubo;
     }
 
     fn get_applied_transform(&self) -> Transform {
-        return self._transform;
+        return self.transform;
     }
 
     fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
-            &self.get_position(),
-            &self.get_up(),
-            &self.get_direction(),
-            &self.get_right(),
+            &self.position,
+            &self.up,
+            &self.direction,
+            // &self.right,
         );
         let orth_view = linalg::ortho(
             self._xmin, self._xmax, self._ymin, self._ymax, self._zmin, self._zmax,
@@ -98,10 +98,11 @@ impl Camera for OrthoCamera {
     }
 
     fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3) {
-        self._position = *new_pos;
-        self._direction = *new_dir;
-        self._up = *new_up;
-        self._right = linalg::cross_v3(&self._direction, &self._up);
+        self.position = *new_pos;
+        self.direction = *new_dir;
+        self.up = *new_up;
+        // self.right = linalg::cross_v3(&self.direction, &self.up);
+        self.right = linalg::cross_v3(&self.up, &self.direction);
         self.update_ubo();
     }
 }
@@ -126,12 +127,13 @@ impl OrthoCamera {
             _ymax: ymax,
             _zmin: zmin,
             _zmax: zmax,
-            _position: *position,
-            _direction: new_direction,
-            _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
-            _ubo: OrthoCamera::make_ubo(),
-            _transform: Transform::new(),
+            position: *position,
+            direction: new_direction,
+            up: linalg::normalize_v3(up),
+            // right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            right: linalg::normalize_v3(&linalg::cross_v3(&up, &new_direction)),
+            ubo: OrthoCamera::make_ubo(),
+            transform: Transform::new(),
         };
     }
 
@@ -154,17 +156,18 @@ impl OrthoCamera {
             _ymax: ymax,
             _zmin: zmin,
             _zmax: zmax,
-            _position: *position,
-            _direction: new_direction,
-            _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
-            _ubo: OrthoCamera::make_ubo(),
-            _transform: Transform::new(),
+            position: *position,
+            direction: new_direction,
+            up: linalg::normalize_v3(up),
+            // right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            right: linalg::normalize_v3(&linalg::cross_v3(&up, &new_direction)),
+            ubo: OrthoCamera::make_ubo(),
+            transform: Transform::new(),
         };
     }
 
     pub fn set_target(&mut self, target: &V3) {
-        self._direction = OrthoCamera::dir_from_target(&self._position, target);
+        self.direction = OrthoCamera::dir_from_target(&self.position, target);
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
@@ -189,49 +192,49 @@ pub struct PerspectiveCamera {
     _ymax: f32,
     _zmin: f32,
     _zmax: f32,
-    _position: V3,
-    _direction: V3,
-    _up: V3,
-    _right: V3,
-    _ubo: UBO,
-    _transform: Transform,
+    pub position: V3,
+    pub direction: V3,
+    pub up: V3,
+    pub right: V3,
+    pub ubo: UBO,
+    pub transform: Transform,
 }
 
 impl Camera for PerspectiveCamera {
     fn get_position(&self) -> V3 {
-        return self._position;
+        return self.position;
     }
 
     fn get_up(&self) -> V3 {
-        return self._up;
+        return self.up;
     }
 
     fn get_right(&self) -> V3 {
-        return self._right;
+        return self.right;
     }
 
     fn get_direction(&self) -> V3 {
-        return self._direction;
+        return self.direction;
     }
 
-    fn get_ubo(&self) -> &UBO {
-        return &self._ubo;
+    fn get_ubo(&self) -> UBO {
+        return self.ubo;
     }
 
     fn set_ubo(&mut self, ubo: UBO) {
-        self._ubo = ubo;
+        self.ubo = ubo;
     }
 
     fn get_applied_transform(&self) -> Transform {
-        return self._transform;
+        return self.transform;
     }
 
     fn get_transform(&self) -> Vec<V4> {
         let look = linalg::look_at(
-            &self.get_position(),
-            &self.get_up(),
-            &self.get_direction(),
-            &self.get_right(),
+            &self.position,
+            &self.up,
+            &self.direction,
+            // &self.right,
         );
         let persp_view = linalg::perspective(
             self._xmin, self._xmax, self._ymin, self._ymax, self._zmin, self._zmax,
@@ -243,10 +246,13 @@ impl Camera for PerspectiveCamera {
     }
 
     fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3) {
-        self._position = *new_pos;
-        self._direction = *new_dir;
-        self._up = *new_up;
-        self._right = linalg::cross_v3(&self._direction, &self._up);
+        self.position = *new_pos;
+        // self.direction = *new_dir;
+        // self.up = *new_up;
+        self.direction = linalg::normalize_v3(new_dir);
+        self.up = linalg::normalize_v3(new_up);
+        // self.right = linalg::cross_v3(&self.direction, &self.up);
+        self.right = linalg::cross_v3(&self.up, &self.direction);
         self.update_ubo();
     }
 }
@@ -271,12 +277,13 @@ impl PerspectiveCamera {
             _ymax: ymax,
             _zmin: zmin,
             _zmax: zmax,
-            _position: *position,
-            _direction: new_direction,
-            _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
-            _ubo: PerspectiveCamera::make_ubo(),
-            _transform: Transform::new(),
+            position: *position,
+            direction: new_direction,
+            up: linalg::normalize_v3(up),
+            // right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            right: linalg::normalize_v3(&linalg::cross_v3(&up, &new_direction)),
+            ubo: PerspectiveCamera::make_ubo(),
+            transform: Transform::new(),
         };
     }
 
@@ -299,17 +306,18 @@ impl PerspectiveCamera {
             _ymax: ymax,
             _zmin: zmin,
             _zmax: zmax,
-            _position: *position,
-            _direction: new_direction,
-            _up: linalg::normalize_v3(up),
-            _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
-            _ubo: PerspectiveCamera::make_ubo(),
-            _transform: Transform::new(),
+            position: *position,
+            direction: new_direction,
+            up: linalg::normalize_v3(up),
+            // right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
+            right: linalg::normalize_v3(&linalg::cross_v3(&up, &new_direction)),
+            ubo: PerspectiveCamera::make_ubo(),
+            transform: Transform::new(),
         };
     }
 
     pub fn set_target(&mut self, target: &V3) {
-        self._direction = PerspectiveCamera::dir_from_target(&self._position, target);
+        self.direction = PerspectiveCamera::dir_from_target(&self.position, target);
     }
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
