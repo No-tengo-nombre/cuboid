@@ -1,5 +1,4 @@
-use crate::core::traits::Drawable;
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::{assert_gl_is_loaded, Drawable};
 use gl;
 use gl::types::*;
 

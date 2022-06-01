@@ -1,5 +1,5 @@
+use crate::assert_gl_is_loaded;
 use crate::utils::images::load;
-use crate::utils::opengl::assert_gl_is_loaded;
 use gl;
 
 #[derive(Copy, Clone)]

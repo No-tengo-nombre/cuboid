@@ -1,6 +1,9 @@
 use crate::components::{Material, Texture2D};
-use crate::core::{buffers::EBO, buffers::VAO, buffers::VBO, traits, Transform};
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::{
+    assert_gl_is_loaded,
+    buffers::{EBO, VAO, VBO},
+    Drawable,
+};
 use gl::types::*;
 use std::mem::size_of;
 
@@ -11,7 +14,7 @@ pub struct Shape<'a> {
     _texture: Texture2D,
 }
 
-impl<'a> traits::Drawable for Shape<'a> {
+impl<'a> Drawable for Shape<'a> {
     fn get_drawn(&self, mode: GLenum) {
         self.use_material();
         self.bind_vao();
@@ -34,7 +37,7 @@ impl<'a> traits::Drawable for Shape<'a> {
 
 // impl<'a> traits::Transformable for Shape<'a> {
 //     fn apply_transform(&self, transform: &Transform) -> Self {
-        
+//
 //     }
 // }
 

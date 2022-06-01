@@ -1,5 +1,5 @@
-use std::ops;
 use crate::utils::types::V4;
+use std::ops;
 
 #[derive(Copy, Clone)]
 pub struct Transform {
@@ -41,12 +41,16 @@ impl Transform {
         };
     }
 
-    pub fn new_value(trans: TransformTranslate, rot: TransformRotate, scl: TransformScale) -> Transform {
+    pub fn new_value(
+        trans: TransformTranslate,
+        rot: TransformRotate,
+        scl: TransformScale,
+    ) -> Transform {
         return Transform {
             _translate: trans,
             _rotate: rot,
             _scale: scl,
-        }
+        };
     }
 
     pub fn add(&mut self, transform: &Transform) {

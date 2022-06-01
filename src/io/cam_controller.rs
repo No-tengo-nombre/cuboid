@@ -28,24 +28,24 @@ pub trait CameraController {
 
     fn handle_key_event(
         &mut self,
-        key: glfw::Key,
-        scancode: glfw::Scancode,
-        action: glfw::Action,
-        modifiers: glfw::Modifiers,
+        _key: glfw::Key,
+        _scancode: glfw::Scancode,
+        _action: glfw::Action,
+        _modifiers: glfw::Modifiers,
     ) {
     }
 
     fn handle_mouse_button_event(
         &mut self,
-        mouse_button: glfw::MouseButton,
-        action: glfw::Action,
-        modifiers: glfw::Modifiers,
+        _mouse_button: glfw::MouseButton,
+        _action: glfw::Action,
+        _modifiers: glfw::Modifiers,
     ) {
     }
 
-    fn handle_cursor_pos_event(&mut self, x: f64, y: f64) {}
+    fn handle_cursor_pos_event(&mut self, _x: f64, _y: f64) {}
 
-    fn handle_cursor_enter_event(&mut self, enter: bool) {}
+    fn handle_cursor_enter_event(&mut self, _enter: bool) {}
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
