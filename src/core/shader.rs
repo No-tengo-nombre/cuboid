@@ -1,4 +1,4 @@
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::assert_gl_is_loaded;
 use crate::utils::str::name_to_ptr;
 use crate::utils::types::V4;
 use gl;

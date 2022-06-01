@@ -1,6 +1,9 @@
-use crate::components::{material::Material, texture::Texture2D};
-use crate::core::{buffers::ebo::EBO, buffers::vao::VAO, buffers::vbo::VBO, traits};
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::components::{Material, Texture2D};
+use crate::{
+    assert_gl_is_loaded,
+    buffers::{EBO, VAO, VBO},
+    Drawable,
+};
 use gl::types::*;
 use std::mem::size_of;
 
@@ -11,7 +14,7 @@ pub struct Shape<'a> {
     _texture: Texture2D,
 }
 
-impl<'a> traits::Drawable for Shape<'a> {
+impl<'a> Drawable for Shape<'a> {
     fn get_drawn(&self, mode: GLenum) {
         self.use_material();
         self.bind_vao();
@@ -31,6 +34,12 @@ impl<'a> traits::Drawable for Shape<'a> {
         self.unbind_texture();
     }
 }
+
+// impl<'a> traits::Transformable for Shape<'a> {
+//     fn apply_transform(&self, transform: &Transform) -> Self {
+//
+//     }
+// }
 
 impl<'a> Drop for Shape<'a> {
     fn drop(&mut self) {
@@ -123,7 +132,6 @@ impl<'a> Shape<'a> {
     }
 
     pub fn set_vertices<T>(&self, vertices: &[T], layouts: &[u32]) {
-        // let vao = VAO::new_typed::<T>((size_of::<T>() as u32) / 2);
         self._vao.bind();
         let vbo = VBO::new(vertices);
         for i in 0..layouts.len() {

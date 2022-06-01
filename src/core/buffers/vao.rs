@@ -1,5 +1,5 @@
-use crate::core::buffers;
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::assert_gl_is_loaded;
+use crate::buffers;
 use gl;
 use std::mem::size_of;
 
@@ -53,7 +53,7 @@ impl VAO {
         }
     }
 
-    pub fn link_vbo(&self, vbo: &buffers::vbo::VBO, layout: u32) {
+    pub fn link_vbo(&self, vbo: &buffers::VBO, layout: u32) {
         assert_gl_is_loaded();
         vbo.bind();
         unsafe {

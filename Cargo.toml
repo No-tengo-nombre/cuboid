@@ -7,12 +7,16 @@ readme = "README.md"
 license = "MIT"
 keywords = ["graphics", "opengl", "gamedev", "science", "visualization"]
 categories = ["graphics", "rendering::graphics-api"]
-homepage = "https://github.com/No-tengo-nombre/shiny"
-repository = "https://github.com/No-tengo-nombre/shiny"
+homepage = "https://github.com/No-tengo-nombre/cuboid"
+repository = "https://github.com/No-tengo-nombre/cuboid"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 gl = "0.14.0"
-glfw = "0.43.0"
+glfw = "0.44.0"
 image = "0.24.1"
+
+# [dependencies.glfw]
+# git = "https://github.com/bjz/glfw-rs.git"
+# default-features = false

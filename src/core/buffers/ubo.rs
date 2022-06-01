@@ -1,4 +1,4 @@
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::assert_gl_is_loaded;
 use gl;
 use gl::types::*;
 use std::mem::size_of;
@@ -41,7 +41,7 @@ impl UBO {
             gl::BindBuffer(gl::UNIFORM_BUFFER, self._id);
         }
     }
-    
+
     /// Uninds the UBO
     pub fn unbind(&self) {
         assert_gl_is_loaded();

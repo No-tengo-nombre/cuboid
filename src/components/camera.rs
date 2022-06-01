@@ -1,7 +1,7 @@
-use crate::core::buffers::ubo::UBO;
 use crate::utils::conversions;
 use crate::utils::math::linalg;
 use crate::utils::types::{V3, V4};
+use crate::{buffers::UBO, Transform, Transformable};
 
 pub trait Camera {
     fn get_position(&self) -> V3;
@@ -9,6 +9,7 @@ pub trait Camera {
     fn get_up(&self) -> V3;
     fn get_right(&self) -> V3;
     fn get_transform(&self) -> Vec<V4>;
+    fn get_applied_transform(&self) -> Transform;
     fn update(&mut self, new_pos: &V3, new_dir: &V3, new_up: &V3);
     fn get_ubo(&self) -> &UBO;
     fn set_ubo(&mut self, ubo: UBO);
@@ -48,6 +49,7 @@ pub struct OrthoCamera {
     _up: V3,
     _right: V3,
     _ubo: UBO,
+    _transform: Transform,
 }
 
 impl Camera for OrthoCamera {
@@ -73,6 +75,10 @@ impl Camera for OrthoCamera {
 
     fn set_ubo(&mut self, ubo: UBO) {
         self._ubo = ubo;
+    }
+
+    fn get_applied_transform(&self) -> Transform {
+        return self._transform;
     }
 
     fn get_transform(&self) -> Vec<V4> {
@@ -125,6 +131,7 @@ impl OrthoCamera {
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
             _ubo: OrthoCamera::make_ubo(),
+            _transform: Transform::new(),
         };
     }
 
@@ -152,6 +159,7 @@ impl OrthoCamera {
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
             _ubo: OrthoCamera::make_ubo(),
+            _transform: Transform::new(),
         };
     }
 
@@ -161,6 +169,12 @@ impl OrthoCamera {
 
     fn dir_from_target(position: &V3, target: &V3) -> V3 {
         return linalg::normalize_v3(&linalg::sub_v3(position, target));
+    }
+}
+
+impl Transformable for OrthoCamera {
+    fn get_trans(&self) -> Transform {
+        return self.get_applied_transform();
     }
 }
 
@@ -180,6 +194,7 @@ pub struct PerspectiveCamera {
     _up: V3,
     _right: V3,
     _ubo: UBO,
+    _transform: Transform,
 }
 
 impl Camera for PerspectiveCamera {
@@ -205,6 +220,10 @@ impl Camera for PerspectiveCamera {
 
     fn set_ubo(&mut self, ubo: UBO) {
         self._ubo = ubo;
+    }
+
+    fn get_applied_transform(&self) -> Transform {
+        return self._transform;
     }
 
     fn get_transform(&self) -> Vec<V4> {
@@ -257,6 +276,7 @@ impl PerspectiveCamera {
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
             _ubo: PerspectiveCamera::make_ubo(),
+            _transform: Transform::new(),
         };
     }
 
@@ -284,6 +304,7 @@ impl PerspectiveCamera {
             _up: linalg::normalize_v3(up),
             _right: linalg::normalize_v3(&linalg::cross_v3(&new_direction, &up)),
             _ubo: PerspectiveCamera::make_ubo(),
+            _transform: Transform::new(),
         };
     }
 

@@ -12,9 +12,9 @@ use cuboid::components::{
     Renderer3D,
     Shape,
 };
-use cuboid::core::Shader;
+use cuboid::Shader;
 use cuboid::io::CameraController;
-use cuboid::utils::{init, math::linalg, types};
+use cuboid::utils::{math::linalg, types};
 
 const WINDOW_TITLE: &str = "Texture example";
 
@@ -31,9 +31,12 @@ fn main() {
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
-    let (mut window, events, mut glfw_instance) =
-        init::init_glfw(1000, 1000, WINDOW_TITLE, glfw::WindowMode::Windowed);
-    init::init_gl(&mut window);
+    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+        .width(1000)
+        .height(1000)
+        .title(WINDOW_TITLE)
+        .windowed()
+        .build();
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
@@ -69,8 +72,8 @@ fn main() {
         1000.0,
     );
 
-    let cam_mov_speed = 0.1;
-    let cam_rot_speed = 1.0;
+    let cam_mov_speed = 0.01;
+    let cam_rot_speed = 0.5;
 
     let mut wireframe = false;
     let mut controller = Controller::new();
@@ -83,7 +86,7 @@ fn main() {
         let time = glfw_instance.get_time() as f32;
         delta = time - prev_time;
         fps = 1.0 / delta;
-        println!("FPS : {}", fps);
+        // println!("FPS : {}", fps);
 
         camera_right = linalg::normalize_v3(&linalg::cross_v3(&camera_dir, &camera_up));
 

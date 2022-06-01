@@ -1,4 +1,4 @@
-use crate::utils::opengl::assert_gl_is_loaded;
+use crate::assert_gl_is_loaded;
 use gl;
 use gl::types::*;
 use std::mem::size_of;
