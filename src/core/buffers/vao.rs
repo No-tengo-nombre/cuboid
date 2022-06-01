@@ -4,6 +4,7 @@ use gl;
 use std::mem::size_of;
 
 /// An OpenGL Vertex Array Object.
+#[derive(Copy, Clone)]
 pub struct VAO {
     _id: u32,
     _stride: i32,

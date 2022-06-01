@@ -3,6 +3,7 @@ use gl;
 use gl::types::*;
 use std::mem::size_of;
 
+#[derive(Copy, Clone)]
 pub struct UBO {
     _id: u32,
 }

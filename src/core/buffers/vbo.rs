@@ -4,6 +4,7 @@ use gl::types::*;
 use std::mem::size_of;
 
 /// An OpenGL Vertex Buffer Object.
+#[derive(Copy, Clone)]
 pub struct VBO {
     _id: u32,
 }

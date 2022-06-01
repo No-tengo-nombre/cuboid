@@ -4,6 +4,7 @@ use gl::types::*;
 use std::mem::size_of;
 
 /// An OpenGL Element Buffer Object.
+#[derive(Copy, Clone)]
 pub struct EBO {
     _id: u32,
     _count: u32,
