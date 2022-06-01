@@ -17,28 +17,29 @@ use cuboid::utils::types;
 const WINDOW_TITLE: &str = "Hello world triangle";
 
 fn main() {
-    let triangle_v: Vec<types::V6> = vec![
-        [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
-        [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
-        [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
-    ];
-
-    let triangle_i: Vec<u32> = vec![0, 1, 2];
-
+    // Initialization of the window
     let (mut window, events, mut glfw_instance) = cuboid::Window::new()
-        .width(1000)
-        .height(1000)
+        .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()
         .build();
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
+
+    // Define a material
     let shader = Shader::new(
         "examples/hello_world/resources/shaders/test.vert",
         "examples/hello_world/resources/shaders/test.frag",
     );
     let material = Material::new(&shader);
 
+    // Creation of the components
+    let triangle_v: Vec<types::V6> = vec![
+        [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
+        [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
+    ];
+    let triangle_i: Vec<u32> = vec![0, 1, 2];
     let triangle = Shape::new_with_usage(
         &triangle_v,
         &triangle_i,
@@ -46,8 +47,11 @@ fn main() {
         &[0, 1],
         gl::STATIC_DRAW,
     );
+
+    // Add the item to the renderer
     renderer.add_item(&triangle);
 
+    // Making a basic controller for the example
     let mut wireframe = false;
     let mut controller = Controller::new();
 

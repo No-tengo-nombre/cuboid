@@ -5,14 +5,8 @@ use glfw;
 use glfw::Context;
 
 use controller::Controller;
-use cuboid::components::{
-    Camera,
-    PerspectiveCamera,
-    Material,
-    Renderer3D,
-    Shape
-};
-use cuboid::core::Shader;
+use cuboid::components::{Camera, PerspectiveCamera, Material, Renderer3D, Shape};
+use cuboid::Shader;
 use cuboid::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
@@ -22,14 +16,30 @@ fn main() {
     let mut delta;
     let mut fps;
     let mut prev_time = 0.0;
+
+    // Initialization of the window
+    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+        .dimensions(1000, 1000)
+        .title(WINDOW_TITLE)
+        .windowed()
+        .build();
+    let mut renderer = Renderer3D::new();
+    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
+
+    // Define a material
+    let shader = Shader::new(
+        "examples/basic_example/resources/shaders/test.vert",
+        "examples/basic_example/resources/shaders/test.frag",
+    );
+    let material = Material::new(&shader);
+    
+    // Create the components
     let mut triangle_v: Vec<types::V6> = vec![
         [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
         [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
         [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
     ];
-
     let triangle_i: Vec<u32> = vec![0, 1, 2];
-
     let mut cube_v: Vec<types::V6> = vec![
         [-10.5, -10.5, -10.5, 0.0, 0.0, 0.0],
         [-10.5, -10.5, 10.5, 0.0, 0.0, 1.0],
@@ -40,7 +50,6 @@ fn main() {
         [10.5, 10.5, -10.5, 1.0, 1.0, 0.0],
         [10.5, 10.5, 10.5, 1.0, 1.0, 1.0],
     ];
-
     // Quads indices
     let cube_i: Vec<u32> = vec![
         0, 1, 3, 2,
@@ -50,20 +59,6 @@ fn main() {
         0, 1, 5, 4,
         2, 3, 7, 6,
     ];
-
-    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
-        .dimensions(1000, 1000)
-        .title(WINDOW_TITLE)
-        .windowed()
-        .build();
-    let mut renderer = Renderer3D::new();
-    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
-    let shader = Shader::new(
-        "examples/basic_example/resources/shaders/test.vert",
-        "examples/basic_example/resources/shaders/test.frag",
-    );
-    let material = Material::new(&shader);
-
     let triangle = Shape::new_with_usage(
         &triangle_v,
         &triangle_i,
@@ -72,8 +67,12 @@ fn main() {
         gl::DYNAMIC_DRAW,
     );
     let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
+
+    // Add the items to the renderer
     renderer.add_item_with_mode(&cube, gl::QUADS);
     renderer.add_item(&triangle);
+
+    // Define a custom camera
     let mut camera_pos = [0.0, 0.0, 20.0];
     let mut camera_dir = [0.0, 0.0, 1.0];
     let mut camera_up = [0.0, 1.0, 0.0];
@@ -94,6 +93,7 @@ fn main() {
     let cam_mov_speed = 0.1;
     let cam_rot_speed = 1.0;
 
+    // Making a custom controller
     let mut wireframe = false;
     let mut controller = Controller::new();
 
@@ -174,6 +174,7 @@ fn main() {
             println!("LEFT");
         }
 
+        // This functionality is to show the use of shaders and uniforms
         let r = ((2.5 * time) / 2.0 + 0.5).sin();
         let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
         let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
