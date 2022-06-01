@@ -7,7 +7,6 @@ use glfw::Context;
 use controller::Controller;
 use cuboid::components::{
     Camera,
-    OrthoCamera,
     PerspectiveCamera,
     Material,
     Renderer3D,
@@ -15,7 +14,7 @@ use cuboid::components::{
 };
 use cuboid::core::Shader;
 use cuboid::io::CameraController;
-use cuboid::utils::{init, math::linalg, types};
+use cuboid::utils::{math::linalg, types};
 
 const WINDOW_TITLE: &str = "Basic example";
 
@@ -52,9 +51,11 @@ fn main() {
         2, 3, 7, 6,
     ];
 
-    let (mut window, events, mut glfw_instance) =
-        init::init_glfw(1000, 1000, WINDOW_TITLE, glfw::WindowMode::Windowed);
-    init::init_gl(&mut window);
+    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+        .dimensions(1000, 1000)
+        .title(WINDOW_TITLE)
+        .windowed()
+        .build();
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
@@ -173,24 +174,21 @@ fn main() {
             println!("LEFT");
         }
 
-        // let r = ((2.5 * time) / 2.0 + 0.5).sin();
-        // let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        // let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
-        let r = 1.0;
-        let g = 1.0;
-        let b = 1.0;
+        let r = ((2.5 * time) / 2.0 + 0.5).sin();
+        let g = ((2.5 * time + 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
+        let b = ((2.5 * time - 2.0 * 3.1415 / 3.0) / 2.0 + 0.5).sin();
 
         let rot_speed = 10.0;
 
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
-        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
-        // triangle.set_vertices(&triangle_v, &[0, 1]);
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
+        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
+        triangle.set_vertices(&triangle_v, &[0, 1]);
 
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
-        // cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
-        // cube.set_vertices(&cube_v, &[0, 1]);
+        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
+        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
+        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
+        cube.set_vertices(&cube_v, &[0, 1]);
 
         // TODO: Make materials handle these uniforms.
         material.get_shader().set_4f("timeColor", r, g, b, 1.0);
