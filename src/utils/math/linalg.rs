@@ -104,6 +104,18 @@ pub fn mat3_mul_v3(m1: &[V3], v: &V3) -> V3 {
     return result;
 }
 
+pub fn transpose4x4(m1: &Vec<V4>) -> Vec<V4> {
+    let mut result = Vec::<V4>::new();
+    for j in 0..4 {
+        let mut temp_result: V4 = [0.0, 0.0, 0.0, 0.0];
+        for i in 0..4 {
+            temp_result[i] = m1[i][j];
+        }
+        result.push(temp_result);
+    }
+    return result;
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //|================================| Important matrices |=======================================|//
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,7 +173,37 @@ pub fn rot_mat3(axis: &V3, angle: f32) -> [V3; 3] {
     ];
 }
 
-pub fn look_at(position: &V3, up: &V3, direction: &V3, right: &V3) -> Vec<V4> {
+// pub fn look_at(position: &V3, up: &V3, direction: &V3, right: &V3) -> Vec<V4> {
+//     let rx = right[0];
+//     let ry = right[1];
+//     let rz = right[2];
+//     let ux = up[0];
+//     let uy = up[1];
+//     let uz = up[2];
+//     let dx = direction[0];
+//     let dy = direction[1];
+//     let dz = direction[2];
+//     let px = position[0];
+//     let py = position[1];
+//     let pz = position[2];
+//     let matrix1 = [
+//         [rx, ry, rz, 0.0],
+//         [ux, uy, uz, 0.0],
+//         [dx, dy, dz, 0.0],
+//         [0.0, 0.0, 0.0, 1.0],
+//     ];
+//     let matrix2 = [
+//         [1.0, 0.0, 0.0, -px],
+//         [0.0, 1.0, 0.0, -py],
+//         [0.0, 0.0, 1.0, -pz],
+//         [0.0, 0.0, 0.0, 1.0],
+//     ];
+//     return mat4_mul4(&matrix1, &matrix2);
+// }
+
+pub fn look_at(position: &V3, up: &V3, direction: &V3) -> Vec<V4> {
+    // let right = normalize_v3(&cross_v3(&direction, &up));
+    let right = normalize_v3(&cross_v3(&up, &direction));
     let rx = right[0];
     let ry = right[1];
     let rz = right[2];
