@@ -6,21 +6,18 @@ use glfw::Context;
 
 use controller::Controller;
 use cuboid::components::{
-    Camera,
-    OrthoCamera,
-    PerspectiveCamera,
     Material,
     Renderer3D,
     Shape
 };
 use cuboid::core::Shader;
 use cuboid::io::CameraController;
-use cuboid::utils::{init, math::linalg, types};
+use cuboid::utils::types;
 
 const WINDOW_TITLE: &str = "Hello world triangle";
 
 fn main() {
-    let mut triangle_v: Vec<types::V6> = vec![
+    let triangle_v: Vec<types::V6> = vec![
         [-0.75, -0.75, 0.0, 1.0, 0.0, 0.0],
         [0.75, -0.75, 0.0, 0.0, 1.0, 0.0],
         [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
@@ -28,9 +25,12 @@ fn main() {
 
     let triangle_i: Vec<u32> = vec![0, 1, 2];
 
-    let (mut window, events, mut glfw_instance) =
-        init::init_glfw(1000, 1000, WINDOW_TITLE, init::WindowMode::Windowed);
-    init::init_gl(&mut window);
+    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+        .width(1000)
+        .height(1000)
+        .title(WINDOW_TITLE)
+        .windowed()
+        .build();
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new(
@@ -47,24 +47,6 @@ fn main() {
         gl::STATIC_DRAW,
     );
     renderer.add_item(&triangle);
-    let mut camera_pos = [0.0, 0.0, 20.0];
-    let mut camera_dir = [0.0, 0.0, 1.0];
-    let mut camera_up = [0.0, 1.0, 0.0];
-
-    let mut camera = PerspectiveCamera::new(
-        &camera_pos,
-        &camera_dir,
-        &camera_up,
-        -1.0,
-        1.0,
-        -1.0,
-        1.0,
-        1.0,
-        1000.0,
-    );
-
-    let cam_mov_speed = 0.1;
-    let cam_rot_speed = 1.0;
 
     let mut wireframe = false;
     let mut controller = Controller::new();
