@@ -1,21 +1,30 @@
-pub struct Material<'a> {
-    _shader: &'a crate::shader::Shader,
+use crate::shader::Shader;
+
+pub struct Material {
+    pub shader: Shader,
 }
 
-impl<'a> Material<'a> {
-    pub fn new(shader: &crate::shader::Shader) -> Material {
-        return Material { _shader: shader };
+impl Material {
+    // pub fn new(shader: &crate::shader::Shader) -> Material {
+    //     return Material { _shader: shader };
+    // }
+
+    pub fn new() -> Material {
+        return Material {
+            shader: Shader::new(),
+        };
+    }
+
+    pub fn shader(mut self, shader: &Shader) -> Material {
+        self.shader = *shader;
+        return self;
     }
 
     pub fn del(&self) {
-        self._shader.del();
+        self.shader.del();
     }
 
     pub fn use_program(&self) {
-        self._shader.use_program();
-    }
-
-    pub fn get_shader(&self) -> &crate::shader::Shader {
-        return self._shader;
+        self.shader.use_program();
     }
 }
