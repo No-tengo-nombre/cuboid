@@ -27,7 +27,7 @@ pub trait Camera {
 
     /// Makes an UBO
     fn make_ubo() -> UBO {
-        let camera_ubo = UBO::new(64);
+        let camera_ubo = UBO::new().size(64).build();
         camera_ubo.bind_index(0);
         return camera_ubo;
     }

@@ -1,14 +1,11 @@
 use crate::shader::Shader;
 
+#[derive(Copy, Clone)]
 pub struct Material {
     pub shader: Shader,
 }
 
 impl Material {
-    // pub fn new(shader: &crate::shader::Shader) -> Material {
-    //     return Material { _shader: shader };
-    // }
-
     pub fn new() -> Material {
         return Material {
             shader: Shader::new(),
