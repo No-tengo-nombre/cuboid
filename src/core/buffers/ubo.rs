@@ -6,14 +6,55 @@ use std::mem::size_of;
 #[derive(Copy, Clone)]
 pub struct UBO {
     _id: u32,
+    pub size: u32,
+    pub usage: GLenum,
 }
 
 impl UBO {
-    pub fn new(size: u32) -> UBO {
-        return UBO::new_with_usage(size, gl::STREAM_DRAW);
+    // pub fn new(size: u32) -> UBO {
+    //     return UBO::new_with_usage(size, gl::STREAM_DRAW);
+    // }
+
+    // pub fn new_with_usage(size: u32, usage: GLenum) -> UBO {
+    //     assert_gl_is_loaded();
+    //     let mut ubo = 0;
+    //     unsafe {
+    //         // Generate the UBO
+    //         gl::GenBuffers(1, &mut ubo);
+    //         assert_ne!(ubo, 0);
+    //         gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
+
+    //         // Buffer empty data at the beginning
+    //         gl::BufferData(
+    //             gl::UNIFORM_BUFFER,
+    //             size as GLsizeiptr,
+    //             0 as *const GLvoid,
+    //             usage,
+    //         );
+
+    //         gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
+    //     }
+    //     return UBO { _id: ubo };
+    // }
+    pub fn new() -> UBO {
+        return UBO {
+            _id: 0,
+            size: 0,
+            usage: gl::STREAM_DRAW,
+        };
     }
 
-    pub fn new_with_usage(size: u32, usage: GLenum) -> UBO {
+    pub fn size(mut self, size: u32) -> UBO {
+        self.size = size;
+        return self;
+    }
+
+    pub fn usage(mut self, usage: GLenum) -> UBO {
+        self.usage = usage;
+        return self;
+    }
+
+    pub fn build(mut self) -> UBO {
         assert_gl_is_loaded();
         let mut ubo = 0;
         unsafe {
@@ -25,14 +66,16 @@ impl UBO {
             // Buffer empty data at the beginning
             gl::BufferData(
                 gl::UNIFORM_BUFFER,
-                size as GLsizeiptr,
+                self.size as GLsizeiptr,
                 0 as *const GLvoid,
-                usage,
+                self.usage,
             );
 
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
         }
-        return UBO { _id: ubo };
+
+        self._id = ubo;
+        return self;
     }
 
     /// Binds the UBO

@@ -1,5 +1,5 @@
 use crate::assert_gl_is_loaded;
-use crate::buffers;
+use crate::buffers::{VBO};
 use gl;
 use std::mem::size_of;
 
@@ -7,11 +7,46 @@ use std::mem::size_of;
 #[derive(Copy, Clone)]
 pub struct VAO {
     _id: u32,
-    _stride: i32,
-    _size: u32,
+    pub stride: u32,
+    pub size: u32,
 }
 
 impl VAO {
+    pub fn new() -> VAO {
+        return VAO {
+            _id: 0,
+            stride: 0,
+            size: 0,
+        };
+    }
+
+    pub fn stride(mut self, stride: u32) -> VAO {
+        self.stride = stride;
+        return self;
+    }
+
+    pub fn stride_from_type<T>(mut self) -> VAO {
+        self.stride = size_of::<T>() as u32;
+        return self;
+    }
+
+    pub fn size(mut self, size: u32) -> VAO {
+        self.size = size;
+        return self;
+    }
+
+    pub fn build(mut self) -> VAO {
+        assert_gl_is_loaded();
+        let mut vao = 0;
+        unsafe {
+            gl::GenVertexArrays(1, &mut vao);
+            assert_ne!(vao, 0);
+            gl::BindVertexArray(vao);
+        }
+        self._id = vao;
+        return self;
+    }
+
     pub fn new_typed<T>(size: u32) -> VAO {
         return VAO::new_sized(size_of::<T>(), size);
     }
@@ -28,8 +63,8 @@ impl VAO {
         }
         return VAO {
             _id: vao,
-            _stride: stride as i32,
-            _size: size,
+            stride: stride as u32,
+            size: size,
         };
     }
 
@@ -54,7 +89,7 @@ impl VAO {
         }
     }
 
-    pub fn link_vbo(&self, vbo: &buffers::VBO, layout: u32) {
+    pub fn link_vbo<T>(&self, vbo: &VBO<T>, layout: u32) {
         assert_gl_is_loaded();
         vbo.bind();
         unsafe {
@@ -63,8 +98,8 @@ impl VAO {
                 3,
                 gl::FLOAT,
                 gl::FALSE,
-                self._stride,
-                (self._size * layout) as *const _,
+                self.stride.try_into().unwrap(),
+                (self.size * layout) as *const _,
             );
             gl::EnableVertexAttribArray(layout);
         }

@@ -5,20 +5,63 @@ use std::mem::size_of;
 
 /// An OpenGL Vertex Buffer Object.
 #[derive(Copy, Clone)]
-pub struct VBO {
+pub struct VBO<'a, T> {
     _id: u32,
+    pub vertices: &'a [T],
+    pub usage: GLenum,
 }
 
-impl VBO {
-    /// Generates a new instance of a Vertex Buffer Object containing the given
-    /// vertices, with the usage `GL_STATIC_DRAW`.
-    pub fn new<T>(vertices: &[T]) -> VBO {
-        return VBO::new_with_usage(vertices, gl::STATIC_DRAW);
+impl<'a, T> VBO<'a, T> {
+    // /// Generates a new instance of a Vertex Buffer Object containing the given
+    // /// vertices, with the usage `GL_STATIC_DRAW`.
+    // pub fn new<T>(vertices: &[T]) -> VBO {
+    //     return VBO::new_with_usage(vertices, gl::STATIC_DRAW);
+    // }
+
+    // /// Generates a new instance of a Vertex Buffer Object containing the given
+    // /// vertices, allowing the user to specify the usage.
+    // pub fn new_with_usage<T>(vertices: &[T], usage: GLenum) -> VBO {
+    //     assert_gl_is_loaded();
+    //     let mut vbo = 0;
+    //     unsafe {
+    //         // Generate the VBO
+    //         gl::GenBuffers(1, &mut vbo);
+    //         assert_ne!(vbo, 0);
+    //         gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
+
+    //         // Buffer the vertices
+    //         gl::BufferData(
+    //             gl::ARRAY_BUFFER,
+    //             (vertices.len() * size_of::<T>()) as GLsizeiptr,
+    //             vertices.as_ptr() as *const GLvoid,
+    //             usage,
+    //         );
+    //         gl::BindBuffer(gl::ARRAY_BUFFER, 0);
+    //     }
+    //     return VBO { _id: vbo };
+    // }
+
+    pub fn new() -> VBO<'a, T> {
+        return VBO {
+            _id: 0,
+            vertices: &[],
+            usage: gl::STATIC_DRAW,
+        };
+    }
+
+    pub fn vertices(mut self, vertices: &'a [T]) -> VBO<'a, T> {
+        self.vertices = vertices;
+        return self;
+    }
+
+    pub fn usage(mut self, usage: GLenum) -> VBO<'a, T> {
+        self.usage = usage;
+        return self;
     }
 
     /// Generates a new instance of a Vertex Buffer Object containing the given
     /// vertices, allowing the user to specify the usage.
-    pub fn new_with_usage<T>(vertices: &[T], usage: GLenum) -> VBO {
+    pub fn build(mut self) -> VBO<'a, T> {
         assert_gl_is_loaded();
         let mut vbo = 0;
         unsafe {
@@ -30,13 +73,14 @@ impl VBO {
             // Buffer the vertices
             gl::BufferData(
                 gl::ARRAY_BUFFER,
-                (vertices.len() * size_of::<T>()) as GLsizeiptr,
-                vertices.as_ptr() as *const GLvoid,
-                usage,
+                (self.vertices.len() * size_of::<T>()) as GLsizeiptr,
+                self.vertices.as_ptr() as *const GLvoid,
+                self.usage,
             );
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
         }
-        return VBO { _id: vbo };
+        self._id = vbo;
+        return self;
     }
 
     pub fn bind(&self) {
