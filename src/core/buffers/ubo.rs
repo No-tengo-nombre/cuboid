@@ -11,31 +11,6 @@ pub struct UBO {
 }
 
 impl UBO {
-    // pub fn new(size: u32) -> UBO {
-    //     return UBO::new_with_usage(size, gl::STREAM_DRAW);
-    // }
-
-    // pub fn new_with_usage(size: u32, usage: GLenum) -> UBO {
-    //     assert_gl_is_loaded();
-    //     let mut ubo = 0;
-    //     unsafe {
-    //         // Generate the UBO
-    //         gl::GenBuffers(1, &mut ubo);
-    //         assert_ne!(ubo, 0);
-    //         gl::BindBuffer(gl::UNIFORM_BUFFER, ubo);
-
-    //         // Buffer empty data at the beginning
-    //         gl::BufferData(
-    //             gl::UNIFORM_BUFFER,
-    //             size as GLsizeiptr,
-    //             0 as *const GLvoid,
-    //             usage,
-    //         );
-
-    //         gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
-    //     }
-    //     return UBO { _id: ubo };
-    // }
     pub fn new() -> UBO {
         return UBO {
             _id: 0,
