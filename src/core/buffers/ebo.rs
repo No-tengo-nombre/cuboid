@@ -5,15 +5,15 @@ use std::mem::size_of;
 
 /// An OpenGL Element Buffer Object.
 #[derive(Copy, Clone)]
-pub struct EBO<'a, T> {
+pub struct EBO<'a> {
     _id: u32,
     pub count: u32,
-    pub indices: &'a [T],
+    pub indices: &'a [u32],
     pub usage: GLenum,
 }
 
-impl<'a, T> EBO<'a, T> {
-    pub fn new() -> EBO<'a, T> {
+impl<'a> EBO<'a> {
+    pub fn new() -> EBO<'a> {
         return EBO {
             _id: 0,
             count: 0,
@@ -22,22 +22,22 @@ impl<'a, T> EBO<'a, T> {
         };
     }
 
-    pub fn count(mut self, count: u32) -> EBO<'a, T> {
+    pub fn count(mut self, count: u32) -> EBO<'a> {
         self.count = count;
         return self;
     }
 
-    pub fn indices(mut self, indices: &'a [T]) -> EBO<'a, T> {
+    pub fn indices(mut self, indices: &'a [u32]) -> EBO<'a> {
         self.indices = indices;
         return self;
     }
 
-    pub fn usage(mut self, usage: GLenum) -> EBO<'a, T> {
+    pub fn usage(mut self, usage: GLenum) -> EBO<'a> {
         self.usage = usage;
         return self;
     }
 
-    pub fn build(mut self) -> EBO<'a, T> {
+    pub fn build(mut self) -> EBO<'a> {
         assert_gl_is_loaded();
         let mut ebo = 0;
         unsafe {
@@ -49,7 +49,7 @@ impl<'a, T> EBO<'a, T> {
             // Buffer the vertices
             gl::BufferData(
                 gl::ELEMENT_ARRAY_BUFFER,
-                (self.indices.len() * size_of::<T>()) as GLsizeiptr,
+                (self.indices.len() * size_of::<u32>()) as GLsizeiptr,
                 self.indices.as_ptr() as *const GLvoid,
                 self.usage,
             );
@@ -60,10 +60,10 @@ impl<'a, T> EBO<'a, T> {
 
     /// Generates a new instance of an Element Buffer Object containing the given
     /// indices, asuming the usage `GL_STATIC_DRAW`.
-    pub fn new_ebo(indices: &'a [T], count: u32) -> EBO<'a, T> {
-        return EBO::new().count(count).indices(indices).build();
-        // return EBO::new_with_usage(indices, count, gl::STATIC_DRAW);
-    }
+    // pub fn new_ebo(indices: &'a [u32], count: u32) -> EBO<'a> {
+    //     return EBO::new().count(count).indices(indices).build();
+    // return EBO::new_with_usage(indices, count, gl::STATIC_DRAW);
+    // }
 
     /// Generates a new instance of an Element Buffer Object containing the given
     /// indices, allowing the user to specify the usage.
