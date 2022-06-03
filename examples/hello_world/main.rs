@@ -10,7 +10,7 @@ use cuboid::components::{
     Renderer3D,
     Shape
 };
-use cuboid::core::Shader;
+use cuboid::Shader;
 use cuboid::io::CameraController;
 use cuboid::utils::types;
 
@@ -27,11 +27,11 @@ fn main() {
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
 
     // Define a material
-    let shader = Shader::new(
-        "examples/hello_world/resources/shaders/test.vert",
-        "examples/hello_world/resources/shaders/test.frag",
-    );
-    let material = Material::new(&shader);
+    let shader = Shader::new()
+        .vertex("examples/hello_world/resources/shaders/test.vert")
+        .fragment("examples/hello_world/resources/shaders/test.frag");
+
+    let material = Material::new().shader(&shader);
 
     // Creation of the components
     let triangle_v: Vec<types::V6> = vec![
@@ -40,13 +40,12 @@ fn main() {
         [0.0, 0.75, 0.0, 0.0, 0.0, 1.0],
     ];
     let triangle_i: Vec<u32> = vec![0, 1, 2];
-    let triangle = Shape::new_with_usage(
-        &triangle_v,
-        &triangle_i,
-        &material,
-        &[0, 1],
-        gl::STATIC_DRAW,
-    );
+    let triangle = Shape::new()
+        .vertices(&triangle_v)
+        .indices(&triangle_i)
+        .material(&material)
+        .layouts(&[0, 1])
+        .build();
 
     // Add the item to the renderer
     renderer.add_item(&triangle);
