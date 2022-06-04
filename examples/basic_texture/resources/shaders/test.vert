@@ -15,5 +15,5 @@ out vec2 texCoord;
 void main() {
     outColor = vec4(aColor, 1.0);
     gl_Position = vec4(aPos, 1.0) * view;
-    texCoord = aTexCoord.xy;
+    texCoord = aTexCoord;
 }
