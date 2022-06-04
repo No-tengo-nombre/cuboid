@@ -50,12 +50,13 @@ impl<'a> Renderer3D<'a> {
 
     /// Draws the given shape using triangles.
     pub fn draw(&self, drawable: &dyn Drawable) {
-        self.draw_mode(drawable, gl::TRIANGLES);
+        drawable.draw();
     }
 
     /// Draws the given shape using triangles.
     pub fn draw_mode(&self, drawable: &dyn Drawable, mode: GLenum) {
-        drawable.get_drawn(mode);
+        drawable.draw_with_mode(mode);
+        // drawable.draw();
     }
 
     pub fn set_polygon_mode(&self, face: GLenum, mode: GLenum) {
