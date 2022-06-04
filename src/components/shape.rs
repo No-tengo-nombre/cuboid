@@ -22,6 +22,25 @@ pub struct Shape<'a, T> {
 }
 
 impl<'a, T> Drawable for Shape<'a, T> {
+    fn draw_with_mode(&self, mode: GLenum) {
+        self.use_material();
+        self.bind_vao();
+        self.bind_ebo();
+        self.bind_texture();
+        assert_gl_is_loaded();
+        unsafe {
+            gl::DrawElements(
+                mode,
+                self._count.try_into().unwrap(),
+                gl::UNSIGNED_INT,
+                0 as *const _,
+            );
+        }
+        self.unbind_vao();
+        self.unbind_ebo();
+        self.unbind_texture();
+    }
+
     fn draw(&self) {
         self.use_material();
         self.bind_vao();
@@ -184,16 +203,16 @@ impl<'a, T> Shape<'a, T> {
 //====================================| Default shapes |=========================================//
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-    pub fn triangle(vertices: &'a [T; 3]) -> Shape<'a, T> {
+    pub fn triangle(vertices: &'a [T]) -> Shape<'a, T> {
         return Shape::new()
             .vertices(vertices)
-            .indices(&[0, 1, 2])
+            .indices(&[0, 1, 2]);
     }
 
-    pub fn quad(vertices: &'a [T; 4]) -> Shape<'a, T> {
+    pub fn quad(vertices: &'a [T]) -> Shape<'a, T> {
         return Shape::new()
             .vertices(vertices)
             .indices(&[0, 1, 2, 3])
-            .draw_mode(gl::QUADS)
+            .draw_mode(gl::QUADS);
     }
 }
