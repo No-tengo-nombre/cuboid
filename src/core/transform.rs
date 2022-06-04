@@ -3,29 +3,29 @@ use std::ops;
 
 #[derive(Copy, Clone)]
 pub struct Transform {
-    _translate: TransformTranslate,
-    _rotate: TransformRotate,
-    _scale: TransformScale,
+    pub _translate: TransformTranslate,
+    pub _rotate: TransformRotate,
+    pub _scale: TransformScale,
 }
 
 #[derive(Copy, Clone)]
 pub struct TransformTranslate {
-    _x: f32,
-    _y: f32,
-    _z: f32,
+    pub _x: f32,
+    pub _y: f32,
+    pub _z: f32,
 }
 
 #[derive(Copy, Clone)]
 pub struct TransformRotate {
-    _theta: f32,
-    _phi: f32,
+    pub _theta: f32,
+    pub _phi: f32,
 }
 
 #[derive(Copy, Clone)]
 pub struct TransformScale {
-    _x: f32,
-    _y: f32,
-    _z: f32,
+    pub _x: f32,
+    pub _y: f32,
+    pub _z: f32,
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,29 +54,17 @@ impl Transform {
     }
 
     pub fn add(&mut self, transform: &Transform) {
-        self._translate += *transform.get_translate();
-        self._rotate += *transform.get_rotate();
-        self._scale += *transform.get_scale();
-    }
-
-    pub fn get_translate(&self) -> &TransformTranslate {
-        return &self._translate;
+        self._translate += transform._translate;
+        self._rotate += transform._rotate;
+        self._scale += transform._scale;
     }
 
     pub fn translate(&mut self, x: f32, y: f32, z: f32) {
         self._translate += TransformTranslate::new_value(x, y, z);
     }
 
-    pub fn get_rotate(&self) -> &TransformRotate {
-        return &self._rotate;
-    }
-
     pub fn rotate(&mut self, theta: f32, phi: f32) {
         self._rotate += TransformRotate::new_value(theta, phi);
-    }
-
-    pub fn get_scale(&self) -> &TransformScale {
-        return &self._scale;
     }
 
     pub fn scale(&mut self, x: f32, y: f32, z: f32) {
@@ -89,9 +77,9 @@ impl ops::Add<Transform> for Transform {
 
     fn add(self, rhs: Transform) -> Transform {
         return Transform::new_value(
-            *self.get_translate() + *rhs.get_translate(),
-            *self.get_rotate() + *rhs.get_rotate(),
-            *self.get_scale() + *rhs.get_scale(),
+            self._translate + rhs._translate,
+            self._rotate + rhs._rotate,
+            self._scale + rhs._scale,
         );
     }
 }
@@ -99,9 +87,9 @@ impl ops::Add<Transform> for Transform {
 impl ops::AddAssign<Transform> for Transform {
     fn add_assign(&mut self, rhs: Transform) {
         let result = *self + rhs;
-        self._translate = *result.get_translate();
-        self._rotate = *result.get_rotate();
-        self._scale = *result.get_scale();
+        self._translate = result._translate;
+        self._rotate = result._rotate;
+        self._scale = result._scale;
     }
 }
 
@@ -110,9 +98,9 @@ impl ops::Sub<Transform> for Transform {
 
     fn sub(self, rhs: Transform) -> Transform {
         return Transform::new_value(
-            *self.get_translate() - *rhs.get_translate(),
-            *self.get_rotate() - *rhs.get_rotate(),
-            *self.get_scale() - *rhs.get_scale(),
+            self._translate - rhs._translate,
+            self._rotate - rhs._rotate,
+            self._scale - rhs._scale,
         );
     }
 }
@@ -120,9 +108,9 @@ impl ops::Sub<Transform> for Transform {
 impl ops::SubAssign<Transform> for Transform {
     fn sub_assign(&mut self, rhs: Transform) {
         let result = *self - rhs;
-        self._translate = *result.get_translate();
-        self._rotate = *result.get_rotate();
-        self._scale = *result.get_scale();
+        self._translate = result._translate;
+        self._rotate = result._rotate;
+        self._scale = result._scale;
     }
 }
 
