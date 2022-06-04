@@ -18,10 +18,11 @@ pub struct Shape<'a, T> {
     pub _count: u32,
     pub _usage: GLenum,
     pub _vert_sizes: &'a [u32],
+    pub _draw_mode: GLenum,
 }
 
 impl<'a, T> Drawable for Shape<'a, T> {
-    fn get_drawn(&self, mode: GLenum) {
+    fn draw(&self) {
         self.use_material();
         self.bind_vao();
         self.bind_ebo();
@@ -29,7 +30,7 @@ impl<'a, T> Drawable for Shape<'a, T> {
         assert_gl_is_loaded();
         unsafe {
             gl::DrawElements(
-                mode,
+                self._draw_mode,
                 self._count.try_into().unwrap(),
                 gl::UNSIGNED_INT,
                 0 as *const _,
@@ -62,10 +63,11 @@ impl<'a, T> Shape<'a, T> {
             _texture: Texture2D::new(),
             _vertices: &[],
             _indices: &[],
-            _layouts: &[],
+            _layouts: &[0, 1, 2],
             _count: 0,
             _usage: gl::STATIC_DRAW,
-            _vert_sizes: &[],
+            _vert_sizes: &[3, 3, 2],
+            _draw_mode: gl::TRIANGLES,
         };
     }
 
@@ -107,6 +109,11 @@ impl<'a, T> Shape<'a, T> {
 
     pub fn vert_sizes(mut self, vert_sizes: &'a [u32]) -> Shape<'a, T> {
         self._vert_sizes = vert_sizes;
+        return self;
+    }
+
+    pub fn draw_mode(mut self, mode: GLenum) -> Shape<'a, T> {
+        self._draw_mode = mode;
         return self;
     }
 
@@ -171,5 +178,22 @@ impl<'a, T> Shape<'a, T> {
         self._vao.del();
         self._ebo.del();
         self._material.del();
+    }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//====================================| Default shapes |=========================================//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+    pub fn triangle(vertices: &'a [T; 3]) -> Shape<'a, T> {
+        return Shape::new()
+            .vertices(vertices)
+            .indices(&[0, 1, 2])
+    }
+
+    pub fn quad(vertices: &'a [T; 4]) -> Shape<'a, T> {
+        return Shape::new()
+            .vertices(vertices)
+            .indices(&[0, 1, 2, 3])
+            .draw_mode(gl::QUADS)
     }
 }
