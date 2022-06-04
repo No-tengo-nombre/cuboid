@@ -7,26 +7,26 @@ use std::mem::size_of;
 #[derive(Copy, Clone)]
 pub struct VBO<'a, T> {
     _id: u32,
-    pub vertices: &'a [T],
-    pub usage: GLenum,
+    pub _vertices: &'a [T],
+    pub _usage: GLenum,
 }
 
 impl<'a, T> VBO<'a, T> {
     pub fn new() -> VBO<'a, T> {
         return VBO {
             _id: 0,
-            vertices: &[],
-            usage: gl::STATIC_DRAW,
+            _vertices: &[],
+            _usage: gl::STATIC_DRAW,
         };
     }
 
     pub fn vertices(mut self, vertices: &'a [T]) -> VBO<'a, T> {
-        self.vertices = vertices;
+        self._vertices = vertices;
         return self;
     }
 
     pub fn usage(mut self, usage: GLenum) -> VBO<'a, T> {
-        self.usage = usage;
+        self._usage = usage;
         return self;
     }
 
@@ -42,16 +42,24 @@ impl<'a, T> VBO<'a, T> {
             gl::BindBuffer(gl::ARRAY_BUFFER, vbo);
 
             // Buffer the vertices
-            gl::BufferData(
-                gl::ARRAY_BUFFER,
-                (self.vertices.len() * size_of::<T>()) as GLsizeiptr,
-                self.vertices.as_ptr() as *const GLvoid,
-                self.usage,
-            );
+            self.buffer_data(self._vertices);
+
             gl::BindBuffer(gl::ARRAY_BUFFER, 0);
         }
         self._id = vbo;
         return self;
+    }
+
+    pub fn buffer_data(&self, vertices: &'a [T]) {
+        assert_gl_is_loaded();
+        unsafe {
+            gl::BufferData(
+                gl::ARRAY_BUFFER,
+                (vertices.len() * size_of::<T>()) as GLsizeiptr,
+                vertices.as_ptr() as *const GLvoid,
+                self._usage,
+            );
+        }
     }
 
     pub fn bind(&self) {

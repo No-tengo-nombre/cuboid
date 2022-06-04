@@ -7,33 +7,33 @@ use std::mem::size_of;
 #[derive(Copy, Clone)]
 pub struct EBO<'a> {
     _id: u32,
-    pub count: u32,
-    pub indices: &'a [u32],
-    pub usage: GLenum,
+    pub _count: u32,
+    pub _indices: &'a [u32],
+    pub _usage: GLenum,
 }
 
 impl<'a> EBO<'a> {
     pub fn new() -> EBO<'a> {
         return EBO {
             _id: 0,
-            count: 0,
-            indices: &[],
-            usage: gl::STATIC_DRAW,
+            _count: 0,
+            _indices: &[],
+            _usage: gl::STATIC_DRAW,
         };
     }
 
     pub fn count(mut self, count: u32) -> EBO<'a> {
-        self.count = count;
+        self._count = count;
         return self;
     }
 
     pub fn indices(mut self, indices: &'a [u32]) -> EBO<'a> {
-        self.indices = indices;
+        self._indices = indices;
         return self;
     }
 
     pub fn usage(mut self, usage: GLenum) -> EBO<'a> {
-        self.usage = usage;
+        self._usage = usage;
         return self;
     }
 
@@ -49,9 +49,9 @@ impl<'a> EBO<'a> {
             // Buffer the vertices
             gl::BufferData(
                 gl::ELEMENT_ARRAY_BUFFER,
-                (self.indices.len() * size_of::<u32>()) as GLsizeiptr,
-                self.indices.as_ptr() as *const GLvoid,
-                self.usage,
+                (self._indices.len() * size_of::<u32>()) as GLsizeiptr,
+                self._indices.as_ptr() as *const GLvoid,
+                self._usage,
             );
         }
         self._id = ebo;

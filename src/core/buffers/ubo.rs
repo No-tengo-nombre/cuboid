@@ -6,26 +6,26 @@ use std::mem::size_of;
 #[derive(Copy, Clone)]
 pub struct UBO {
     _id: u32,
-    pub size: u32,
-    pub usage: GLenum,
+    pub _size: u32,
+    pub _usage: GLenum,
 }
 
 impl UBO {
     pub fn new() -> UBO {
         return UBO {
             _id: 0,
-            size: 0,
-            usage: gl::STREAM_DRAW,
+            _size: 0,
+            _usage: gl::STREAM_DRAW,
         };
     }
 
     pub fn size(mut self, size: u32) -> UBO {
-        self.size = size;
+        self._size = size;
         return self;
     }
 
     pub fn usage(mut self, usage: GLenum) -> UBO {
-        self.usage = usage;
+        self._usage = usage;
         return self;
     }
 
@@ -41,9 +41,9 @@ impl UBO {
             // Buffer empty data at the beginning
             gl::BufferData(
                 gl::UNIFORM_BUFFER,
-                self.size as GLsizeiptr,
+                self._size as GLsizeiptr,
                 0 as *const GLvoid,
-                self.usage,
+                self._usage,
             );
 
             gl::BindBuffer(gl::UNIFORM_BUFFER, 0);
