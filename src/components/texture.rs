@@ -12,7 +12,11 @@ impl Texture2D {
         return Texture2D { _id: 0 };
     }
 
-    pub fn from_path(mut self, path: &str) -> Texture2D {
+    pub fn from_path(path: &str) -> Texture2D {
+        return Texture2D::new().load_from_path(path);
+    }
+
+    pub fn load_from_path(mut self, path: &str) -> Texture2D {
         assert_gl_is_loaded();
         let mut id = 0;
         let (img, width, height) = load(path);
@@ -22,6 +26,7 @@ impl Texture2D {
             // Generate the texture
             gl::GenTextures(1, &mut id);
             assert_ne!(id, 0);
+            gl::ActiveTexture(gl::TEXTURE0);
             gl::BindTexture(gl::TEXTURE_2D, id);
 
             gl::TexParameteri(gl::TEXTURE_2D, gl::TEXTURE_WRAP_S, gl::REPEAT as i32);
@@ -38,7 +43,7 @@ impl Texture2D {
                 0,
                 gl::RGBA.try_into().unwrap(),
                 gl::UNSIGNED_BYTE,
-                &data[0] as *const u8 as *const _,
+                data.as_ptr() as *const _,
             );
             gl::GenerateMipmap(gl::TEXTURE_2D);
         }
