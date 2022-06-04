@@ -2,26 +2,26 @@ use crate::shader::Shader;
 
 #[derive(Copy, Clone)]
 pub struct Material {
-    pub shader: Shader,
+    pub _shader: Shader,
 }
 
 impl Material {
     pub fn new() -> Material {
         return Material {
-            shader: Shader::new(),
+            _shader: Shader::new(),
         };
     }
 
     pub fn shader(mut self, shader: &Shader) -> Material {
-        self.shader = *shader;
+        self._shader = *shader;
         return self;
     }
 
     pub fn del(&self) {
-        self.shader.del();
+        self._shader.del();
     }
 
     pub fn use_program(&self) {
-        self.shader.use_program();
+        self._shader.use_program();
     }
 }

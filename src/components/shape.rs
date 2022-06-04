@@ -5,19 +5,19 @@ use crate::{
     Drawable,
 };
 use gl::types::*;
-use std::mem::size_of;
 
 /// Container for a drawable shape
 pub struct Shape<'a, T> {
-    _vao: VAO,
+    _vao: VAO<'a>,
     _ebo: EBO<'a>,
-    pub material: Material,
-    pub texture: Texture2D,
-    pub vertices: &'a [T],
-    pub indices: &'a [u32],
-    pub layouts: &'a [u32],
-    pub count: u32,
-    pub usage: GLenum,
+    pub _material: Material,
+    pub _texture: Texture2D,
+    pub _vertices: &'a [T],
+    pub _indices: &'a [u32],
+    pub _layouts: &'a [u32],
+    pub _count: u32,
+    pub _usage: GLenum,
+    pub _vert_sizes: &'a [u32],
 }
 
 impl<'a, T> Drawable for Shape<'a, T> {
@@ -30,7 +30,7 @@ impl<'a, T> Drawable for Shape<'a, T> {
         unsafe {
             gl::DrawElements(
                 mode,
-                self.get_ebo_count().try_into().unwrap(),
+                self._count.try_into().unwrap(),
                 gl::UNSIGNED_INT,
                 0 as *const _,
             );
@@ -58,71 +58,78 @@ impl<'a, T> Shape<'a, T> {
         return Shape {
             _vao: VAO::new(),
             _ebo: EBO::new(),
-            material: Material::new(),
-            texture: Texture2D::new(),
-            vertices: &[],
-            indices: &[],
-            layouts: &[],
-            count: 0,
-            usage: gl::STATIC_DRAW,
+            _material: Material::new(),
+            _texture: Texture2D::new(),
+            _vertices: &[],
+            _indices: &[],
+            _layouts: &[],
+            _count: 0,
+            _usage: gl::STATIC_DRAW,
+            _vert_sizes: &[],
         };
     }
 
     pub fn material(mut self, material: &Material) -> Shape<'a, T> {
-        self.material = *material;
+        self._material = *material;
         return self;
     }
 
     pub fn texture(mut self, texture: &Texture2D) -> Shape<'a, T> {
-        self.texture = *texture;
+        self._texture = *texture;
         return self;
     }
 
     pub fn vertices(mut self, vertices: &'a [T]) -> Shape<'a, T> {
-        self.vertices = vertices;
+        self._vertices = vertices;
         return self;
     }
 
     pub fn indices(mut self, indices: &'a [u32]) -> Shape<'a, T> {
-        self.indices = indices;
-        self.count = indices.len().try_into().unwrap();
+        self._indices = indices;
+        self._count = indices.len().try_into().unwrap();
         return self;
     }
 
     pub fn layouts(mut self, layouts: &'a [u32]) -> Shape<'a, T> {
-        self.layouts = layouts;
+        self._layouts = layouts;
         return self;
     }
 
     pub fn count(mut self, count: u32) -> Shape<'a, T> {
-        self.count = count;
+        self._count = count;
         return self;
     }
 
     pub fn usage(mut self, usage: GLenum) -> Shape<'a, T> {
-        self.usage = usage;
+        self._usage = usage;
+        return self;
+    }
+
+    pub fn vert_sizes(mut self, vert_sizes: &'a [u32]) -> Shape<'a, T> {
+        self._vert_sizes = vert_sizes;
         return self;
     }
 
     pub fn build(mut self) -> Shape<'a, T> {
         let vao = VAO::new()
             .stride_from_type::<T>()
-            .size(size_of::<T>() as u32 / 2)
+            .sizes(self._vert_sizes)
             .build();
         vao.bind();
         let vbo = VBO::new()
-            .vertices(self.vertices)
-            .usage(self.usage)
+            .vertices(self._vertices)
+            .usage(self._usage)
             .build();
         let ebo = EBO::new()
-            .indices(self.indices)
-            .count(self.count)
-            .usage(self.usage)
+            .indices(self._indices)
+            .count(self._count)
+            .usage(self._usage)
             .build();
 
-        for i in 0..self.layouts.len() {
-            vao.link_vbo(&vbo, self.layouts[i]);
+        for l in self._layouts {
+            vao.link_vbo(&vbo, *l);
         }
+
         vao.unbind();
         vbo.unbind();
         ebo.unbind();
@@ -133,7 +140,7 @@ impl<'a, T> Shape<'a, T> {
     }
 
     pub fn use_material(&self) {
-        self.material.use_program();
+        self._material.use_program();
     }
 
     pub fn bind_vao(&self) {
@@ -145,7 +152,7 @@ impl<'a, T> Shape<'a, T> {
     }
 
     pub fn bind_texture(&self) {
-        self.texture.bind();
+        self._texture.bind();
     }
 
     pub fn unbind_vao(&self) {
@@ -157,16 +164,12 @@ impl<'a, T> Shape<'a, T> {
     }
 
     pub fn unbind_texture(&self) {
-        self.texture.unbind();
-    }
-
-    pub fn get_ebo_count(&self) -> u32 {
-        return self._ebo.count;
+        self._texture.unbind();
     }
 
     pub fn del(&self) {
         self._vao.del();
         self._ebo.del();
-        self.material.del();
+        self._material.del();
     }
 }
