@@ -64,13 +64,9 @@ fn main() {
         .material(&axes_material)
         .layouts(&[0, 1])
         .build();
-    let mut square = Shape::new()
-        .vertices(&square_v)
-        .indices(&square_i)
+
+    let square = Shape::quad(&square_v)
         .material(&cube_material)
-        .layouts(&[0, 1, 2])
-        .vert_sizes(&[3, 3, 2])
-        .usage(gl::DYNAMIC_DRAW)
         .texture(&Texture2D::from_path("examples/basic_texture/resources/images/dude.jpg"))
         .build();
 
