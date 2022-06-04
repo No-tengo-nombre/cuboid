@@ -32,17 +32,11 @@ fn main() {
     ];
     let axes_i: Vec<u32> = vec![0, 1, 0, 2, 0, 3];
 
-    // let square_v: Vec<types::V8> = vec![
-    //     [-4.0, -10.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-    //     [4.0, -10.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
-    //     [6.0, 10.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
-    //     [-6.0, 10.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0],
-    // ];
-    let square_v: Vec<types::V6> = vec![
-        [-4.0, -10.0, 0.0, 1.0, 0.0, 0.0],
-        [4.0, -10.0, 0.0, 0.0, 1.0, 0.0],
-        [6.0, 10.0, 0.0, 0.0, 0.0, 1.0],
-        [-6.0, 10.0, 0.0, 1.0, 1.0, 1.0],
+    let square_v: Vec<types::V8> = vec![
+        [-6.0, -10.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0],
+        [ 6.0, -10.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0],
+        [ 6.0,  10.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+        [-6.0,  10.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0],
     ];
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
@@ -74,11 +68,10 @@ fn main() {
         .vertices(&square_v)
         .indices(&square_i)
         .material(&cube_material)
-        // .layouts(&[0, 1, 2])
-        .layouts(&[0, 1])
-        .usage(gl::DYNAMIC_DRAW)
+        .layouts(&[0, 1, 2])
         .vert_sizes(&[3, 3, 2])
-        .texture(&Texture2D::new().from_path("examples/texture_example/resources/images/perroxd.png"))
+        .usage(gl::DYNAMIC_DRAW)
+        .texture(&Texture2D::from_path("examples/basic_texture/resources/images/dude.jpg"))
         .build();
 
     // renderer.add_item_with_mode(&axes, gl::LINE);
