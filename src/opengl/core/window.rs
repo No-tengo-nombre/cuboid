@@ -30,7 +30,7 @@ impl Window {
     pub fn new() -> Window {
         let empty_instance = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
         let (window, receiver) = empty_instance
-            .create_window(0, 0, "", glfw::WindowMode::Windowed)
+            .create_window(1, 1, "", glfw::WindowMode::Windowed)
             .expect("");
         return Window {
             _width: 640,
@@ -106,6 +106,10 @@ impl Window {
 
     pub fn swap_buffers(&mut self) {
         self._glfw_window.swap_buffers();
+    }
+
+    pub fn get_time(&self) -> f32 {
+        return self._glfw_instance.get_time() as f32;
     }
 }
 
