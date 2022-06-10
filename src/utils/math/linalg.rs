@@ -43,19 +43,29 @@ pub fn cross_v3(a: &V3, b: &V3) -> V3 {
 //|===============================| Matrix multiplication |=====================================|//
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
-pub fn mat4_mul4(m1: &[V4; 4], m2: &[V4; 4]) -> Vec<V4> {
-    let mut result = Vec::<V4>::new();
-    for i in 0..m1.len() {
+pub fn mat4_mul4(m1: &[V4; 4], m2: &[V4; 4]) -> [V4; 4] {
+    let mut result = eye4();
+    for i in 0..4 {
         let vertex = m1[i];
-        let mut temp_result: V4 = [0.0, 0.0, 0.0, 0.0];
         for j in 0..4 {
             let mut sum = 0.0;
             for k in 0..4 {
                 sum += vertex[k] * m2[k][j];
             }
-            temp_result[j] = sum;
+            result[i][j] = sum;
         }
-        result.push(temp_result);
+    }
+    return result;
+}
+
+pub fn mat4_mul_v4(m1: &[V4; 4], v: &V4) -> V4 {
+    let mut result = [0.0, 0.0, 0.0, 0.0];
+    for i in 0..4 {
+        let mut sum = 0.0;
+        for k in 0..4 {
+            sum += m1[i][k] * v[k];
+        }
+        result[i] = sum;
     }
     return result;
 }
@@ -77,19 +87,21 @@ pub fn mat6_mul3(m1: &[V6], m2: &[V3; 3]) -> Vec<V6> {
     return result;
 }
 
-pub fn mat3_mul3(m1: &[V3], m2: &[V3; 3]) -> Vec<V3> {
-    let mut result = Vec::<V3>::new();
-    for i in 0..m1.len() {
+pub fn mat3_mul3(m1: &[V3; 3], m2: &[V3; 3]) -> [V3; 3] {
+    let mut result = [
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 0.0, 1.0],
+    ];
+    for i in 0..3 {
         let vertex = m1[i];
-        let mut temp_result: V3 = [0.0, 0.0, 0.0];
         for j in 0..3 {
             let mut sum = 0.0;
             for k in 0..3 {
                 sum += vertex[k] * m2[k][j];
             }
-            temp_result[j] = sum;
+            result[i][j] = sum;
         }
-        result.push(temp_result);
     }
     return result;
 }
@@ -119,6 +131,23 @@ pub fn transpose4x4(m1: &Vec<V4>) -> Vec<V4> {
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //|================================| Important matrices |=======================================|//
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+pub fn eye3() -> [V3; 3] {
+    return [
+        [1.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0],
+        [0.0, 0.0, 1.0],
+    ];
+}
+
+pub fn eye4() -> [V4; 4] {
+    return [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ];
+}
 
 pub fn rot_mat3_x(angle: f32) -> [V3; 3] {
     let ang_rad = angle.to_radians();
@@ -173,7 +202,15 @@ pub fn rot_mat3(axis: &V3, angle: f32) -> [V3; 3] {
     ];
 }
 
-pub fn look_at(position: &V3, up: &V3, direction: &V3) -> Vec<V4> {
+pub fn scale_mat3(x: f32, y: f32, z: f32) -> [V3; 3] {
+    return [
+        [x, 0.0, 0.0],
+        [0.0, y, 0.0],
+        [0.0, 0.0, z],
+    ];
+}
+
+pub fn look_at(position: &V3, up: &V3, direction: &V3) -> [V4; 4] {
     let right = normalize_v3(&cross_v3(&up, &direction));
     let rx = right[0];
     let ry = right[1];
@@ -202,14 +239,14 @@ pub fn look_at(position: &V3, up: &V3, direction: &V3) -> Vec<V4> {
     return mat4_mul4(&matrix1, &matrix2);
 }
 
-pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> Vec<V4> {
+pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> [V4; 4] {
     let rml = xmax - xmin;
     let tmb = ymax - ymin;
     let fmn = zmax - zmin;
     let rpl = xmax + xmin;
     let tpb = ymax + ymin;
     let fpn = zmax + zmin;
-    return vec![
+    return [
         [2.0 / rml, 0.0, 0.0, -rpl / rml],
         [0.0, 2.0 / tmb, 0.0, -tpb / tmb],
         [0.0, 0.0, -2.0 / fmn, -fpn / fmn],
@@ -217,14 +254,14 @@ pub fn ortho(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -
     ];
 }
 
-pub fn perspective(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> Vec<V4> {
+pub fn perspective(xmin: f32, xmax: f32, ymin: f32, ymax: f32, zmin: f32, zmax: f32) -> [V4; 4] {
     let rml = xmax - xmin;
     let tmb = ymax - ymin;
     let fmn = zmax - zmin;
     let rpl = xmax + xmin;
     let tpb = ymax + ymin;
     let fpn = zmax + zmin;
-    return vec![
+    return [
         [2.0 * zmin / rml, 0.0, 0.0, 0.0],
         [0.0, 2.0 * zmin / tmb, 0.0, 0.0],
         [rpl / rml, tpb / tmb, -fpn / fmn, -1.0],
