@@ -13,7 +13,7 @@ use cuboid::opengl::components::{
     Shape,
     Texture2D,
 };
-use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::{Shader, Renderer, Window};
 use cuboid::opengl::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
@@ -32,17 +32,16 @@ fn main() {
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
-    let (mut window, events, mut glfw_instance) = Window::new()
+    let mut window = Window::new()
         .width(1000)
         .height(1000)
         .title(WINDOW_TITLE)
         .windowed()
         .build();
-    let mut renderer = Renderer3D::new();
-    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
+    let mut renderer = Renderer3D::new().clear_color(0.0, 0.0, 0.0, 1.0);
     let shader = Shader::new()
-        .vertex("examples/ogl_texture_example/resources/shaders/test.vert")
-        .fragment("examples/ogl_texture_example/resources/shaders/test.frag");
+        .vertex("examples/gl_texture_example/resources/shaders/test.vert")
+        .fragment("examples/gl_texture_example/resources/shaders/test.frag");
     let material = Material::new().shader(&shader);
 
     let mut square = Shape::new()
@@ -51,7 +50,7 @@ fn main() {
         .material(&material)
         .layouts(&[0, 1, 2])
         .usage(gl::DYNAMIC_DRAW)
-        .texture(&Texture2D::from_path("examples/ogl_texture_example/resources/images/perroxd.png"))
+        .texture(&Texture2D::from_path("examples/gl_texture_example/resources/images/perroxd.png"))
         .build();
 
     renderer.add_item_with_mode(&square, gl::QUADS);
@@ -79,11 +78,11 @@ fn main() {
     let mut controller = Controller::new();
 
     while !window.should_close() {
-        controller.poll_window_events(&mut glfw_instance, &events);
+        controller.poll_window_events(&mut window);
         if controller.esc_pressed {
             window.set_should_close(true);
         }
-        let time = glfw_instance.get_time() as f32;
+        let time = window.get_time();
         delta = time - prev_time;
         fps = 1.0 / delta;
         // println!("FPS : {}", fps);

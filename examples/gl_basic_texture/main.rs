@@ -13,7 +13,7 @@ use cuboid::opengl::components::{
     Shape,
     Texture2D,
 };
-use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::{Shader, Renderer, Window};
 use cuboid::opengl::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
@@ -41,20 +41,19 @@ fn main() {
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
-    let (mut window, events, mut glfw_instance) = Window::new()
+    let mut window = Window::new()
         .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()
         .build();
-    let mut renderer = Renderer3D::new();
-    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
+    let mut renderer = Renderer3D::new().clear_color(0.0, 0.0, 0.0, 1.0);
 
     let axes_shader = Shader::new()
-        .vertex("examples/ogl_basic_texture/resources/shaders/test.vert")
-        .fragment("examples/ogl_basic_texture/resources/shaders/line.frag");
+        .vertex("examples/gl_basic_texture/resources/shaders/test.vert")
+        .fragment("examples/gl_basic_texture/resources/shaders/line.frag");
     let cube_shader = Shader::new()
-        .vertex("examples/ogl_basic_texture/resources/shaders/test.vert")
-        .fragment("examples/ogl_basic_texture/resources/shaders/test.frag");
+        .vertex("examples/gl_basic_texture/resources/shaders/test.vert")
+        .fragment("examples/gl_basic_texture/resources/shaders/test.frag");
     let axes_material = Material::new().shader(&axes_shader);
     let cube_material = Material::new().shader(&cube_shader);
 
@@ -67,7 +66,7 @@ fn main() {
 
     let square = Shape::quad(&square_v)
         .material(&cube_material)
-        .texture(&Texture2D::from_path("examples/ogl_basic_texture/resources/images/dude.jpg"))
+        .texture(&Texture2D::from_path("examples/gl_basic_texture/resources/images/dude.jpg"))
         .build();
 
     // renderer.add_item_with_mode(&axes, gl::LINE);
@@ -96,11 +95,11 @@ fn main() {
     let mut controller = Controller::new();
 
     while !window.should_close() {
-        controller.poll_window_events(&mut glfw_instance, &events);
+        controller.poll_window_events(&mut window);
         if controller.esc_pressed {
             window.set_should_close(true);
         }
-        let time = glfw_instance.get_time() as f32;
+        let time = window.get_time();
         delta = time - prev_time;
         fps = 1.0 / delta;
         // println!("FPS : {}", fps);

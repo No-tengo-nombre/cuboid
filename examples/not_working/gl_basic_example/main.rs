@@ -28,8 +28,8 @@ fn main() {
 
     // Define a material
     let shader = Shader::new()
-        .vertex("examples/ogl_basic_example/resources/shaders/test.vert")
-        .fragment("examples/ogl_basic_example/resources/shaders/test.frag");
+        .vertex("examples/gl_basic_example/resources/shaders/test.vert")
+        .fragment("examples/gl_basic_example/resources/shaders/test.frag");
     let material = Material::new().shader(&shader);
     
     // Create the components
