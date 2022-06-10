@@ -1,10 +1,29 @@
-use crate::opengl::{assert_gl_is_loaded, Drawable};
+use crate::opengl::{assert_gl_is_loaded, Drawable, Renderer};
 use gl;
 use gl::types::*;
 
 pub struct Renderer2D<'a> {
     _clear_color: [f32; 4],
     _layers: Vec<Vec<(&'a dyn Drawable, GLenum)>>,
+}
+
+impl<'a> Renderer for Renderer2D<'a> {
+    fn clear(&self) {
+        assert_gl_is_loaded();
+        unsafe {
+            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
+        }
+    }
+
+    fn render(&self) {
+        for i in 0..self._layers.len() {
+            let layer = self.get_layer(i);
+            for j in 0..layer.len() {
+                let drawable = &layer[j];
+                self.draw_mode(drawable.0, drawable.1);
+            }
+        }
+    }
 }
 
 impl<'a> Renderer2D<'a> {
@@ -24,12 +43,6 @@ impl<'a> Renderer2D<'a> {
         self._layers[layer].push((drawable, mode));
     }
 
-    pub fn clear(&self) {
-        assert_gl_is_loaded();
-        unsafe {
-            gl::Clear(gl::COLOR_BUFFER_BIT | gl::DEPTH_BUFFER_BIT);
-        }
-    }
     pub fn set_clear_color(&mut self, r: f32, g: f32, b: f32, a: f32) {
         assert_gl_is_loaded();
         self._clear_color = [r, g, b, a];
@@ -40,16 +53,6 @@ impl<'a> Renderer2D<'a> {
 
     pub fn get_layer(&self, layer: usize) -> &Vec<(&dyn Drawable, GLenum)> {
         return &self._layers[layer];
-    }
-
-    pub fn render(&self) {
-        for i in 0..self._layers.len() {
-            let layer = self.get_layer(i);
-            for j in 0..layer.len() {
-                let drawable = &layer[j];
-                self.draw_mode(drawable.0, drawable.1);
-            }
-        }
     }
 
     /// Draws the given shape.
