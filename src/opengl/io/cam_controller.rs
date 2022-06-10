@@ -1,17 +1,13 @@
+use crate::opengl::Window;
 use glfw;
-use std::sync::mpsc::Receiver;
 
 pub trait CameraController {
-    fn poll_window_events(
-        &mut self,
-        glfw_instance: &mut glfw::Glfw,
-        events: &Receiver<(f64, glfw::WindowEvent)>,
-    ) {
-        glfw_instance.poll_events();
-        for (_, event) in glfw::flush_messages(events) {
+    fn poll_window_events(&mut self, window: &mut Window) {
+        for (_, event) in glfw::flush_messages(window.poll_events()) {
             self.handle_event(event);
         }
     }
+
     fn handle_event(&mut self, event: glfw::WindowEvent) {
         match event {
             glfw::WindowEvent::Key(key, scancode, action, modifiers) => {
