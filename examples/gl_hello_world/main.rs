@@ -10,7 +10,7 @@ use cuboid::opengl::components::{
     Renderer3D,
     Shape
 };
-use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::{Shader, Renderer, Window};
 use cuboid::opengl::io::CameraController;
 use cuboid::utils::types;
 
@@ -23,8 +23,7 @@ fn main() {
         .title(WINDOW_TITLE)
         .windowed()
         .build();
-    let mut renderer = Renderer3D::new(&mut window).clear_color(0.0, 0.0, 0.0, 1.0);
-    // let mut renderer = Renderer3D::new().clear_color(0.0, 0.0, 0.0, 1.0);
+    let mut renderer = Renderer3D::new().clear_color(0.0, 0.0, 0.0, 1.0);
 
     // Define a material
     let shader = Shader::new()
@@ -54,7 +53,7 @@ fn main() {
     let mut wireframe = false;
     let mut controller = Controller::new();
 
-    let update_func = | | {
+    while !window.should_close() {
         controller.poll_window_events(&mut window);
         if controller.esc_pressed {
             window.set_should_close(true);
@@ -70,33 +69,9 @@ fn main() {
             }
             wireframe = controller.wireframe;
         }
-    };
 
-    // renderer.run_loop(&mut update_func);
-    
-    // window.update_func(&update_func);
-
-    // window.run_loop(&renderer, &mut update_func);
-
-    // while !window.should_close() {
-    //     controller.poll_window_events(&mut glfw_instance, &events);
-    //     if controller.esc_pressed {
-    //         window.set_should_close(true);
-    //     }
-
-    //     if wireframe != controller.wireframe {
-    //         if controller.wireframe {
-    //             renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
-    //             println!("LINE")
-    //         } else {
-    //             renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::FILL);
-    //             println!("FILL")
-    //         }
-    //         wireframe = controller.wireframe;
-    //     }
-
-    //     renderer.clear();
-    //     renderer.render();
-    //     window.swap_buffers();
-    // }
+        renderer.clear();
+        renderer.render();
+        window.swap_buffers();
+    }
 }
