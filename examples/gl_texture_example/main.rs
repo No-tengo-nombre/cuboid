@@ -145,7 +145,7 @@ fn main() {
             camera_dir = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_dir);
             camera_up = linalg::mat3_mul_v3(&linalg::rot_mat3_y(cam_rot_speed), &camera_up);
         }
-        camera.update(&camera_pos, &camera_dir, &camera_up);
+        camera.update();
 
         renderer.clear();
         renderer.render();
