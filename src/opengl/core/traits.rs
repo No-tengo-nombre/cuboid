@@ -1,6 +1,11 @@
 use crate::opengl::Transform;
 use gl::types::*;
 
+pub trait Renderer {
+    fn clear(&self);
+    fn render(&self);
+}
+
 /// An object that defines how it should be drawn by the renderer
 pub trait Drawable {
     fn draw_with_mode(&self, mode: GLenum);
