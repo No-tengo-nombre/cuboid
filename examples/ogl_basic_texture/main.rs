@@ -50,11 +50,11 @@ fn main() {
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
 
     let axes_shader = Shader::new()
-        .vertex("examples/basic_texture/resources/shaders/test.vert")
-        .fragment("examples/basic_texture/resources/shaders/line.frag");
+        .vertex("examples/ogl_basic_texture/resources/shaders/test.vert")
+        .fragment("examples/ogl_basic_texture/resources/shaders/line.frag");
     let cube_shader = Shader::new()
-        .vertex("examples/basic_texture/resources/shaders/test.vert")
-        .fragment("examples/basic_texture/resources/shaders/test.frag");
+        .vertex("examples/ogl_basic_texture/resources/shaders/test.vert")
+        .fragment("examples/ogl_basic_texture/resources/shaders/test.frag");
     let axes_material = Material::new().shader(&axes_shader);
     let cube_material = Material::new().shader(&cube_shader);
 
@@ -67,7 +67,7 @@ fn main() {
 
     let square = Shape::quad(&square_v)
         .material(&cube_material)
-        .texture(&Texture2D::from_path("examples/basic_texture/resources/images/dude.jpg"))
+        .texture(&Texture2D::from_path("examples/ogl_basic_texture/resources/images/dude.jpg"))
         .build();
 
     // renderer.add_item_with_mode(&axes, gl::LINE);

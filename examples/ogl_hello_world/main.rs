@@ -28,8 +28,8 @@ fn main() {
 
     // Define a material
     let shader = Shader::new()
-        .vertex("examples/hello_world/resources/shaders/test.vert")
-        .fragment("examples/hello_world/resources/shaders/test.frag");
+        .vertex("examples/ogl_hello_world/resources/shaders/test.vert")
+        .fragment("examples/ogl_hello_world/resources/shaders/test.frag");
 
     let material = Material::new().shader(&shader);
 
