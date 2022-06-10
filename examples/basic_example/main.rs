@@ -188,17 +188,18 @@ fn main() {
 
         let rot_speed = 10.0;
 
-        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
-        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
-        triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
+        let mut new_triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
+        new_triangle_v = linalg::mat6_mul3(&new_triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
+        new_triangle_v = linalg::mat6_mul3(&new_triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
+        // triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
         // triangle.set_vertices(&triangle_v, &[0, 1]);
-        triangle.vertices(&triangle_v);
+        triangle.vertices(&new_triangle_v);
 
-        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
-        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
-        cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
+        let mut new_cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
+        new_cube_v = linalg::mat6_mul3(&new_cube_v, &linalg::rot_mat3_y(rot_speed * delta));
+        new_cube_v = linalg::mat6_mul3(&new_cube_v, &linalg::rot_mat3_z(rot_speed * delta));
         // cube.set_vertices(&cube_v, &[0, 1]);
-        cube.vertices(&cube_v);
+        cube.vertices(&new_cube_v);
 
         // TODO: Make materials handle these uniforms.
         material._shader.set_4f("timeColor", r, g, b, 1.0);
