@@ -18,18 +18,18 @@ const WINDOW_TITLE: &str = "Hello world triangle";
 
 fn main() {
     // Initialization of the window
-    let (mut window, events, mut glfw_instance) = Window::new()
+    let mut window = Window::new()
         .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()
         .build();
-    let mut renderer = Renderer3D::new();
-    renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
+    let mut renderer = Renderer3D::new(&mut window).clear_color(0.0, 0.0, 0.0, 1.0);
+    // let mut renderer = Renderer3D::new().clear_color(0.0, 0.0, 0.0, 1.0);
 
     // Define a material
     let shader = Shader::new()
-        .vertex("examples/ogl_hello_world/resources/shaders/test.vert")
-        .fragment("examples/ogl_hello_world/resources/shaders/test.frag");
+        .vertex("examples/gl_hello_world/resources/shaders/test.vert")
+        .fragment("examples/gl_hello_world/resources/shaders/test.frag");
 
     let material = Material::new().shader(&shader);
 
@@ -54,8 +54,8 @@ fn main() {
     let mut wireframe = false;
     let mut controller = Controller::new();
 
-    while !window.should_close() {
-        controller.poll_window_events(&mut glfw_instance, &events);
+    let update_func = | | {
+        controller.poll_window_events(&mut window);
         if controller.esc_pressed {
             window.set_should_close(true);
         }
@@ -70,9 +70,33 @@ fn main() {
             }
             wireframe = controller.wireframe;
         }
+    };
 
-        renderer.clear();
-        renderer.render();
-        window.swap_buffers();
-    }
+    // renderer.run_loop(&mut update_func);
+    
+    // window.update_func(&update_func);
+
+    // window.run_loop(&renderer, &mut update_func);
+
+    // while !window.should_close() {
+    //     controller.poll_window_events(&mut glfw_instance, &events);
+    //     if controller.esc_pressed {
+    //         window.set_should_close(true);
+    //     }
+
+    //     if wireframe != controller.wireframe {
+    //         if controller.wireframe {
+    //             renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::LINE);
+    //             println!("LINE")
+    //         } else {
+    //             renderer.set_polygon_mode(gl::FRONT_AND_BACK, gl::FILL);
+    //             println!("FILL")
+    //         }
+    //         wireframe = controller.wireframe;
+    //     }
+
+    //     renderer.clear();
+    //     renderer.render();
+    //     window.swap_buffers();
+    // }
 }
