@@ -1,7 +1,7 @@
-use crate::components::{Material, Texture2D};
-use crate::{
+use crate::opengl::{
     assert_gl_is_loaded,
     buffers::{EBO, VAO, VBO},
+    components::{Material, Texture2D},
     Drawable,
 };
 use gl::types::*;
@@ -199,14 +199,12 @@ impl<'a, T> Shape<'a, T> {
         self._material.del();
     }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//====================================| Default shapes |=========================================//
-///////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    //====================================| Default shapes |=========================================//
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     pub fn triangle(vertices: &'a [T]) -> Shape<'a, T> {
-        return Shape::new()
-            .vertices(vertices)
-            .indices(&[0, 1, 2]);
+        return Shape::new().vertices(vertices).indices(&[0, 1, 2]);
     }
 
     pub fn quad(vertices: &'a [T]) -> Shape<'a, T> {

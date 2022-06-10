@@ -1,6 +1,3 @@
-pub mod components;
-pub mod core;
-pub mod io;
+pub mod opengl;
 pub mod utils;
-
-pub use crate::core::*;
+pub mod vulkan;

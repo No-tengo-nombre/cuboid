@@ -5,7 +5,7 @@ use glfw;
 use glfw::Context;
 
 use controller::Controller;
-use cuboid::components::{
+use cuboid::opengl::components::{
     Camera,
     PerspectiveCamera,
     Material,
@@ -13,8 +13,8 @@ use cuboid::components::{
     Shape,
     Texture2D,
 };
-use cuboid::Shader;
-use cuboid::io::CameraController;
+use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
 const WINDOW_TITLE: &str = "Texture example";
@@ -41,7 +41,7 @@ fn main() {
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
-    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+    let (mut window, events, mut glfw_instance) = Window::new()
         .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()

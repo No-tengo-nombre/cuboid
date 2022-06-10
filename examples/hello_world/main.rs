@@ -5,20 +5,20 @@ use glfw;
 use glfw::Context;
 
 use controller::Controller;
-use cuboid::components::{
+use cuboid::opengl::components::{
     Material,
     Renderer3D,
     Shape
 };
-use cuboid::Shader;
-use cuboid::io::CameraController;
+use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::io::CameraController;
 use cuboid::utils::types;
 
 const WINDOW_TITLE: &str = "Hello world triangle";
 
 fn main() {
     // Initialization of the window
-    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+    let (mut window, events, mut glfw_instance) = Window::new()
         .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()

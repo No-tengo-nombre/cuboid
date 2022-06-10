@@ -5,15 +5,16 @@ use glfw;
 use glfw::Context;
 
 use controller::Controller;
-use cuboid::components::{
+use cuboid::opengl::components::{
     Camera,
     PerspectiveCamera,
     Material,
     Renderer3D,
     Shape,
+    Texture2D,
 };
-use cuboid::Shader;
-use cuboid::io::CameraController;
+use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
 const WINDOW_TITLE: &str = "Texture example";
@@ -31,7 +32,7 @@ fn main() {
 
     let square_i: Vec<u32> = vec![0, 1, 2, 3];
 
-    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+    let (mut window, events, mut glfw_instance) = Window::new()
         .width(1000)
         .height(1000)
         .title(WINDOW_TITLE)
@@ -39,20 +40,19 @@ fn main() {
         .build();
     let mut renderer = Renderer3D::new();
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
-    let shader = Shader::new(
-        "examples/texture_example/resources/shaders/test.vert",
-        "examples/texture_example/resources/shaders/test.frag",
-    );
-    let material = Material::new(&shader);
+    let shader = Shader::new()
+        .vertex("examples/texture_example/resources/shaders/test.vert")
+        .fragment("examples/texture_example/resources/shaders/test.frag");
+    let material = Material::new().shader(&shader);
 
-    let mut square = Shape::new_with_usage(
-        &square_v,
-        &square_i,
-        &material,
-        &[0, 1, 2],
-        gl::DYNAMIC_DRAW,
-    );
-    square.set_texture_path("examples/texture_example/resources/images/perroxd.png");
+    let mut square = Shape::new()
+        .vertices(&square_v)
+        .indices(&square_i)
+        .material(&material)
+        .layouts(&[0, 1, 2])
+        .usage(gl::DYNAMIC_DRAW)
+        .texture(&Texture2D::from_path("examples/texture_example/resources/images/perroxd.png"))
+        .build();
 
     renderer.add_item_with_mode(&square, gl::QUADS);
     let mut camera_pos = [0.0, 0.0, 20.0];

@@ -1,5 +1,5 @@
-use crate::assert_gl_is_loaded;
-use crate::buffers::VBO;
+use crate::opengl::assert_gl_is_loaded;
+use crate::opengl::buffers::VBO;
 use gl;
 use std::mem::size_of;
 

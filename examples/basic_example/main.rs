@@ -5,9 +5,9 @@ use glfw;
 use glfw::Context;
 
 use controller::Controller;
-use cuboid::components::{Camera, PerspectiveCamera, Material, Renderer3D, Shape};
-use cuboid::Shader;
-use cuboid::io::CameraController;
+use cuboid::opengl::components::{Camera, PerspectiveCamera, Material, Renderer3D, Shape};
+use cuboid::opengl::{Shader, Window};
+use cuboid::opengl::io::CameraController;
 use cuboid::utils::{math::linalg, types};
 
 const WINDOW_TITLE: &str = "Basic example";
@@ -18,7 +18,7 @@ fn main() {
     let mut prev_time = 0.0;
 
     // Initialization of the window
-    let (mut window, events, mut glfw_instance) = cuboid::Window::new()
+    let (mut window, events, mut glfw_instance) = Window::new()
         .dimensions(1000, 1000)
         .title(WINDOW_TITLE)
         .windowed()
@@ -27,11 +27,10 @@ fn main() {
     renderer.set_clear_color(0.0, 0.0, 0.0, 1.0);
 
     // Define a material
-    let shader = Shader::new(
-        "examples/basic_example/resources/shaders/test.vert",
-        "examples/basic_example/resources/shaders/test.frag",
-    );
-    let material = Material::new(&shader);
+    let shader = Shader::new()
+        .vertex("examples/basic_example/resources/shaders/test.vert")
+        .fragment("examples/basic_example/resources/shaders/test.frag");
+    let material = Material::new().shader(&shader);
     
     // Create the components
     let mut triangle_v: Vec<types::V6> = vec![
@@ -59,14 +58,22 @@ fn main() {
         0, 1, 5, 4,
         2, 3, 7, 6,
     ];
-    let triangle = Shape::new_with_usage(
-        &triangle_v,
-        &triangle_i,
-        &material,
-        &[0, 1],
-        gl::DYNAMIC_DRAW,
-    );
-    let cube = Shape::new_with_usage(&cube_v, &cube_i, &material, &[0, 1], gl::DYNAMIC_DRAW);
+
+    let triangle = Shape::new()
+        .vertices(&triangle_v)
+        .indices(&triangle_i)
+        .material(&material)
+        .layouts(&[0, 1])
+        .usage(gl::DYNAMIC_DRAW)
+        .build();
+
+    let cube = Shape::new()
+        .vertices(&cube_v)
+        .indices(&cube_i)
+        .material(&material)
+        .layouts(&[0, 1])
+        .usage(gl::DYNAMIC_DRAW)
+        .build();
 
     // Add the items to the renderer
     renderer.add_item_with_mode(&cube, gl::QUADS);
@@ -184,15 +191,17 @@ fn main() {
         triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_x(rot_speed * delta));
         triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_y(rot_speed * delta));
         triangle_v = linalg::mat6_mul3(&triangle_v, &linalg::rot_mat3_z(rot_speed * delta));
-        triangle.set_vertices(&triangle_v, &[0, 1]);
+        // triangle.set_vertices(&triangle_v, &[0, 1]);
+        triangle.vertices(&triangle_v);
 
         cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_x(rot_speed * delta));
         cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_y(rot_speed * delta));
         cube_v = linalg::mat6_mul3(&cube_v, &linalg::rot_mat3_z(rot_speed * delta));
-        cube.set_vertices(&cube_v, &[0, 1]);
+        // cube.set_vertices(&cube_v, &[0, 1]);
+        cube.vertices(&cube_v);
 
         // TODO: Make materials handle these uniforms.
-        material.get_shader().set_4f("timeColor", r, g, b, 1.0);
+        material._shader.set_4f("timeColor", r, g, b, 1.0);
 
         renderer.clear();
         renderer.render();

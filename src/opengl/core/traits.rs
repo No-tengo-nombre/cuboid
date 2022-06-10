@@ -1,4 +1,4 @@
-use crate::core::Transform;
+use crate::opengl::Transform;
 use gl::types::*;
 
 /// An object that defines how it should be drawn by the renderer

@@ -1,4 +1,4 @@
-use crate::assert_gl_is_loaded;
+use crate::opengl::assert_gl_is_loaded;
 use crate::utils::images::load;
 use gl;
 

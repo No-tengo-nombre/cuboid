@@ -1,7 +1,7 @@
 use crate::utils::conversions;
 use crate::utils::math::linalg;
 use crate::utils::types::{V3, V4};
-use crate::{buffers::UBO, Transform, Transformable};
+use crate::opengl::{buffers::UBO, Transform, Transformable};
 
 pub trait Camera {
     fn get_position(&self) -> V3;

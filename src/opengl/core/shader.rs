@@ -1,4 +1,4 @@
-use crate::assert_gl_is_loaded;
+use crate::opengl::assert_gl_is_loaded;
 use crate::utils::str::name_to_ptr;
 use crate::utils::types::V4;
 use gl;
@@ -72,7 +72,7 @@ impl Shader {
         return self;
     }
 
-    pub fn make_shader(content: &String, shader_type: GLenum) -> GLuint {
+    pub fn make_shader(content: &str, shader_type: GLenum) -> GLuint {
         assert_gl_is_loaded();
         let shader;
         unsafe {
@@ -89,11 +89,11 @@ impl Shader {
         return shader;
     }
 
-    fn make_vertex_shader(content: &String) -> GLuint {
+    fn make_vertex_shader(content: &str) -> GLuint {
         return Shader::make_shader(content, gl::VERTEX_SHADER);
     }
 
-    fn make_fragment_shader(content: &String) -> GLuint {
+    fn make_fragment_shader(content: &str) -> GLuint {
         return Shader::make_shader(content, gl::FRAGMENT_SHADER);
     }
 

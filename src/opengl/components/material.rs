@@ -1,4 +1,4 @@
-use crate::shader::Shader;
+use crate::opengl::Shader;
 
 #[derive(Copy, Clone)]
 pub struct Material {
