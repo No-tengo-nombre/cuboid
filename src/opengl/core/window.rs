@@ -1,4 +1,5 @@
 use gl;
+use glfw;
 use glfw::Context;
 use std::sync::mpsc::Receiver;
 
@@ -15,21 +16,30 @@ pub enum WindowMode {
     FullScreen(u32),
 }
 
-#[derive(Clone)]
 pub struct Window {
     _width: u32,
     _height: u32,
     _title: String,
     _mode: WindowMode,
+    _glfw_window: glfw::Window,
+    _events: Receiver<(f64, glfw::WindowEvent)>,
+    _glfw_instance: glfw::Glfw,
 }
 
 impl Window {
     pub fn new() -> Window {
+        let empty_instance = glfw::init(glfw::FAIL_ON_ERRORS).unwrap();
+        let (window, receiver) = empty_instance
+            .create_window(0, 0, "", glfw::WindowMode::Windowed)
+            .expect("");
         return Window {
             _width: 640,
             _height: 480,
             _title: "Hello World!".to_string(),
             _mode: WindowMode::Windowed,
+            _glfw_window: window,
+            _events: receiver,
+            _glfw_instance: empty_instance,
         };
     }
 
@@ -69,11 +79,33 @@ impl Window {
         return self;
     }
 
-    pub fn build(&self) -> (glfw::Window, Receiver<(f64, glfw::WindowEvent)>, glfw::Glfw) {
+    pub fn build(mut self) -> Window {
         let (mut window, events, glfw_inst) =
             init_glfw(self._width, self._height, &self._title, self._mode);
         init_gl(&mut window);
-        return (window, events, glfw_inst);
+        self._glfw_window = window;
+        self._events = events;
+        self._glfw_instance = glfw_inst;
+        return self;
+    }
+
+    // The following are functions delegated to the fields of the struct
+
+    pub fn should_close(&self) -> bool {
+        return self._glfw_window.should_close();
+    }
+
+    pub fn set_should_close(&mut self, condition: bool) {
+        self._glfw_window.set_should_close(condition);
+    }
+
+    pub fn poll_events(&mut self) -> &Receiver<(f64, glfw::WindowEvent)> {
+        self._glfw_instance.poll_events();
+        return &self._events;
+    }
+
+    pub fn swap_buffers(&mut self) {
+        self._glfw_window.swap_buffers();
     }
 }
 
