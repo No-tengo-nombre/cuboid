@@ -16,3 +16,20 @@ pub fn v4_to_v3(v: &V4) -> V3 {
     let w = v[3];
     return [v[0] / w, v[1] / w, v[2] / w];
 }
+
+pub fn mat3_to_mat4(mat3: &[V3; 3]) -> [V4; 4] {
+    let mut result = [
+        [1.0, 0.0, 0.0, 0.0],
+        [0.0, 1.0, 0.0, 0.0],
+        [0.0, 0.0, 1.0, 0.0],
+        [0.0, 0.0, 0.0, 1.0],
+    ];
+
+    for i in 0..3 {
+        for j in 0..3 {
+            result[i][j] = mat3[i][j];
+        }
+    }
+
+    return result;
+}
